@@ -1,4 +1,19 @@
-.ant-layout-header {
-    background-color: transparent;
-    padding: 0 40px;
+.ant-layout-header,.ant-layout-footer {
+  background-color: transparent;
+//   padding: 0 40px;
+}
+.transparent-input {
+  .ant-input-group-addon:nth-of-type(1),.ant-input {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.26);
+    border: none;
+}
+.ant-input-group-addon:nth-of-type(2) {
+    border: none;
+      color: #fff;
+    background-color: #5B3DF2;
+  }
+  .ant-input:focus, .ant-input-focused {
+    box-shadow: none;
+  }
 }
