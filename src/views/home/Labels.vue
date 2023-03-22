@@ -1,0 +1,96 @@
+<script setup lang="ts">
+const labelsData: {label:string, id: number}[] = [
+    {
+        label: '分类1',
+        id: 1
+    },
+    {
+        label: '分类2',
+        id: 2
+    },
+    {
+        label: '分类3',
+        id: 3
+    },
+    {
+        label: '分类4',
+        id: 4
+    },
+    {
+        label: '分类5',
+        id: 5
+    },
+    {
+        label: '分类6',
+        id: 6
+    },
+    {
+        label: '分类7',
+        id: 7
+    },
+    {
+        label: '分类8',
+        id: 8
+    },
+    {
+        label: '分类9',
+        id: 9
+    },
+    {
+        label: '分类10',
+        id: 10
+    }
+]
+</script>
+
+<template>
+  <div class="labels">
+    <div class="label-category">
+      <span class="label-category-item text-center" v-for="item in labelsData" :key="item.id"> {{item.label}} </span>
+    </div>
+    <div class="label-category">
+      <span class="label-category-item no-bg text-left" v-for="item in labelsData" :key="item.id"> {{item.label}} </span>
+    </div>
+    <div class="label-category">
+      <span class="label-category-item no-bg text-left" v-for="item in labelsData" :key="item.id"> {{item.label}} </span>
+    </div>
+    <div class="label-category">
+      <span class="label-category-item no-bg text-left" v-for="item in labelsData" :key="item.id"> {{item.label}} </span>
+    </div>
+    <div class="label-category">
+      <span class="label-category-item no-bg text-left" v-for="item in labelsData" :key="item.id"> {{item.label}} </span>
+    </div>
+    <div class="label-category">
+      <span class="label-category-item no-bg text-left" v-for="item in labelsData" :key="item.id"> {{item.label}} </span>
+    </div>
+    <div class="label-category">
+      <span class="label-category-item no-bg text-left" v-for="item in labelsData" :key="item.id"> {{item.label}} </span>
+    </div>
+  </div>
+</template>
+<style lang="less">
+.labels {
+  width: 70vw;
+  overflow: scroll;
+  white-space: nowrap;
+  height: 280px;
+  background: @liner-color;
+  margin: 0 auto;
+  padding: 15px;
+  text-align: left;;
+  .label-category-item {
+    width: 84px;
+    height: 32px;
+    line-height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    display: inline-block;
+    color: #fff;
+    margin: 5px;
+    cursor: pointer;
+    &.no-bg {
+        background-color: transparent;
+    }
+  }
+}
+</style>

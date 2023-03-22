@@ -6,7 +6,7 @@ import Unocss from 'unocss/vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(),Unocss()],
+  plugins: [vue(), Unocss()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -16,11 +16,13 @@ export default defineConfig({
     preprocessorOptions: {
       less: {
         javascriptEnabled: true,
-        modifyVars: {},
         additionalData: `
-          @import "ant-design-vue/lib/style/themes/default.less";
+          // @import "ant-design-vue/lib/style/themes/default.less";
           @import "@/assets/styles/variables.less";
         `,
+        modifyVars: {
+          'primary-color': '#5B3DF2'
+        },
       },
     },
   },
