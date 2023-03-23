@@ -73,7 +73,7 @@ const labelsData: {label:string, id: number}[] = [
   width: 70vw;
   overflow: scroll;
   white-space: nowrap;
-  height: 280px;
+  height: 250px;
   background: @liner-color;
   margin: 0 auto;
   padding: 15px;

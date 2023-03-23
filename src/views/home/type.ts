@@ -11,7 +11,3 @@ export interface CategoryItem {
     type: number;
 }
 
-export interface LoginState {
-    username: string;
-    password: string;
-}

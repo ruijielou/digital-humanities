@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
-import { LoginState } from "./type";
+// import type { LoginState } from "../views/home/type";
+
+interface LoginState {
+    username: string;
+    password: string;
+}
 
 const loginType = ref<string>("password");
 const visible = ref<boolean>(false);
