@@ -6,7 +6,8 @@ import IconLogin from "./icons/IconLogin.vue";
 import IconUser from "./icons/IconUser.vue";
 import IconMessage from "./icons/IconMessage.vue";
 import LogoIcon from "./LogoIcon.vue";
-// const emit = defineEmits(['']);
+import {SearchOutlined} from "@ant-design/icons-vue";
+// const emit = defineEmits(['fun1', '']);
 
 const router = useRouter();
 const loginModalRef = ref();
@@ -28,7 +29,10 @@ const openLoginModal = () => {
     >
       <LogoIcon />
       <div class="header-icons flex items-center">
-        <span @click="openToContribute" >
+        <span >
+          <SearchOutlined class="cursor-pointer" style="color: #fff; font-size: 20px;" />
+        </span>
+        <span @click="openToContribute" class="m-l-4">
           <IconLogin class="cursor-pointer" />
         </span>
         <span class="m-l-4">
