@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive } from "vue";
 import Header from "../../components/Header.vue";
+import LogoText from "../../components/LogoText.vue";
 import SetpOne from "./StepOne.vue";
 import SetpTwo from "./StepTwo.vue";
 import type { GroupDataItem } from "./type";
@@ -72,11 +73,7 @@ const chooseCustomTag = () => {
   <div class="h-screen overflow-auto">
     <Header class="contribute-header" />
     <a-layout-content style="padding-top: 20px; padding-bottom: 20px" class="flex flex-col">
-      <div class="contribute-page-title text-center">
-        <img src="../../assets/image/title-l.png" alt="" />
-        <span class="p-l-4 p-r-4 text-6 v-middle" style="letter-spacing: 5px">案例投稿</span>
-        <img src="../../assets/image/title-r.png" alt="" />
-      </div>
+      <LogoText text="案例投稿" />
       <div class="p-l-100 p-r-100 p-t-5 p-b-5">
         <a-steps :current="currentStep" size="small" @change="changeStep">
           <a-step title="选择案例库" />

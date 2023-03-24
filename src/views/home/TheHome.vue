@@ -64,57 +64,33 @@ const changeVisibile = (type: number) => {
         </div>
       </div>
     </a-layout-content>
-    <a-layout-footer
-      class="flex p-t-4 p-b-4"
-      style="border-top: 1px solid rgba(255, 255, 255, 0.3)"
-    >
+    <a-layout-footer class="flex p-t-4 p-b-4" style="border-top: 1px solid rgba(255, 255, 255, 0.3)">
       <div class="footer-item c-white flex-1 text-center">
-        <span
-          class="cursor-pointer"
-          @click="changeVisibile(CategoryType.CaseLibrary)"
-          >案例库</span
-        >
+        <span class="cursor-pointer" @click="changeVisibile(CategoryType.CaseLibrary)">案例库</span>
       </div>
       <div class="footer-item c-white flex-1 text-center">
-        <span
-          class="cursor-pointer"
-          @click="changeVisibile(CategoryType.CaseSpectrum)"
-          >案例谱</span
-        >
+        <span class="cursor-pointer" @click="changeVisibile(CategoryType.CaseSpectrum)">案例谱</span>
       </div>
       <div class="footer-item c-white flex-1 text-center">
-        <span
-          class="cursor-pointer"
-          @click="changeVisibile(CategoryType.Visualization)"
-          >可视化</span
-        >
+        <span class="cursor-pointer" @click="changeVisibile(CategoryType.Visualization)">可视化</span>
       </div>
     </a-layout-footer>
-    <a-drawer
-      placement="left"
-      :closable="false"
-      :visible="visible"
-      @close="changeVisibile"
-    >
+    <a-drawer placement="left" :closable="false" :visible="visible" @close="changeVisibile">
       <div class="draw-content text-center h-100% flex flex-col">
         <LogoIcon />
         <h4 class="title">数字人文多媒体案例资源库</h4>
-        <div
-          class="draw-category text-left flex-1 flex flex-col justify-center"
-        >
-          <div
-            class="category-item"
-            v-for="item in categoryList"
-            :key="item.name"
-            :class="{ active: visibleType === item.type }"
-          >
+        <div class="draw-category text-left flex-1 flex flex-col justify-center">
+          <div class="category-item" v-for="item in categoryList" :key="item.name"
+            :class="{ active: visibleType === item.type }">
             <span class="line"></span>
-            {{ item.label }}
+            <span class="cursor-pointer m-l-2" @click="$router.push({ name: 'CaseLibrary' })">
+              {{ item.label }}
+            </span>
           </div>
         </div>
       </div>
     </a-drawer>
-    
+
   </a-layout>
 </template>
 <style lang="less">

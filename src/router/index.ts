@@ -14,6 +14,11 @@ const router = createRouter({
       name: "Contribute",
       component: () => import("../views/contribute/Contribute.vue"),
     },
+    {
+      path: "/caselibrary",
+      name: "CaseLibrary",
+      component: () => import("../views/caseLibrary/CaseLibrary.vue"),
+    },
     // {
     //   path: "/about",
     //   name: "about",

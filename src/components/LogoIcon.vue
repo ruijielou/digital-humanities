@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <div>
-        <img src="../assets/image/logo.png" alt="" />
-      </div>
+  <div class="cursor-pointer" @click="$router.push({ path: '/' })">
+    <img src="../assets/image/logo.png" alt="" />
+  </div>
 </template>
