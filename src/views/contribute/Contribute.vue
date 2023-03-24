@@ -14,10 +14,10 @@ const chooseTag = (value: string) => {
   );
 };
 
-const changeStep = (step:number) => {
+const changeStep = (step: number) => {
   console.log(step);
   currentStep.value = step || 0;
-  
+
 }
 
 const groupData: GroupDataItem[] = [
@@ -71,15 +71,10 @@ const chooseCustomTag = () => {
 <template>
   <div class="h-screen overflow-auto">
     <Header class="contribute-header" />
-    <a-layout-content
-      style="padding-top: 20px; padding-bottom: 20px"
-      class="flex flex-col"
-    >
+    <a-layout-content style="padding-top: 20px; padding-bottom: 20px" class="flex flex-col">
       <div class="contribute-page-title text-center">
         <img src="../../assets/image/title-l.png" alt="" />
-        <span class="p-l-4 p-r-4 text-6 v-middle" style="letter-spacing: 5px"
-          >案例投稿</span
-        >
+        <span class="p-l-4 p-r-4 text-6 v-middle" style="letter-spacing: 5px">案例投稿</span>
         <img src="../../assets/image/title-r.png" alt="" />
       </div>
       <div class="p-l-100 p-r-100 p-t-5 p-b-5">
@@ -89,17 +84,16 @@ const chooseCustomTag = () => {
           <a-step title="完成" />
         </a-steps>
       </div>
-
-      <!-- <setp-one
-        :selected-tag="selectedTag"
-        :group-data="groupData"
-        @choose-tag="chooseTag"
-        @choose-custom-tag="chooseCustomTag"
-        v-if="currentStep === 0"
-      ></setp-one> -->
-      <SetpTwo :selected-tag="selectedTag"   v-if="currentStep === 1"/>
+      <setp-one :selected-tag="selectedTag" :group-data="groupData" @choose-tag="chooseTag"
+        @choose-custom-tag="chooseCustomTag" v-if="currentStep === 0"></setp-one>
+      <SetpTwo :selected-tag="selectedTag" v-if="currentStep === 1" />
+      <div v-if="currentStep === 2" class="step-3 text-center">
+        <img class="p-t-6" src="../../assets/image/no-content.png" alt="">
+        <div class="text-5 p-t-4">已完成，等待审核中…</div>
+      </div>
       <div class="text-center p-t-10">
-        <a-button type="primary">下一步</a-button>
+        <a-button v-if="currentStep === 2" type="primary">完成</a-button>
+        <a-button v-else @click="currentStep = currentStep == 0 ? 1 : 2" type="primary">下一步</a-button>
       </div>
     </a-layout-content>
   </div>
@@ -110,13 +104,16 @@ const chooseCustomTag = () => {
   background-size: cover;
   background-position: center center;
 }
+
 .group-container {
   padding: 20px 120px;
+
   .group-tags {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 15px;
   }
+
   .tag-item {
     text-align: center;
     cursor: pointer;
@@ -125,21 +122,31 @@ const chooseCustomTag = () => {
     height: 44px;
     background-color: #f5f5f5;
     color: #333;
+
     &:hover {
       color: @primary-color;
       background: #eeebff;
     }
+
     &.active {
       background: @primary-color;
       color: #fff;
     }
+
+    &.selected {
+      background: #5b3df280;
+      color: #fff;
+    }
   }
+
   .group-item {
     padding: 10px 0;
+
     .group-item-title {
       width: 100%;
       padding: 10px 0;
       position: relative;
+
       &:after {
         content: "";
         position: absolute;
@@ -149,6 +156,7 @@ const chooseCustomTag = () => {
         background-color: #ccc;
         top: 50%;
       }
+
       &:before {
         content: "";
         position: absolute;
@@ -159,8 +167,10 @@ const chooseCustomTag = () => {
         top: 50%;
         transform: translateY(-50%) rotate(-45deg);
       }
+
       .line-title {
         position: relative;
+
         &:after {
           content: "";
           position: absolute;

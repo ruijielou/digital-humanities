@@ -1,70 +1,84 @@
 <script setup lang="ts">
-const labelsData: {label:string, id: number}[] = [
-    {
-        label: '分类1',
-        id: 1
-    },
-    {
-        label: '分类2',
-        id: 2
-    },
-    {
-        label: '分类3',
-        id: 3
-    },
-    {
-        label: '分类4',
-        id: 4
-    },
-    {
-        label: '分类5',
-        id: 5
-    },
-    {
-        label: '分类6',
-        id: 6
-    },
-    {
-        label: '分类7',
-        id: 7
-    },
-    {
-        label: '分类8',
-        id: 8
-    },
-    {
-        label: '分类9',
-        id: 9
-    },
-    {
-        label: '分类10',
-        id: 10
-    }
+const labelsData: { label: string, id: number }[] = [
+  {
+    label: '分类1',
+    id: 1
+  },
+  {
+    label: '分类2',
+    id: 2
+  },
+  {
+    label: '分类3',
+    id: 3
+  },
+  {
+    label: '分类4',
+    id: 4
+  },
+  {
+    label: '分类5',
+    id: 5
+  },
+  {
+    label: '分类6',
+    id: 6
+  },
+  {
+    label: '分类7',
+    id: 7
+  },
+  {
+    label: '分类8',
+    id: 8
+  },
+  {
+    label: '分类9',
+    id: 9
+  },
+  {
+    label: '分类10',
+    id: 10
+  }
 ]
 </script>
 
 <template>
   <div class="labels">
     <div class="label-category">
-      <span class="label-category-item text-center" v-for="item in labelsData" :key="item.id"> {{item.label}} </span>
+      <span @click="$emit('setSearch', item.label)" class="label-category-item text-center" v-for="item in labelsData"
+        :key="item.id">
+        {{ item.label }} </span>
     </div>
     <div class="label-category">
-      <span class="label-category-item no-bg text-left" v-for="item in labelsData" :key="item.id"> {{item.label}} </span>
+      <span @click="$emit('setSearch', item.label)" class="label-category-item no-bg text-left" v-for="item in labelsData"
+        :key="item.id"> {{ item.label }}
+      </span>
     </div>
     <div class="label-category">
-      <span class="label-category-item no-bg text-left" v-for="item in labelsData" :key="item.id"> {{item.label}} </span>
+      <span @click="$emit('setSearch', item.label)" class="label-category-item no-bg text-left" v-for="item in labelsData"
+        :key="item.id"> {{ item.label }}
+      </span>
     </div>
     <div class="label-category">
-      <span class="label-category-item no-bg text-left" v-for="item in labelsData" :key="item.id"> {{item.label}} </span>
+      <span @click="$emit('setSearch', item.label)" class="label-category-item no-bg text-left" v-for="item in labelsData"
+        :key="item.id"> {{ item.label }}
+      </span>
     </div>
     <div class="label-category">
-      <span class="label-category-item no-bg text-left" v-for="item in labelsData" :key="item.id"> {{item.label}} </span>
+      <span @click="$emit('setSearch', item.label)" class="label-category-item no-bg text-left" v-for="item in labelsData"
+        :key="item.id"> {{ item.label }}
+      </span>
     </div>
     <div class="label-category">
-      <span class="label-category-item no-bg text-left" v-for="item in labelsData" :key="item.id"> {{item.label}} </span>
+      <span @click="$emit('setSearch', item.label)" class="label-category-item no-bg text-left" v-for="item in labelsData"
+        :key="item.id"> {{ item.label }}
+      </span>
     </div>
     <div class="label-category">
-      <span class="label-category-item no-bg text-left" v-for="item in labelsData" :key="item.id"> {{item.label}} </span>
+      <span @click="$emit('setSearch', item.label)" class="label-category-item no-bg text-left" v-for="item in labelsData"
+        :key="item.id"> {{ item.label }}
+      </span>
     </div>
   </div>
 </template>
@@ -77,7 +91,9 @@ const labelsData: {label:string, id: number}[] = [
   background: @liner-color;
   margin: 0 auto;
   padding: 15px;
-  text-align: left;;
+  text-align: left;
+  ;
+
   .label-category-item {
     width: 84px;
     height: 32px;
@@ -88,8 +104,9 @@ const labelsData: {label:string, id: number}[] = [
     color: #fff;
     margin: 5px;
     cursor: pointer;
+
     &.no-bg {
-        background-color: transparent;
+      background-color: transparent;
     }
   }
 }

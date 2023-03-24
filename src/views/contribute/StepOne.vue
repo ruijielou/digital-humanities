@@ -20,35 +20,6 @@ defineProps<{
         自定义案例库
       </span>
     </div>
-    {{ groupData }}
-    <div class="group-item" v-for="(item, index) in groupData" :key="index">
-      <div class="group-item-title">
-        <span class="line-title">{{ item.title }}</span>
-      </div>
-      <div class="group-tags">
-        <span
-          v-for="(tag, i) in item.options"
-          @click="emit('chooseTag', tag)"
-          :key="i"
-          class="tag-item"
-          :class="{ active: selectedTag.includes(tag) }"
-          >{{ tag }}</span
-        >
-      </div>
-    </div>
-  </div>
-
-  <div class="group-container">
-    <div class="group-tags">
-      <span
-        class="tag-item"
-        :class="{ active: selectedTag.includes('自定义案例库') }"
-        @click="emit('chooseCustomTag')"
-      >
-        <PlusOutlined />
-        自定义案例库
-      </span>
-    </div>
     <div class="group-item" v-for="(item, index) in groupData" :key="index">
       <div class="group-item-title">
         <span class="line-title">{{ item.title }}</span>
