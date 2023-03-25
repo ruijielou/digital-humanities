@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from "vue";
-import Header from "../../components/Header.vue";
 import LogoText from "../../components/LogoText.vue";
 import {
   ArrowLeftOutlined,

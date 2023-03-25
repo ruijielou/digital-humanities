@@ -2,7 +2,6 @@
 import { ref } from "vue";
 import LogoIcon from "../../components/LogoIcon.vue";
 import Search from "../../components/Search.vue";
-import Header from "../../components/Header.vue";
 import {categoryList,CategoryType} from "../../utils/type"
 
 

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, reactive } from "vue";
-import Header from "../../components/Header.vue";
 import LogoText from "../../components/LogoText.vue";
 import SetpOne from "./StepOne.vue";
 import SetpTwo from "./StepTwo.vue";
@@ -163,20 +162,7 @@ const chooseCustomTag = () => {
         transform: translateY(-50%) rotate(-45deg);
       }
 
-      .line-title {
-        position: relative;
-
-        &:after {
-          content: "";
-          position: absolute;
-          left: -2px;
-          bottom: -2px;
-          width: 24px;
-          height: 8px;
-          z-index: -1;
-          background: #f243d9;
-        }
-      }
+     
     }
   }
 }

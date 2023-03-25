@@ -8,3 +8,16 @@
 .flex-3 {
     flex: 3
 }
+.line-title {
+    position: relative;
+    &:after {
+      content: "";
+      position: absolute;
+      left: -2px;
+      bottom: -2px;
+      width: 24px;
+      height: 8px;
+      z-index: -1;
+      background: #f243d9;
+    }
+  }

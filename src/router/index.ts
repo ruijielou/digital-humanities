@@ -20,6 +20,11 @@ const router = createRouter({
       component: () => import("../views/caseLibrary/CaseLibrary.vue"),
     },
     {
+      path: "/morelibrary",
+      name: "MoreLibrary",
+      component: () => import("../views/caseLibrary/MoreLibrary.vue"),
+    },
+    {
       path: "/casespectrum",
       name: "CaseSpectrum",
       component: () => import("../views/caseSpectrum/CaseSpectrum.vue"),

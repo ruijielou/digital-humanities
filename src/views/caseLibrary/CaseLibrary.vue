@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import Header from "../../components/Header.vue";
 import LogoText from "../../components/LogoText.vue";
 import Carousel from "./Carousel.vue"
 import Card from "./Card.vue";
 import GLAM from "../../assets/image/GLAM.png";
-import Footer from "../../components/Footer.vue";
 
 import { caseReferred, cardData } from "./mock";
 </script>
@@ -86,7 +84,7 @@ import { caseReferred, cardData } from "./mock";
         </div>
       </div>
       <div class="more-container">
-        <span class="border-btn">更多</span>
+        <span class="border-btn" @click="$router.push({name: ''})">更多</span>
       </div>
     </a-layout-content>
     <Footer />
