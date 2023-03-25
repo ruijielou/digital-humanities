@@ -39,7 +39,7 @@ const changeVisibile = (type: number) => {
 
 <template>
   <a-layout class="home-container h-screen">
-    <Header />
+    <Header/>
     <a-layout-content style="padding-top: 20px" class="flex flex-col">
       <div class="home-content">
         <h1 class="page-title">数字与人文交汇的时刻</h1>

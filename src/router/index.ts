@@ -19,14 +19,24 @@ const router = createRouter({
       name: "CaseLibrary",
       component: () => import("../views/caseLibrary/CaseLibrary.vue"),
     },
-    // {
-    //   path: "/about",
-    //   name: "about",
-    //   // route level code-splitting
-    //   // this generates a separate chunk (About.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import("../views/AboutView.vue"),
-    // },
+    {
+      path: "/casespectrum",
+      name: "CaseSpectrum",
+      component: () => import("../views/caseSpectrum/CaseSpectrum.vue"),
+    },
+    {
+      path: "/visualization",
+      name: "Visualization",
+      component: () => import("../views/visualization/Visualization.vue"),
+    },
+    {
+      path: "/about",
+      name: "About",
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import("../views/AboutView.vue"),
+    },
   ],
 });
 

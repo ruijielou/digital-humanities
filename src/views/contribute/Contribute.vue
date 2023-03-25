@@ -71,7 +71,7 @@ const chooseCustomTag = () => {
 </script>
 <template>
   <div class="h-screen overflow-auto">
-    <Header class="contribute-header" />
+    <Header title="追踪研究线索" class="contribute-header" />
     <a-layout-content style="padding-top: 20px; padding-bottom: 20px" class="flex flex-col">
       <LogoText text="案例投稿" />
       <div class="p-l-100 p-r-100 p-t-5 p-b-5">
@@ -98,8 +98,6 @@ const chooseCustomTag = () => {
 <style lang="less">
 .contribute-header {
   background-image: url("../../assets/image/bg1.png");
-  background-size: cover;
-  background-position: center center;
 }
 
 .group-container {

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, defineEmits } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import LoginModal from "./LoginModal.vue";
 import IconLogin from "./icons/IconLogin.vue";
@@ -8,6 +8,10 @@ import IconMessage from "./icons/IconMessage.vue";
 import LogoIcon from "./LogoIcon.vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 // const emit = defineEmits(['fun1', '']);
+
+defineProps<{
+    title?: string;
+}>()
 
 const router = useRouter();
 const loginModalRef = ref();
@@ -22,9 +26,10 @@ const openLoginModal = () => {
 };
 </script>
 <template>
-  <a-layout-header class="flex justify-between"
-    style="height: 20vh; line-height: 100px; padding: 0 40px;padding-bottom: 100px;">
+  <a-layout-header class="flex justify-between items-start layout-header"
+    style="height: 20vh; padding: 10px 40px;">
     <LogoIcon />
+    <div class="header-title">{{ title }}</div>
     <div class="header-icons flex items-center">
       <span>
         <SearchOutlined class="cursor-pointer" style="color: #fff; font-size: 20px;" />
@@ -39,6 +44,25 @@ const openLoginModal = () => {
         <IconUser class="cursor-pointer" />
       </span>
     </div>
+   
     <LoginModal ref="loginModalRef" />
   </a-layout-header>
 </template>
+<style lang="less">
+.layout-header {
+  background-image: url("../../assets/image/caselibrary-bg.png");
+  background-size: cover;
+  background-position: center center;
+  position: relative;
+  .header-title {
+    font-size: 44px;
+    font-weight: 500;
+    color: #ffffff;
+    letter-spacing: 8px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+</style>
