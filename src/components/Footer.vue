@@ -1,10 +1,53 @@
+<script lang="ts" setup>
+import { categoryList } from "../utils/type";
+import { SearchOutlined } from "@ant-design/icons-vue";
+
+</script>
 <template>
-  <div class="footer">footer</div>
+  <div class="footer ">
+    <div class="flex">
+        <div class="flex-1 text-center">
+      <img width="90" src="../assets/image/logo-white.png" alt="" />
+      <p class="text-4 c-white p-t-10">数字人文多媒体案例资源库</p>
+    </div>
+    <div class="flex-1 flex flex-col p-b-10">
+      <div
+        class="cursor-pointer flex-1"
+        v-for="item in categoryList"
+        :key="item.name"
+        @click="$router.push({ name: item.name })"
+      >
+        <span class="m-l-2 c-white">
+          {{ item.label }}
+        </span>
+      </div>
+    </div>
+    <div class="flex-2 footer-search p-t-20">
+      <a-input>
+        <template #suffix>
+          <SearchOutlined />
+        </template>
+      </a-input>
+    </div>
+    </div>
+    <div class="copyright text-center c-white text-2">Copyright © 2023</div>
+  </div>
 </template>
 <style lang="less">
 .footer {
- width: 100%;
- height: 292px;
-background: #5B3DF2;
+  width: 100%;
+  height: 292px;
+  background: #5b3df2;
+  padding: 0 10%;
+  padding-top: 4em;
+  .footer-search .ant-input-affix-wrapper, .footer-search .ant-input {
+    background-color: transparent;
+    color: #fff;
+  }
+  .footer-search .ant-input-affix-wrapper {
+    border-left: none;
+    border-top:none;
+    border-right: none;
+  }
 }
 </style>

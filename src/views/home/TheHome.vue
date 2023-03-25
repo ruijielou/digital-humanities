@@ -3,30 +3,8 @@ import { ref } from "vue";
 import LogoIcon from "../../components/LogoIcon.vue";
 import Search from "../../components/Search.vue";
 import Header from "../../components/Header.vue";
-import { CategoryItem, CategoryType } from "./type";
+import {categoryList,CategoryType} from "../../utils/type"
 
-const categoryList: CategoryItem[] = [
-  {
-    name: "CaseLibrary",
-    label: "案例库",
-    type: CategoryType.CaseLibrary,
-  },
-  {
-    name: "CaseSpectrum",
-    label: "案例谱",
-    type: CategoryType.CaseSpectrum,
-  },
-  {
-    name: "Visualization",
-    label: "可视化",
-    type: CategoryType.Visualization,
-  },
-  {
-    name: "About",
-    label: "关于",
-    type: CategoryType.About,
-  },
-];
 
 const visible = ref<boolean>(false);
 const visibleType = ref<number>(0);

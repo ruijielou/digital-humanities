@@ -12,7 +12,7 @@ import { caseReferred, cardData } from "./mock";
   <div class="h-screen overflow-auto">
     <Header title="打开数字人文万花筒" class="caselibrary-header" />
     <a-layout-content
-      style="padding-top: 20px; padding-bottom: 20px"
+      style="padding-top: 20px;"
       class="flex flex-col"
     >
       <div class="case-container">
@@ -88,8 +88,8 @@ import { caseReferred, cardData } from "./mock";
       <div class="more-container">
         <span class="border-btn">更多</span>
       </div>
-      <Footer />
     </a-layout-content>
+    <Footer />
   </div>
 </template>
 <style lang="less">
