@@ -8,6 +8,38 @@
 .flex-3 {
   flex: 3;
 }
+  .group-item {
+    padding: 10px 0;
+
+    .group-item-title {
+      width: 100%;
+      padding: 10px 0;
+      position: relative;
+
+      &:after {
+        content: "";
+        position: absolute;
+        right: 19px;
+        width: calc(100% - 98px);
+        height: 1px;
+        background-color: #ccc;
+        top: 50%;
+      }
+
+      &:before {
+        content: "";
+        position: absolute;
+        left: 76px;
+        width: 6px;
+        height: 6px;
+        background-color: #ccc;
+        top: 50%;
+        transform: translateY(-50%) rotate(-45deg);
+      }
+
+     
+    }
+  }
 .line-title {
   position: relative;
   & > span {

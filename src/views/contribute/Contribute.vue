@@ -70,7 +70,7 @@ const chooseCustomTag = () => {
 </script>
 <template>
   <div class="h-screen overflow-auto">
-    <Header title="追踪研究线索" bg-name="contribute-bg"  class="contribute-header" />
+    <Header title="追踪研究线索" bg-name="bg1"  class="contribute-header" />
     <a-layout-content style="padding-top: 20px; padding-bottom: 20px" class="flex flex-col">
       <LogoText text="案例投稿" />
       <div class="p-l-100 p-r-100 p-t-5 p-b-5">
@@ -133,37 +133,6 @@ const chooseCustomTag = () => {
     }
   }
 
-  .group-item {
-    padding: 10px 0;
 
-    .group-item-title {
-      width: 100%;
-      padding: 10px 0;
-      position: relative;
-
-      &:after {
-        content: "";
-        position: absolute;
-        right: 0;
-        width: calc(100% - 88px);
-        height: 1px;
-        background-color: #ccc;
-        top: 50%;
-      }
-
-      &:before {
-        content: "";
-        position: absolute;
-        left: 76px;
-        width: 6px;
-        height: 6px;
-        background-color: #ccc;
-        top: 50%;
-        transform: translateY(-50%) rotate(-45deg);
-      }
-
-     
-    }
-  }
 }
 </style>

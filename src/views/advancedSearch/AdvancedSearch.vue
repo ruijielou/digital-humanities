@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from "vue";
 import LogoText from "../../components/LogoText.vue";
-import type {PageinationType} from "../../utils/type"
+import type { PageinationType } from "../../utils/type";
 import {
   ArrowLeftOutlined,
   CaretDownOutlined,
@@ -92,7 +92,11 @@ const pagination = reactive<PageinationType>({
 </script>
 <template>
   <div class="h-screen overflow-auto advanced-search">
-    <Header class="visualization-header" bg-name="visualization-bg" title="追踪研究线索" />
+    <Header
+      class="visualization-header"
+      bg-name="visualization-bg"
+      title="追踪研究线索"
+    />
     <a-layout-content
       style="padding: 20px 0; margin: 0 auto; width: 80%"
       class="flex flex-col"
@@ -100,7 +104,7 @@ const pagination = reactive<PageinationType>({
       <div class="return-prev-page cursor-pointer" @click="$router.go(-1)">
         <arrow-left-outlined />
         <span class="p-l-2">高级检索</span>
-    </div>
+      </div>
       <LogoText text="检索结果" />
       <div class="result-container p-t-5">
         <div class="result-filter flex p-b-4">
