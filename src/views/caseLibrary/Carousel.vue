@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons-vue";
 const props = withDefaults(defineProps<{
-    hoverDark: boolean
+    hoverDark?: boolean
 }>(), {
     hoverDark: false
 })

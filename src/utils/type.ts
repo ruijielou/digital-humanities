@@ -12,6 +12,11 @@ export enum CategoryType {
     About, //关于
 }
 
+export interface PageinationType {
+  total: number;
+  current: number;
+  pageSize: number;
+}
 export const categoryList: CategoryItem[] = [
     {
       name: "CaseLibrary",

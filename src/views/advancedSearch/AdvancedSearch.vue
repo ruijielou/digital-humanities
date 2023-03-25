@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from "vue";
 import LogoText from "../../components/LogoText.vue";
+import type {PageinationType} from "../../utils/type"
 import {
   ArrowLeftOutlined,
   CaretDownOutlined,
@@ -82,12 +83,8 @@ const dataSource = [
     id: 7,
   },
 ];
-interface pageinationType {
-  total: number;
-  current: number;
-  pageSize: number;
-}
-const pagination = reactive<pageinationType>({
+
+const pagination = reactive<PageinationType>({
   total: 0,
   current: 1,
   pageSize: 10,

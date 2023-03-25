@@ -49,7 +49,7 @@ import { caseReferred, cardData } from "./mock";
       <div class="case-container">
         <LogoText text="研究领域" />
         <div class="case-group flex m-auto">
-          <Carousel :hoverDark="true">
+          <Carousel :hover-dark="true">
             <template #cards>
               <div class="h-100%" v-for="item in cardData">
                 <Card style="width: 25vw; height: 55vh" :card="item" />
@@ -84,7 +84,7 @@ import { caseReferred, cardData } from "./mock";
         </div>
       </div>
       <div class="more-container">
-        <span class="border-btn" @click="$router.push({name: ''})">更多</span>
+        <span class="border-btn" @click="$router.push({name: 'MoreLibrary'})">更多</span>
       </div>
     </a-layout-content>
     <Footer />

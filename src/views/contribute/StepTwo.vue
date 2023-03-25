@@ -19,7 +19,10 @@ const formState = reactive<FormState>({});
   <div class="step-two group-container">
     <div class="group-item">
       <div class="group-item-title">
-        <span class="line-title">所属案例库</span>
+        <span class="line-title"><span>
+          所属案例库
+        </span>
+      </span>
       </div>
       <div class="group-tags">
         <span v-for="(tag, i) in selectedTag" :key="i" class="tag-item selected">{{ tag }}</span>
@@ -28,7 +31,11 @@ const formState = reactive<FormState>({});
     <a-form class="flex" ref="formRef" :model="formState">
       <div class="group-item flex-1 m-r-5" :key="StepTwoForm.introduction.title">
         <div class="group-item-title">
-          <span class="line-title">{{ StepTwoForm.introduction.title }}</span>
+          <span class="line-title">
+            <span>  
+              {{ StepTwoForm.introduction.title }}
+            </span>
+          </span>
         </div>
         <a-form-item v-for="col in StepTwoForm.introduction.formCols" has-feedback :label="col.name" :name="col.key">
           <a-input v-model:value="formState[col.key]" />
@@ -38,7 +45,11 @@ const formState = reactive<FormState>({});
         <template v-for="(item, key) in StepTwoForm">
           <div class="group-item" v-if="key !== 'introduction'">
             <div class="group-item-title">
-              <span class="line-title">{{ item.title }}</span>
+              <span class="line-title">
+                <span>
+                  {{ item.title }}
+                </span>
+              </span>
             </div>
             <a-form-item v-for="col in item.formCols" has-feedback :label="col.name" :name="col.key">
               <a-input v-model:value="formState[col.key]" />

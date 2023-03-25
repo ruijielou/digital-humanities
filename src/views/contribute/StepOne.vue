@@ -22,7 +22,7 @@ defineProps<{
     </div>
     <div class="group-item" v-for="(item, index) in groupData" :key="index">
       <div class="group-item-title">
-        <span class="line-title">{{ item.title }}</span>
+        <span class="line-title"><span>{{ item.title }}</span></span>
       </div>
       <div class="group-tags">
         <span

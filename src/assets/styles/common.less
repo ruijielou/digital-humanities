@@ -1,23 +1,40 @@
 // common
 .primary-color {
-    color: @primary-color;;
+  color: @primary-color;
 }
 .flex-2 {
-    flex: 2;
+  flex: 2;
 }
 .flex-3 {
-    flex: 3
+  flex: 3;
 }
 .line-title {
+  position: relative;
+  & > span {
     position: relative;
-    &:after {
-      content: "";
-      position: absolute;
-      left: -2px;
-      bottom: -2px;
-      width: 24px;
-      height: 8px;
-      z-index: -1;
-      background: #f243d9;
-    }
+    z-index: 1;
   }
+  &:after {
+    content: "";
+    position: absolute;
+    left: -2px;
+    bottom: -2px;
+    width: 24px;
+    height: 8px;
+    z-index: 0;
+    background: #f243d9;
+  }
+}
+.lines-purple {
+  border-bottom: 1px solid #5b3df2;
+  position: relative;
+  &::before {
+    content: "";
+    width: 100px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    background: #5b3df2;
+  }
+}
