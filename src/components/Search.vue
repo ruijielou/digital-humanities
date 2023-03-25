@@ -40,7 +40,7 @@ const changeShowLabels = () => {
         </div>
       </template>
     </a-input>
-    <span class="c-white p-l-4 cursor-pointer">
+    <span class="c-white p-l-4 cursor-pointer" @click="$router.push({name: 'AdvancedSearch'})">
       高级检索
       <double-right-outlined />
     </span>

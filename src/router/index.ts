@@ -30,6 +30,11 @@ const router = createRouter({
       component: () => import("../views/visualization/Visualization.vue"),
     },
     {
+      path: "/advancedSearch",
+      name: "AdvancedSearch",
+      component: () => import("../views/advancedSearch/AdvancedSearch.vue"),
+    },
+    {
       path: "/about",
       name: "About",
       // route level code-splitting

@@ -8,7 +8,14 @@ import LogoText from "../../components/LogoText.vue";
     <Header title="打开数字人文万花筒"  class="caselibrary-header" />
     <a-layout-content style="padding-top: 20px; padding-bottom: 20px" class="flex flex-col">
       <LogoText text="特选案例" />
+      <div class="case-container">
+        <div class="case-referred">
 
+        </div>
+        <div class="case-group">
+          
+        </div>
+      </div>
     </a-layout-content>
   </div>
 </template>
