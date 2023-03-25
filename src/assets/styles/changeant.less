@@ -49,13 +49,34 @@
   }
 }
 
-// .search {
-//   .ant-select * {
-//     color: white;
-//   }
-// }
-
-// .ant-btn-background-ghost.ant-btn-primary,.ant-btn-background-ghost.ant-btn-primary:hover, .ant-btn-background-ghost.ant-btn-primary:focus {
-//   color: @primary-color;
-//   border-color: @primary-color;
-// }
+.transparent-full-modal {
+  .ant-modal {
+    max-width: 100%;
+    top: 0;
+    padding-bottom: 0;
+    margin: 0;
+  }
+  .ant-modal-header {
+    background-color: transparent;
+  }
+  .ant-modal-content {
+    background: linear-gradient(180deg, #1f1033e6 0%, #061233e6 100%);
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh);
+  }
+  .ant-modal-body {
+    flex: 1;
+    padding-top: 30vh;
+    padding-bottom: 7vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .ant-modal-close {
+    right: 3.5em;
+    top: 3.5em;
+  }
+  .ant-modal-close-x {
+    color: white;
+  }
+}

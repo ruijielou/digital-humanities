@@ -7,14 +7,16 @@ import IconUser from "./icons/IconUser.vue";
 import IconMessage from "./icons/IconMessage.vue";
 import LogoIcon from "./LogoIcon.vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
+import Search from "./Search.vue";
 // const emit = defineEmits(['fun1', '']);
 
 defineProps<{
-    title?: string;
-}>()
+  title?: string;
+}>();
 
 const router = useRouter();
 const loginModalRef = ref();
+const visibleSearch = ref<boolean>(false);
 
 const openToContribute = () => {
   router.push({ name: "Contribute" });
@@ -26,13 +28,18 @@ const openLoginModal = () => {
 };
 </script>
 <template>
-  <a-layout-header class="flex justify-between items-start layout-header"
-    style="height: 20vh; padding: 10px 40px;">
+  <a-layout-header
+    class="flex justify-between items-start layout-header"
+    style="height: 20vh; padding: 10px 40px"
+  >
     <LogoIcon />
     <div class="header-title">{{ title }}</div>
     <div class="header-icons flex items-center">
-      <span>
-        <SearchOutlined class="cursor-pointer" style="color: #fff; font-size: 20px;" />
+      <span @click="visibleSearch = !visibleSearch">
+        <SearchOutlined
+          class="cursor-pointer"
+          style="color: #fff; font-size: 20px"
+        />
       </span>
       <span @click="openToContribute" class="m-l-4">
         <IconLogin class="cursor-pointer" />
@@ -44,7 +51,15 @@ const openLoginModal = () => {
         <IconUser class="cursor-pointer" />
       </span>
     </div>
-   
+    <a-modal
+      width="100%"
+      wrap-class-name="transparent-full-modal"
+      v-model:visible="visibleSearch"
+      :footer="null"
+      :closable="true"
+    >
+      <Search />
+    </a-modal>
     <LoginModal ref="loginModalRef" />
   </a-layout-header>
 </template>

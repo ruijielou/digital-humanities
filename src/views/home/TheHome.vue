@@ -44,24 +44,9 @@ const changeVisibile = (type: number) => {
       <div class="home-content">
         <h1 class="page-title">数字与人文交汇的时刻</h1>
         <Search />
+        
       </div>
-      <div class="flex justify-center flex-1 items-end">
-        <div class="class-item">
-          <span class="c-white">分布谱</span>
-        </div>
-        <div class="class-item">
-          <span class="c-white">时间谱</span>
-        </div>
-        <div class="class-item">
-          <span class="c-white">合作谱</span>
-        </div>
-        <div class="class-item">
-          <span class="c-white">知识图谱</span>
-        </div>
-        <div class="class-item">
-          <span class="c-white">主题词谱</span>
-        </div>
-      </div>
+      
     </a-layout-content>
     <a-layout-footer
       class="flex p-t-4 p-b-4"

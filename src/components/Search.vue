@@ -14,11 +14,15 @@ const searchType = ref<number>(0);
 const changeShowLabels = () => {
   showLabels.value = !showLabels.value;
 };
-
 </script>
 <template>
   <div class="flex items-center justify-center">
-    <a-input class="transparent-input" size="large" v-model:value="searchFields" style="width: 50%">
+    <a-input
+      class="transparent-input"
+      size="large"
+      v-model:value="searchFields"
+      style="width: 50%"
+    >
       <template #addonBefore>
         <div class="cursor-pointer">
           <a-select v-model:value="searchType">
@@ -58,5 +62,66 @@ const changeShowLabels = () => {
     </div>
   </div>
   <Labels v-if="searchType" @setSearch="(val: string) => searchFields = val" />
+  <div class="flex justify-center flex-1 items-end">
+    <div class="class-item">
+      <span class="c-white">分布谱</span>
+    </div>
+    <div class="class-item">
+      <span class="c-white">时间谱</span>
+    </div>
+    <div class="class-item">
+      <span class="c-white">合作谱</span>
+    </div>
+    <div class="class-item">
+      <span class="c-white">知识图谱</span>
+    </div>
+    <div class="class-item">
+      <span class="c-white">主题词谱</span>
+    </div>
+  </div>
 </template>
+<style lang="less">
+.content-text-wrapper {
+  .text-wrapper {
+    padding: 6px 10px;
+    background-color: rgba(0, 0, 0, 0.61);
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 1);
+    overflow-wrap: break-word;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    margin: 9px 0 0 8px;
+  }
+}
+.class-item {
+  position: relative;
+  padding-left: 16px;
+  margin: 20px;
+  cursor: pointer;
 
+  &:before {
+    content: "";
+    width: 4px;
+    height: 4px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &:after {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border: 1px solid #ffffff;
+    border-radius: 50%;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+</style>
