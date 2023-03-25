@@ -1,21 +1,42 @@
 <script setup lang="ts">
 import Header from "../../components/Header.vue";
 import LogoText from "../../components/LogoText.vue";
+import type { CardType } from "./type";
+import Card from "./Card.vue";
 
+import { caseReferred, cardData } from "./mock";
 </script>
 <template>
   <div class="h-screen overflow-auto">
-    <Header title="打开数字人文万花筒"  class="caselibrary-header" />
-    <a-layout-content style="padding-top: 20px; padding-bottom: 20px" class="flex flex-col">
-      <LogoText text="特选案例" />
+    <Header title="打开数字人文万花筒" class="caselibrary-header" />
+    <a-layout-content
+      style="padding-top: 20px; padding-bottom: 20px"
+      class="flex flex-col"
+    >
       <div class="case-container">
-        <div class="case-referred">
-
+        <LogoText text="特选案例" />
+        <div class="case-referred flex m-auto" style="width: 80%; height: 70vh">
+          <Card class="flex-3" :no-show-number="true" :card="caseReferred[0]" />
+          <div class="flex-2 flex flex-col">
+            <Card
+              class="flex-1"
+              :hoverCard="true"
+              :no-show-number="true"
+              :card="caseReferred[1]"
+            />
+            <Card
+              class="flex-1"
+              :hoverCard="true"
+              :no-show-number="true"
+              :card="caseReferred[2]"
+            />
+          </div>
         </div>
-        <div class="case-group">
-          
-        </div>
+        <div class="case-group"></div>
       </div>
+      <div class="case-container">
+        <LogoText text="特选案例" />
+        </div>
     </a-layout-content>
   </div>
 </template>
