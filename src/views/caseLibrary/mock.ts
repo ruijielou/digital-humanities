@@ -182,4 +182,34 @@ export const cardData: CardType[] = [
         viewsNumber: 3328,
         image: "/src/assets/image/card2.png",
     },
+    {
+        title: "数字档案馆案例库",
+        caseNumber: 134,
+        recentUpdates: "欧洲时光机",
+        comments: [
+            {
+                name: "jack",
+                photo: "",
+                id: 1,
+            },
+            {
+                name: "tome",
+                photo: "",
+                id: 2,
+            },
+            {
+                name: "emliy",
+                photo: "",
+                id: 3,
+            },
+            {
+                name: "lucy",
+                photo: "",
+                id: 4,
+            },
+        ],
+        viewsNumber: 3328,
+        image: "/src/assets/image/card2.png",
+    },
 ];
+

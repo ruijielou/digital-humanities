@@ -3,7 +3,7 @@ import { EyeOutlined, UserOutlined } from "@ant-design/icons-vue"
 import type { CardType } from "./type";
 const props = withDefaults(defineProps<{
   card: CardType,
-  noShowNumber: boolean
+  noShowNumber?: boolean
 }>(), {
   noShowNumber: false
 })

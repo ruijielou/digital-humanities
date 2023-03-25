@@ -5,7 +5,7 @@ import type { CardType } from "./type";
 const props = withDefaults(
   defineProps<{
     card: CardType;
-    noShowNumber: boolean;
+    noShowNumber?: boolean;
     hoverCard?: boolean;
   }>(),
   {
@@ -20,7 +20,6 @@ const props = withDefaults(
     :class="{ hoverCard: hoverCard }"
     :style="{ backgroundImage: hoverCard ? `url(${card.image})` : '' }"
   >
-    <!-- <img style="max-width: 100%;max-height: 60%;" src="../../assets/image/card.png" alt=""> -->
     <div
       class="flex-1 card-image"
       :style="{

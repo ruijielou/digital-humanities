@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import Header from "../../components/Header.vue";
 import LogoText from "../../components/LogoText.vue";
-import {LeftCircleOutlined, RightCircleOutlined} from "@ant-design/icons-vue"
+import Carousel from "./Carousel.vue"
 import Card from "./Card.vue";
 import GLAM from "../../assets/image/GLAM.png";
-import Footer from "../../components/Footer.vue"
+import Footer from "../../components/Footer.vue";
 
 import { caseReferred, cardData } from "./mock";
 </script>
@@ -39,30 +39,54 @@ import { caseReferred, cardData } from "./mock";
       <div class="case-container" :style="{ backgroundImage: `url(${GLAM})` }">
         <LogoText style="color: #fff" text="数字GLAM" />
         <div class="case-group flex m-auto">
-            <Card style="width: 30%;" v-for="item in cardData" :card="item" />
+          <Carousel>
+            <template #cards>
+              <div class="h-100%" v-for="item in cardData">
+                <Card style="width: 25vw; height: 55vh" :card="item" />
+              </div>
+            </template>
+          </Carousel>
         </div>
       </div>
-      <div class="case-container" >
+      <div class="case-container">
         <LogoText text="研究领域" />
         <div class="case-group flex m-auto">
-            <Card style="width: 30%;" v-for="item in cardData" :card="item" />
+          <Carousel :hoverDark="true">
+            <template #cards>
+              <div class="h-100%" v-for="item in cardData">
+                <Card style="width: 25vw; height: 55vh" :card="item" />
+              </div>
+            </template>
+          </Carousel>
         </div>
       </div>
-      
+
       <div class="case-container" :style="{ backgroundImage: `url(${GLAM})` }">
         <LogoText style="color: #fff" text="机构平台" />
         <div class="case-group flex m-auto">
-            <Card style="width: 30%;" v-for="item in cardData" :card="item" />
+          <Carousel>
+            <template #cards>
+              <div class="h-100%" v-for="item in cardData">
+                <Card style="width: 25vw; height: 55vh" :card="item" />
+              </div>
+            </template>
+          </Carousel>
         </div>
       </div>
-      <div class="case-container" >
+      <div class="case-container">
         <LogoText text="基础设置" />
         <div class="case-group flex m-auto">
-            <Card style="width: 30%;" v-for="item in cardData" :card="item" />
+          <Carousel>
+            <template #cards>
+              <div class="h-100%" v-for="item in cardData">
+                <Card style="width: 25vw; height: 55vh" :card="item" />
+              </div>
+            </template>
+          </Carousel>
         </div>
       </div>
       <div class="more-container">
-          <span class="border-btn">更多</span>
+        <span class="border-btn">更多</span>
       </div>
       <Footer />
     </a-layout-content>
@@ -80,7 +104,6 @@ import { caseReferred, cardData } from "./mock";
     width: 80%;
     height: 60vh;
   }
-
 }
 .more-container {
   padding: 2em;
@@ -98,4 +121,6 @@ import { caseReferred, cardData } from "./mock";
   padding: 5px 10px;
   cursor: pointer;
 }
+
+
 </style>
