@@ -17,12 +17,12 @@ const props = withDefaults(defineProps<{
       <span>案例量：</span>
       <span>{{ card.caseNumber }}</span>
     </div>
-    <div>
+    <div class="p-b-2">
       <span>最近更新：</span>
       <span>{{ card.recentUpdates }}</span>
     </div>
    </template>
-    <div class="flex">
+    <div class="flex  ">
       <div class="flex-1">
         <a-avatar shape="circle" :size="24" class="m-r-2" :title="person.name" v-for="person in card.comments">
           <template #icon>

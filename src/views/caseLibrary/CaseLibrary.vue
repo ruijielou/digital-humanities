@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import Header from "../../components/Header.vue";
 import LogoText from "../../components/LogoText.vue";
-import type { CardType } from "./type";
+import {LeftCircleOutlined, RightCircleOutlined} from "@ant-design/icons-vue"
 import Card from "./Card.vue";
+import GLAM from "../../assets/image/GLAM.png";
+import Footer from "../../components/Footer.vue"
 
 import { caseReferred, cardData } from "./mock";
 </script>
@@ -33,10 +35,36 @@ import { caseReferred, cardData } from "./mock";
           </div>
         </div>
       </div>
-      <div class="case-container">
-        <LogoText text="数字GLAM" />
-        <div class="case-group flex m-auto"></div>
+
+      <div class="case-container" :style="{ backgroundImage: `url(${GLAM})` }">
+        <LogoText style="color: #fff" text="数字GLAM" />
+        <div class="case-group flex m-auto">
+            <Card style="width: 30%;" v-for="item in cardData" :card="item" />
+        </div>
       </div>
+      <div class="case-container" >
+        <LogoText text="研究领域" />
+        <div class="case-group flex m-auto">
+            <Card style="width: 30%;" v-for="item in cardData" :card="item" />
+        </div>
+      </div>
+      
+      <div class="case-container" :style="{ backgroundImage: `url(${GLAM})` }">
+        <LogoText style="color: #fff" text="机构平台" />
+        <div class="case-group flex m-auto">
+            <Card style="width: 30%;" v-for="item in cardData" :card="item" />
+        </div>
+      </div>
+      <div class="case-container" >
+        <LogoText text="基础设置" />
+        <div class="case-group flex m-auto">
+            <Card style="width: 30%;" v-for="item in cardData" :card="item" />
+        </div>
+      </div>
+      <div class="more-container">
+          <span class="border-btn">更多</span>
+      </div>
+      <Footer />
     </a-layout-content>
   </div>
 </template>
@@ -45,10 +73,29 @@ import { caseReferred, cardData } from "./mock";
   background-image: url("../../assets/image/caselibrary-bg.png");
 }
 .case-container {
-  margin-bottom: 3em;
-  & > .case-group  {
+  background-size: cover;
+  background-position: center center;
+  padding: 3em 0;
+  & > .case-group {
     width: 80%;
-    height: 70vh;
+    height: 60vh;
   }
+
+}
+.more-container {
+  padding: 2em;
+  text-align: center;
+  color: white;
+  font-size: 30px;
+  background-image: url("../../assets/image/more-bg.png");
+  background-size: cover;
+  background-position: center center;
+}
+.border-btn {
+  background-image: url("../../assets/image/border-btn.png");
+  background-size: cover;
+  background-position: center center;
+  padding: 5px 10px;
+  cursor: pointer;
 }
 </style>
