@@ -15,7 +15,7 @@ import { caseReferred, cardData } from "./mock";
     >
       <div class="case-container">
         <LogoText text="特选案例" />
-        <div class="case-referred flex m-auto" style="width: 80%; height: 70vh">
+        <div class="case-referred case-group flex m-auto">
           <Card class="flex-3" :no-show-number="true" :card="caseReferred[0]" />
           <div class="flex-2 flex flex-col">
             <Card
@@ -32,16 +32,23 @@ import { caseReferred, cardData } from "./mock";
             />
           </div>
         </div>
-        <div class="case-group"></div>
       </div>
       <div class="case-container">
-        <LogoText text="特选案例" />
-        </div>
+        <LogoText text="数字GLAM" />
+        <div class="case-group flex m-auto"></div>
+      </div>
     </a-layout-content>
   </div>
 </template>
 <style lang="less">
 .caselibrary-header {
   background-image: url("../../assets/image/caselibrary-bg.png");
+}
+.case-container {
+  margin-bottom: 3em;
+  & > .case-group  {
+    width: 80%;
+    height: 70vh;
+  }
 }
 </style>
