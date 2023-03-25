@@ -12,6 +12,7 @@ import Search from "./Search.vue";
 
 defineProps<{
   title?: string;
+  bgName?:string;
 }>();
 
 const router = useRouter();
@@ -30,7 +31,7 @@ const openLoginModal = () => {
 <template>
   <a-layout-header
     class="flex justify-between items-start layout-header"
-    style="height: 20vh; padding: 10px 40px"
+    :style="{backgroundImage: `url(/src/assets/image/${bgName||'caselibrary-bg'}.png)`}"
   >
     <LogoIcon />
     <div class="header-title">{{ title }}</div>
@@ -65,10 +66,11 @@ const openLoginModal = () => {
 </template>
 <style lang="less">
 .layout-header {
-  background-image: url("../../assets/image/caselibrary-bg.png");
+ 
   background-size: cover;
   background-position: center center;
   position: relative;
+  height: 20vh; padding: 10px 40px;
   .header-title {
     font-size: 44px;
     font-weight: 500;

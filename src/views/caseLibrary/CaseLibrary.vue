@@ -8,7 +8,7 @@ import { caseReferred, cardData } from "./mock";
 </script>
 <template>
   <div class="h-screen overflow-auto">
-    <Header title="打开数字人文万花筒" class="caselibrary-header" />
+    <Header title="打开数字人文万花筒" bg-name="caselibrary-bg" class="caselibrary-header" />
     <a-layout-content
       style="padding-top: 20px;"
       class="flex flex-col"
@@ -91,9 +91,9 @@ import { caseReferred, cardData } from "./mock";
   </div>
 </template>
 <style lang="less">
-.caselibrary-header {
-  background-image: url("../../assets/image/caselibrary-bg.png");
-}
+// .caselibrary-header {
+  // background-image: url("../../assets/image/caselibrary-bg.png");
+// }
 .case-container {
   background-size: cover;
   background-position: center center;

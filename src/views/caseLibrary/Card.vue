@@ -19,6 +19,7 @@ const props = withDefaults(
     class="m-5 w-100 flex flex-col card-item"
     :class="{ hoverCard: hoverCard }"
     :style="{ backgroundImage: hoverCard ? `url(${card.image})` : '' }"
+    @click="$router.push({name: 'CaseDetail'})"
   >
     <div
       class="flex-1 card-image"

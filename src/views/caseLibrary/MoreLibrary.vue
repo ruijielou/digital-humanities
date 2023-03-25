@@ -141,7 +141,7 @@ const pagination = reactive<PageinationType>({
 </script>
 <template>
   <div class="h-screen overflow-auto">
-    <Header title="打开数字人文万花筒" class="morelibrary-header" />
+    <Header title="打开数字人文万花筒"  bg-name="caselibrary-bg" class="morelibrary-header" />
     <a-layout-content class="flex more-library-content">
       <div class="slider-box h-100%">
         <div class="slider-items" v-for="item in sliderData">
@@ -224,9 +224,9 @@ const pagination = reactive<PageinationType>({
   </div>
 </template>
 <style lang="less">
-.morelibrary-header {
-  background-image: url("../../assets/image/caselibrary-bg.png");
-}
+// .morelibrary-header {
+//   background-image: url("../../assets/image/caselibrary-bg.png");
+// }
 .more-library-content {
   //   min-height: calc(100vh - 20vh);
   .slider-box {

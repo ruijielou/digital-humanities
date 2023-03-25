@@ -92,7 +92,7 @@ const pagination = reactive<PageinationType>({
 </script>
 <template>
   <div class="h-screen overflow-auto advanced-search">
-    <Header class="visualization-header" title="追踪研究线索" />
+    <Header class="visualization-header" bg-name="visualization-bg" title="追踪研究线索" />
     <a-layout-content
       style="padding: 20px 0; margin: 0 auto; width: 80%"
       class="flex flex-col"
@@ -159,9 +159,9 @@ const pagination = reactive<PageinationType>({
   </div>
 </template>
 <style lang="less">
-.visualization-header {
-  background-image: url("../../assets/image/visualization-bg.png");
-}
+// .visualization-header {
+//   background-image: url("../../assets/image/visualization-bg.png");
+// }
 .advanced-search {
   position: relative;
   .return-prev-page {
