@@ -30,7 +30,7 @@ import { SearchOutlined } from "@ant-design/icons-vue";
       </a-input>
     </div>
     </div>
-    <div class="copyright text-center border-bottom-search c-white text-2">Copyright © 2023</div>
+    <div class="copyright text-center c-white text-2">Copyright © 2023</div>
   </div>
 </template>
 <style lang="less">
@@ -41,7 +41,13 @@ import { SearchOutlined } from "@ant-design/icons-vue";
   padding: 0 10%;
   padding-top: 4em;
   .footer-search .ant-input-affix-wrapper, .footer-search .ant-input {
+    background-color: transparent;
     color: #fff;
+  }
+  .footer-search .ant-input-affix-wrapper {
+    border-left: none;
+    border-top:none;
+    border-right: none;
   }
 }
 </style>
