@@ -1,16 +1,8 @@
 <script lang="ts" setup>
 import { ref, reactive } from "vue";
-import { ArrowLeftOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import type { PageinationType } from "../../utils/type";
 
-const caseMoveModal = ref<boolean>(false);
-const openStatus = ref<number>(1);
-const caseClasstify = ref<number>(0);
 const loading = ref<boolean>(false);
-const openCaseClasstify = ref<boolean>(false);
-const checkedMoves = ref<string[]>([]);
-const openCaseName = ref<boolean>(false);
-const caseName = ref<string>("");
 const columns = [
   {
     title: "名称",
@@ -105,7 +97,6 @@ const pagination = reactive<PageinationType>({
         :loading="loading"
       >
         <template #bodyCell="{ column, text, index }">
-            <!-- class="c-#5b3df2 cursor-pointer"  -->
           <div class="c-#5b3df2 cursor-pointer"  @click="$router.push({name: 'CaseDetail'})" v-if="column.dataIndex === 'name'">
             {{ text }}
           </div>
