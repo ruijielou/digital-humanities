@@ -64,19 +64,19 @@ const changeShowLabels = () => {
   <Labels v-if="searchType" @setSearch="(val: string) => searchFields = val" />
   <div class="flex justify-center flex-1 items-end">
     <div class="class-item">
-      <span class="c-white">分布谱</span>
+      <span class="c-white" @click="$router.push({name: 'Visualization'})">分布谱</span>
     </div>
     <div class="class-item">
-      <span class="c-white">时间谱</span>
+      <span class="c-white" @click="$router.push({name: 'Visualization'})"> 时间谱</span>
     </div>
     <div class="class-item">
-      <span class="c-white">合作谱</span>
+      <span class="c-white" @click="$router.push({name: 'Visualization'})">合作谱</span>
     </div>
     <div class="class-item">
-      <span class="c-white">知识图谱</span>
+      <span class="c-white" @click="$router.push({name: 'Visualization'})">知识图谱</span>
     </div>
     <div class="class-item">
-      <span class="c-white">主题词谱</span>
+      <span class="c-white" @click="$router.push({name: 'Visualization'})">主题词谱</span>
     </div>
   </div>
 </template>
