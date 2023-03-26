@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import PersonCard from "./PersonCard.vue";
-const noShowPersonCardPages = ['CollectionsClassify', 'MyCaseList']
+const noShowPersonCardPages = ['CollectionsClassify', 'MyCaseList', 'Messages']
 </script>
 <template>
   <div class="h-screen overflow-auto advanced-search">

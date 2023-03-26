@@ -53,7 +53,7 @@ const myMenus = [
         </span>
       </div>
     </div>
-    <div class="person-menu p-t-5 p-b-5">
+    <div class="person-menu my-menu p-t-5 p-b-5">
       <div class="menu-item flex" v-for="item in myMenus" @click="$router.push({name: item.name})" :class="{active: $route.name === item.name || $route.meta.active == item.name}">
         <span class="truncate flex-1">{{item.label}}</span>
       </div>
@@ -73,30 +73,6 @@ const myMenus = [
   }
   .person-menu {
     background-color: #fff;
-    .menu-item {
-      padding: 1em 10px 10px 2em;
-      cursor: pointer;
-      position: relative;
-
-      &.active,
-      &:hover {
-        background: #ede6ff;
-        &:after {
-          content: "";
-          position: absolute;
-          right: 10px;
-          top: 50%;
-          display: inline-block;
-          transform: translateY(-50%);
-          height: 14px;
-          width: 20px;
-          background-image: url(../../assets/image/title-l.png);
-          background-repeat: no-repeat;
-          background-size: cover;
-          background-position: center center;
-        }
-      }
-    }
   }
 }
 </style>
