@@ -1,11 +1,16 @@
 <script lang="ts" setup>
 import { ref, reactive } from "vue";
-import {CaretDownOutlined, ArrowLeftOutlined} from "@ant-design/icons-vue"
+import { ArrowLeftOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import type { PageinationType } from "../../utils/type";
 
-const selectContry = ref<string>("中国");
-const selectFiled = ref<string>("项目时间");
+const caseMoveModal = ref<boolean>(false);
+const openStatus = ref<number>(1);
+const caseClasstify = ref<number>(0);
 const loading = ref<boolean>(false);
+const openCaseClasstify = ref<boolean>(false);
+const checkedMoves = ref<string[]>([]);
+const openCaseName = ref<boolean>(false);
+const caseName = ref<string>("");
 const columns = [
   {
     title: "名称",
@@ -82,60 +87,15 @@ const pagination = reactive<PageinationType>({
   current: 1,
   pageSize: 10,
 });
+
+
 </script>
 <template>
   <a-layout-content
-    style="padding: 20px 0; margin: 0 auto; width: 80%"
+    style="padding: 20px 0; margin: 0 auto; width: 100%"
     class="flex flex-col"
   >
-    <div class="return-prev-page cursor-pointer p-b-3" @click="$router.go(-1)">
-      <arrow-left-outlined />
-      <span class="p-l-2">我的收藏夹</span>
-    </div>
-    <div class="lines-purple flex justify-between">
-      <div class="flex items-center m-b-2">
-        <h2 class="m-0">默认收藏夹</h2>
-      </div>
-    </div>
-    <LogoText text="检索结果" />
-    <div class="result-container p-t-5">
-      <div class="result-filter flex p-b-4">
-        <a-dropdown type="primary">
-          <div @click.prevent>
-            <caret-down-outlined />
-            {{ selectContry }}
-          </div>
-          <template #overlay>
-            <a-menu @click="(e:any) => selectContry = e.key">
-              <a-menu-item key="中国"> 中国 </a-menu-item>
-              <a-menu-item key="日本"> 日本 </a-menu-item>
-              <a-menu-item key="韩国"> 韩国 </a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
-        <a-dropdown class="m-l-8" type="primary">
-          <div @click.prevent>
-            <caret-down-outlined />
-            {{ selectFiled }}
-          </div>
-          <template #overlay>
-            <a-menu @click="(e:any) => selectFiled = e.key">
-              <a-menu-item key="项目进度"> 项目进度 </a-menu-item>
-              <a-menu-item key="项目质量"> 项目质量 </a-menu-item>
-              <a-menu-item key="项目名称"> 项目名称 </a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
-        <div class="flex-1 flex justify-end">
-          <span class="cursor-pointer">
-            <sort-ascending-outlined />
-          </span>
-          <a-divider type="vertical" />
-          <span class="cursor-pointer">
-            <sort-descending-outlined />
-          </span>
-        </div>
-      </div>
+    <div class="result-container">
 
       <a-table
         :columns="columns"
@@ -145,9 +105,10 @@ const pagination = reactive<PageinationType>({
         :loading="loading"
       >
         <template #bodyCell="{ column, text, index }">
-          <template v-if="column.dataIndex === 'name'"
-            >{{ index }} {{ text }}</template
-          >
+            <!-- class="c-#5b3df2 cursor-pointer"  -->
+          <div class="c-#5b3df2 cursor-pointer"  @click="$router.push({name: 'CaseDetail'})" v-if="column.dataIndex === 'name'">
+            {{ text }}
+          </div>
         </template>
       </a-table>
     </div>

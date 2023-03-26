@@ -71,6 +71,16 @@ const router = createRouter({
           component: () => import("../views/about/CollectionsClassify.vue")
         },
         {
+          path: "mycaseList",
+          name: 'MyCaseList',
+          component: () => import("../views/about/MyCaseList.vue")
+        },
+        {
+          path: "myCaseLibraryList",
+          name: 'MyCaseLibraryList',
+          component: () => import("../views/about/MyCaseLibraryList.vue")
+        },
+        {
           path: "myLike",
           name: 'MyLike',
           component: () => import("../views/about/MyLike.vue")

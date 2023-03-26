@@ -54,7 +54,7 @@ const myMenus = [
       </div>
     </div>
     <div class="person-menu p-t-5 p-b-5">
-      <div class="menu-item flex" v-for="item in myMenus" @click="$router.push({name: item.name})" :class="{active: $route.name === item.name}">
+      <div class="menu-item flex" v-for="item in myMenus" @click="$router.push({name: item.name})" :class="{active: $route.name === item.name || $route.meta.active == item.name}">
         <span class="truncate flex-1">{{item.label}}</span>
       </div>
     </div>

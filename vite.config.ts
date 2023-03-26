@@ -17,11 +17,11 @@ export default defineConfig({
       less: {
         javascriptEnabled: true,
         additionalData: `
-          // @import "ant-design-vue/lib/style/themes/default.less";
           @import "@/assets/styles/variables.less";
         `,
         modifyVars: {
-          'primary-color': '#5B3DF2'
+          'primary-color': '#5B3DF2',
+          'error-color': '#F243D9'
         },
       },
     },
