@@ -31,7 +31,7 @@ const openLoginModal = () => {
 <template>
   <a-layout-header
     class="flex justify-between items-start layout-header"
-    :style="{backgroundImage: `url(/src/assets/image/${bgName||'caselibrary-bg'}.png)`}"
+    :style="{backgroundImage: bgName ? `url(/src/assets/image/${bgName}.png)` : 'none'}"
   >
     <LogoIcon />
     <div class="header-title">{{ title }}</div>

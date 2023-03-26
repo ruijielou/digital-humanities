@@ -12,10 +12,9 @@ const checkedList = ref<number[]>([]);
       title="案例谱"
     />
     <a-layout-content
-      style="padding-top: 20px; padding-bottom: 20px"
       class="flex"
     >
-      <div class="w-360px b-#f7f7f7">
+      <div class="w-360px bg-#f7f7f7 p-t-10 p-b-10">
         <div class="labels-container m-b-10 p-l-20">
           <!-- <div>标签：</div> -->
           <div class="flex justify-between p-r-4">
@@ -56,6 +55,7 @@ const checkedList = ref<number[]>([]);
         </div>
       </div>
     </a-layout-content>
+    <Footer />
   </div>
 </template>
 <style lang="less">

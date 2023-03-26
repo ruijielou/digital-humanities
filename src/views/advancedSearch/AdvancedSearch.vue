@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, UnwrapRef } from "vue";
 import LogoText from "../../components/LogoText.vue";
 import type { PageinationType } from "../../utils/type";
 import {
@@ -89,6 +89,13 @@ const pagination = reactive<PageinationType>({
   current: 1,
   pageSize: 10,
 });
+const showSearchRes = ref<boolean>(false);
+const searchFormState: UnwrapRef<any> = reactive({
+  name: '',
+  time: '',
+  contry: "",
+  city: "",
+});
 </script>
 <template>
   <div class="h-screen overflow-auto advanced-search">
@@ -100,8 +107,147 @@ const pagination = reactive<PageinationType>({
     <a-layout-content
       style="padding: 20px 0; margin: 0 auto; width: 80%"
       class="flex flex-col"
+      v-if="!showSearchRes"
     >
       <div class="return-prev-page cursor-pointer" @click="$router.go(-1)">
+        <arrow-left-outlined />
+        <span class="p-l-2">首页</span>
+      </div>
+      <LogoText text="高级检索" />
+      <div class="result-container p-t-5 p-l-15 p-r-15">
+        <a-form
+          :model="searchFormState"
+          v-bind="{
+            labelCol: { span: 6 },
+            wrapperCol: { span: 12 },
+          }"
+        >
+          <a-form-item label="项目名称" :colon="false">
+            <a-input
+              v-model:value="searchFormState.name"
+              placeholder="请输入"
+            />
+          </a-form-item>
+          <a-form-item label="项目时间" :colon="false">
+            <a-input
+              v-model:value="searchFormState.time"
+              placeholder="请输入"
+            />
+          </a-form-item>
+          <a-form-item label="所属国别" :colon="false">
+            <div class="flex">
+              <a-select
+              v-model:value="searchFormState.contry"
+              placeholder="国家"
+            >
+              <a-select-option value="optiona">option a</a-select-option>
+              <a-select-option value="optionb">option b</a-select-option>
+            </a-select>
+            <a-select
+            class="m-l-2"
+              v-model:value="searchFormState.city"
+              placeholder="城市"
+            >
+              <a-select-option value="optiona">option a</a-select-option>
+              <a-select-option value="optionb">option b</a-select-option>
+            </a-select>
+            </div>
+          </a-form-item>
+          <a-form-item label="项目机构" :colon="false">
+            <a-input
+              v-model:value="searchFormState.organization"
+              placeholder="请输入"
+            />
+          </a-form-item>
+          <a-form-item label="项目人员" :colon="false">
+            <a-input
+              v-model:value="searchFormState.person"
+              placeholder="请输入"
+            />
+          </a-form-item>
+          <a-form-item label="所属学科" :colon="false">
+            <a-select
+              v-model:value="searchFormState.class"
+              placeholder="请选择"
+            >
+              <a-select-option value="optiona">option a</a-select-option>
+              <a-select-option value="optionb">option b</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="服务对象" :colon="false">
+            <a-select
+              v-model:value="searchFormState.serviceObject"
+              placeholder="请选择"
+            >
+              <a-select-option value="optiona">option a</a-select-option>
+              <a-select-option value="optionb">option b</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="研究方向" :colon="false">
+            <a-select
+              v-model:value="searchFormState.researchDirection"
+              placeholder="请选择"
+            >
+              <a-select-option value="optiona">option a</a-select-option>
+              <a-select-option value="optionb">option b</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="运行情况" :colon="false">
+            <a-select
+              v-model:value="searchFormState.operation"
+              placeholder="请选择"
+            >
+              <a-select-option value="optiona">option a</a-select-option>
+              <a-select-option value="optionb">option b</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="成果形态" :colon="false">
+            <a-select
+              v-model:value="searchFormState.achievement"
+              placeholder="请选择"
+            >
+              <a-select-option value="optiona">option a</a-select-option>
+              <a-select-option value="optionb">option b</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="合作方式" :colon="false">
+            <a-select
+              v-model:value="searchFormState.cooperationMode"
+              placeholder="请选择"
+            >
+              <a-select-option value="optiona">option a</a-select-option>
+              <a-select-option value="optionb">option b</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="应用技术" :colon="false">
+            <a-select
+              v-model:value="searchFormState.technology"
+              placeholder="请选择"
+            >
+              <a-select-option value="optiona">option a</a-select-option>
+              <a-select-option value="optionb">option b</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item
+            class="text-center"
+            :wrapper-col="{ span: 12, offset: 6 }"
+          >
+            <a-button @click="showSearchRes = true" type="primary"
+              >搜索</a-button
+            >
+          </a-form-item>
+        </a-form>
+      </div>
+    </a-layout-content>
+    <a-layout-content
+      style="padding: 20px 0; margin: 0 auto; width: 80%"
+      class="flex flex-col"
+      v-else
+    >
+      <div
+        class="return-prev-page cursor-pointer"
+        @click="showSearchRes = false"
+      >
         <arrow-left-outlined />
         <span class="p-l-2">高级检索</span>
       </div>
