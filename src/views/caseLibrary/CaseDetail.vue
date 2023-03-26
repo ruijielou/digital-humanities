@@ -108,7 +108,7 @@ const changeCurrentKey = (key: string) => {
     >
       <div class="return-prev-page cursor-pointer" @click="$router.go(-1)">
         <arrow-left-outlined />
-        <span class="p-l-2">高级检索</span>
+        <span class="p-l-2">返回</span>
       </div>
       <div class="p-t-5 lines-purple flex justify-between">
         <div>

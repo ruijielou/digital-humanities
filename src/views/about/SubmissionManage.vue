@@ -67,7 +67,6 @@ const currentType = ref<number>(CaseType.MyCase);
         </Carousel>
       </div>
     </div>
-    <!-- </div> -->
   </div>
 </template>
 <style lang="less">

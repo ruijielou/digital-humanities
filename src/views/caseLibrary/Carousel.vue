@@ -28,9 +28,6 @@ const props = withDefaults(defineProps<{
       </div>
     </template>
     <slot name="cards"></slot>
-    <!-- <div class="h-100%" v-for="item in cardData">
-      <Card style="width: 25vw; height: 55vh" :card="item" />
-    </div> -->
   </a-carousel>
 </template>
 <style lang="less">
