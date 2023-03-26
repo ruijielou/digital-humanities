@@ -39,3 +39,5 @@ export const categoryList: CategoryItem[] = [
       type: CategoryType.About,
     },
   ];
+
+  export const Colors = ['#9292F5', '#C987FA', '#F5A95D', '#26D7BF', '#AF90F0', '#D852FA', '#FA836F', '#4383FA', '#5B3DF2', '#5B3DF2','#F243D9', '#5B3DF2']
