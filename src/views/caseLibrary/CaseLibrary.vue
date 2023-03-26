@@ -16,15 +16,17 @@ import { caseReferred, cardData } from "./mock";
       <div class="case-container">
         <LogoText text="特选案例" />
         <div class="case-referred case-group flex m-auto">
-          <Card class="flex-3" :no-show-number="true" :card="caseReferred[0]" />
+          <Card class="flex-3"  @click="$router.push({name: 'CaseDetail'})" :no-show-number="true" :card="caseReferred[0]" />
           <div class="flex-2 flex flex-col">
             <Card
               class="flex-1"
+              @click="$router.push({name: 'CaseDetail'})"
               :hoverCard="true"
               :no-show-number="true"
               :card="caseReferred[1]"
             />
             <Card
+            @click="$router.push({name: 'CaseDetail'})"
               class="flex-1"
               :hoverCard="true"
               :no-show-number="true"
@@ -40,7 +42,7 @@ import { caseReferred, cardData } from "./mock";
           <Carousel>
             <template #cards>
               <div class="h-100%" v-for="item in cardData">
-                <Card style="width: 25vw; height: 55vh" :card="item" />
+                <Card  @click="$router.push({name: 'CaseDetail'})" style="width: 25vw; height: 55vh" :card="item" />
               </div>
             </template>
           </Carousel>
@@ -52,7 +54,7 @@ import { caseReferred, cardData } from "./mock";
           <Carousel :hover-dark="true">
             <template #cards>
               <div class="h-100%" v-for="item in cardData">
-                <Card style="width: 25vw; height: 55vh" :card="item" />
+                <Card  @click="$router.push({name: 'CaseDetail'})" style="width: 25vw; height: 55vh" :card="item" />
               </div>
             </template>
           </Carousel>

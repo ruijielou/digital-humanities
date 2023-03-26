@@ -10,6 +10,6 @@ export interface CardType {
   caseNumber: number;
   recentUpdates: string;
   comments?: Person[];
-  viewsNumber: number;
+  viewsNumber?: number;
   image: string;
 }

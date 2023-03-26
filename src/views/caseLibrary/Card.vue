@@ -6,6 +6,7 @@ const props = withDefaults(
   defineProps<{
     card: CardType;
     noShowNumber?: boolean;
+    noShowViews?: boolean;
     hoverCard?: boolean;
   }>(),
   {
@@ -19,7 +20,7 @@ const props = withDefaults(
     class="m-5 w-100 flex flex-col card-item"
     :class="{ hoverCard: hoverCard }"
     :style="{ backgroundImage: hoverCard ? `url(${card.image})` : '' }"
-    @click="$router.push({name: 'CaseDetail'})"
+   
   >
     <div
       class="flex-1 card-image"
@@ -31,6 +32,7 @@ const props = withDefaults(
     <CardFooter
       class="card-footer"
       :noShowNumber="props.noShowNumber"
+      :noShowViews="props.noShowViews"
       :card="card"
     />
   </div>

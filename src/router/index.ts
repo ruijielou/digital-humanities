@@ -59,7 +59,16 @@ const router = createRouter({
           path: "myCollection",
           name: 'MyCollection',
           component: () => import("../views/about/MyCollection.vue")
-        
+        },
+        {
+          path: "myCollection",
+          name: 'MyCollection',
+          component: () => import("../views/about/MyCollection.vue")
+        },
+        {
+          path: "collectionsclassify",
+          name: 'CollectionsClassify',
+          component: () => import("../views/about/CollectionsClassify.vue")
         },
         {
           path: "myLike",

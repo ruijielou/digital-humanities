@@ -47,7 +47,7 @@ const currentType = ref<number>(CaseType.MyCase);
         <Carousel class="arrowTop">
           <template #cards>
             <div class="h-100%" v-for="item in cardData">
-              <Card style="width: 22vw; height: 50vh" :card="item" />
+              <Card  @click="$router.push({name: 'CaseDetail'})" style="width: 22vw; height: 50vh" :card="item" />
             </div>
           </template>
         </Carousel>
@@ -61,7 +61,7 @@ const currentType = ref<number>(CaseType.MyCase);
         <Carousel class="arrowTop">
           <template #cards>
             <div class="h-100%" v-for="item in [cardData[0], cardData[1]]">
-              <Card style="width: 22vw; height: 50vh" :card="item" />
+              <Card  @click="$router.push({name: 'CaseDetail'})" style="width: 22vw; height: 50vh" :card="item" />
             </div>
           </template>
         </Carousel>

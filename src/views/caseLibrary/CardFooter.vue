@@ -3,9 +3,11 @@ import { EyeOutlined, UserOutlined } from "@ant-design/icons-vue"
 import type { CardType } from "./type";
 const props = withDefaults(defineProps<{
   card: CardType,
-  noShowNumber?: boolean
+  noShowNumber?: boolean,
+  noShowViews?: boolean
 }>(), {
-  noShowNumber: false
+  noShowNumber: false,
+  noShowViews: false
 })
 </script>
 <template>
@@ -31,7 +33,7 @@ const props = withDefaults(defineProps<{
           </template>
         </a-avatar>
       </div>
-      <div>
+      <div v-if="!noShowViews">
         <eye-outlined />
         {{ card.viewsNumber }}
       </div>
