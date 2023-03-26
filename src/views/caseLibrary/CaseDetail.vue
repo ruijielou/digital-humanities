@@ -142,7 +142,7 @@ const changeCurrentKey = (key: string) => {
               >
                 <div class="p-b-2 detail-item" v-for="(col, colkey) in item">
                   <span>{{
-                    StepTwoForm[key].formCols.find((a) => a.key == colkey)
+                    StepTwoForm[key].formCols.find((a:any) => a.key == colkey)
                       ?.name || colkey
                   }}</span>
                   <span>{{ col }}</span>

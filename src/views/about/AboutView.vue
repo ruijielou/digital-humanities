@@ -11,12 +11,9 @@ import PersonCard from "./PersonCard.vue";
     <PersonCard />
     <a-layout-content
       class="flex bg-#f7f7f7"
-      style="min-height: calc(100% - 20vh)"
+      style="min-height: calc(100% - 20vh);padding-left: 360px;"
     >
-      <div class="w-360px">
-        
-      </div>
-      <div class="flex-1 bg-#fff">
+      <div class="flex-1 bg-#fff w-100%" >
         <router-view></router-view>
       </div>
     </a-layout-content>

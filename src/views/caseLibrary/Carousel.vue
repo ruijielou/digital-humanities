@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons-vue";
 const props = withDefaults(defineProps<{
-    hoverDark?: boolean
+    hoverDark?: boolean,
+    arrowTop?: boolean
 }>(), {
-    hoverDark: false
+    hoverDark: false,
+    arrowTop: false
 })
 </script>
 <template>
@@ -16,12 +18,12 @@ const props = withDefaults(defineProps<{
     :class="{hoverDark: hoverDark}"
   >
     <template #prevArrow>
-      <div class="custom-slick-arrow"  style="left: -6vw">
+      <div class="custom-slick-arrow left-arrow">
         <ArrowLeftOutlined />
       </div>
     </template>
     <template #nextArrow>
-      <div class="custom-slick-arrow"  style="right: -6vw">
+      <div class="custom-slick-arrow right-arrow">
         <ArrowRightOutlined />
       </div>
     </template>
@@ -61,6 +63,29 @@ const props = withDefaults(defineProps<{
     &:hover {
     color: #333;
     background-color: #f1f1f1;
+  }
+}
+.custom-slick-arrow.left-arrow{
+  left: -6vw;
+}
+.custom-slick-arrow.right-arrow{
+  right: -6vw;
+}
+.arrowTop .custom-slick-arrow.left-arrow{
+  right: 50px;
+  top: -20px;
+  left: inherit;
+  height: 30px;
+  &:hover {
+    background-color: #ccc;
+  }
+}
+.arrowTop .custom-slick-arrow.right-arrow{
+  right: 0;
+  top: -20px;
+  height: 30px;
+  &:hover {
+    background-color: #ccc;
   }
 }
 </style>
