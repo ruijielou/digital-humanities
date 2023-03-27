@@ -42,11 +42,11 @@ const myMenus = [
       <div class="m-t-2 m-b-2">张三</div>
       <div>ID:123456789</div>
       <div class="flex justify-around items-center m-t-10 p-b-5">
-        <span class="flex-1">
+        <span class="flex-1 cursor-pointer" @click="$router.push({name: 'PersonInfo'})">
           <form-outlined />
         </span>
         <a-divider style="border-color: #fff" type="vertical" />
-        <span class="flex-1">
+        <span class="flex-1 cursor-pointer">
           <span class="inline-block rotate-90">
             <upload-outlined />
           </span>

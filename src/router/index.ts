@@ -99,6 +99,11 @@ const router = createRouter({
           path: "Authentication",
           name: 'Authentication',
           component: () => import("../views/about/Authentication.vue")
+        },
+        {
+          path: "personInfo",
+          name: 'PersonInfo',
+          component: () => import("../views/about/PersonInfo.vue")
         }
       ]
     },
