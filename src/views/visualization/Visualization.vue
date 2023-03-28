@@ -1,35 +1,49 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 import Distribution from "../../components/icons/Distribution.vue";
 import Theme from "../../components/icons/Theme.vue";
 import Knowledge from "../../components/icons/Knowledge.vue";
 import Time from "../../components/icons/Time.vue";
 import Cooperate from "../../components/icons/Cooperate.vue";
+import { loadBMap } from './map.js'
+import * as echarts from "echarts";
+// import "echarts/extension/bmap/bmap.js"
+import { mapOption, worldOption } from "./options"
+import worldMap from "./geo.json"
 
 const currentType = ref<string>("");
-const chartType = ref<{ key: string; name: string }[]>([
+const chartType = ref<{ key: string; name: string, id: number }[]>([
   {
     key: "Theme",
     name: "主题谱",
+    id: 1,
   },
   {
     key: "Cooperate",
     name: "合作谱",
+    id: 2,
   },
   {
     key: "Distribution",
     name: "分布谱",
+    id: 3,
   },
   {
     key: "Time",
     name: "时间谱",
+    id: 4,
   },
   {
     key: "Knowledge",
     name: "知识谱",
+    id: 5,
   },
 ]);
+
+const toggleChartType = (type: string) => {
+
+}
 const componentMap = {
   Theme,
   Cooperate,
@@ -37,16 +51,37 @@ const componentMap = {
   Time,
   Knowledge,
 };
+const myChart = ref<any>(null);
+const chartInit = ref<any>(null);
+const initChart = (type: string) => {
+  echarts.registerMap('world', { geoJSON: worldMap });
+
+  if (chartInit.value) {
+    chartInit.value.clear();
+  } else {
+    chartInit.value = echarts.init(myChart.value);
+    chartInit.value.setOption(worldOption)
+  }
+  window.addEventListener("resize", () => {
+    chartInit.value.resize()
+  })
+
+}
+
+onMounted(() => {
+  // loadBMap("CGUBZ-O4D64-ONRUF-XUE5Z-4GYO5-I2FOB").then(() => {
+  initChart('map')
+  // })
+
+})
 </script>
 <template>
   <div class="h-screen overflow-auto">
-    <Header
-      class="visualization-header"
-      bg-name="visualization-bg"
-      title="对人文学科重绘廓型"
-    />
+    <Header class="visualization-header" bg-name="visualization-bg" title="对人文学科重绘廓型" />
     <a-layout-content class="visualization-content flex">
-      <div class="chart-box flex-1">ssss</div>
+      <div class="chart-box flex-1" ref="myChart" id="chartMain">
+
+      </div>
       <div class="right-slider w-300px">
         <div class="border-bottom-search">
           <a-input style="border-color: #fff; color: #fff">
@@ -57,10 +92,7 @@ const componentMap = {
         </div>
         <div class="library-list">
           <div class="library-item flex flex-col" v-for="i in 6">
-            <div
-              class="h-120px w-100% item-bg"
-              style="background-image: url('/src/assets/image/card.png')"
-            ></div>
+            <div class="h-120px w-100% item-bg" style="background-image: url('/src/assets/image/card.png')"></div>
             <div class="p-4 library-bottom-desc flex-1">
               <div class="line-clamp-2">
                 德国图书馆、档案馆和博物馆门户（BAMP）
@@ -74,12 +106,8 @@ const componentMap = {
         </div>
       </div>
       <div class="chart-menu">
-        <div
-          class="chart-type-item"
-          :class="{ active: currentType === item.key }"
-          :key="item.key"
-          v-for="item in chartType"
-        >
+        <div class="chart-type-item" :class="{ active: currentType === item.key }" :key="item.key"
+          v-for="item in chartType">
           <span class="title">{{ item.name }}</span>
 
           <Theme class="svg" v-if="item.key === 'Theme'" />
@@ -96,76 +124,91 @@ const componentMap = {
 .visualization-content {
   height: calc(100% - 20vh);
   position: relative;
+
   .chart-menu {
     position: absolute;
     left: 2em;
     top: 50%;
     transform: translateY(-50%);
     color: #fff;
+
     .chart-type-item {
       padding: 10px;
       cursor: pointer;
+
       .title {
         display: none;
         transition: all 0.2s linear;
       }
+
       .svg {
         display: inherit;
         transition: all 0.2s linear;
       }
+
       &.active,
       &:hover {
         .title {
           display: inherit;
         }
+
         .svg {
           display: none;
         }
       }
     }
-    & > div:nth-of-type(1),
-    & > div:nth-last-of-type(1) {
+
+    &>div:nth-of-type(1),
+    &>div:nth-last-of-type(1) {
       margin-left: 20px;
     }
-    & > div:nth-of-type(2),
-    & > div:nth-last-of-type(2) {
+
+    &>div:nth-of-type(2),
+    &>div:nth-last-of-type(2) {
       margin-left: 10px;
     }
   }
+
   background: linear-gradient(180deg, #1e1331 0%, #08122e 100%);
+
   .right-slider {
     border-left: 1px solid #ccc;
     padding: 10px;
-    background: linear-gradient(
-      270deg,
-      #080f2c 0%,
-      rgba(8, 15, 44, 0.84) 75%,
-      rgba(8, 15, 44, 0) 100%
-    );
+    background: linear-gradient(270deg,
+        #080f2c 0%,
+        rgba(8, 15, 44, 0.84) 75%,
+        rgba(8, 15, 44, 0) 100%);
+
     .ant-input {
       color: #fff;
     }
+
     .library-list {
       height: calc(100% - 30px);
       overflow: auto;
+
       .library-item {
         border: 1px solid transparent;
         padding: 8px;
         cursor: pointer;
         margin: 10px;
         color: #fff;
+
         .item-bg {
           background-size: cover;
           background-position: center center;
         }
+
         &:hover {
           box-shadow: 0px 2px 6px 0px rgba(255, 255, 255, 0.39);
           border-color: #8168ff;
           background: #0b102b;
+
           .library-bottom-desc {
             border-color: transparent;
           }
         }
+
         .library-bottom-desc {
           background: #0b102b;
           border: 1px solid rgba(255, 255, 255, 0.15);
