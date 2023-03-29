@@ -13,8 +13,13 @@ import * as echarts from "echarts";
 import { mapOption, worldOption } from "./options";
 import worldMap from "./geo.json";
 
-const currentType = ref<string>("");
-const chartType = ref<{ key: string; name: string; id: number }[]>([
+const currentType = ref<string>("Distribution");
+interface ChartTypeMap {
+  key: string;
+  name: string;
+  id: number;
+}
+const chartType = ref<ChartTypeMap[]>([
   {
     key: "Theme",
     name: "主题谱",
@@ -42,7 +47,16 @@ const chartType = ref<{ key: string; name: string; id: number }[]>([
   },
 ]);
 
-const toggleChartType = (type: string) => {};
+const toggleChartType = (type: string) => {
+  if (type === currentType.value) return;
+  currentType.value = type;
+  const clickindex = chartType.value.findIndex((item) => item.key === type);
+  const reloadIndex = clickindex - 2;
+  chartType.value = [
+    ...chartType.value.splice(reloadIndex),
+    ...chartType.value,
+  ];
+};
 const componentMap = {
   Theme,
   Cooperate,
@@ -54,7 +68,6 @@ const myChart = ref<any>(null);
 const chartInit = ref<any>(null);
 // const initChart = (type: string) => {
 //   echarts.registerMap('world', { geoJSON: worldMap });
-
 //   if (chartInit.value) {
 //     chartInit.value.clear();
 //   } else {
@@ -64,7 +77,6 @@ const chartInit = ref<any>(null);
 //   window.addEventListener("resize", () => {
 //     chartInit.value.resize()
 //   })
-
 // }
 
 onMounted(() => {
@@ -113,17 +125,30 @@ onMounted(() => {
       <div class="chart-menu">
         <div
           class="chart-type-item"
+          @click="toggleChartType(item.key)"
           :class="{ active: currentType === item.key }"
           :key="item.key"
           v-for="item in chartType"
         >
           <span class="title">{{ item.name }}</span>
 
-          <Theme class="svg" v-if="item.key === 'Theme'" />
-          <Cooperate class="svg" v-if="item.key === 'Cooperate'" />
-          <Distribution class="svg" v-if="item.key === 'Distribution'" />
-          <Time class="svg" v-if="item.key === 'Time'" />
-          <Knowledge class="svg" v-if="item.key === 'Knowledge'" />
+          <Theme :title="item.name" class="svg" v-if="item.key === 'Theme'" />
+          <Cooperate
+            :title="item.name"
+            class="svg"
+            v-if="item.key === 'Cooperate'"
+          />
+          <Distribution
+            :title="item.name"
+            class="svg"
+            v-if="item.key === 'Distribution'"
+          />
+          <Time :title="item.name" class="svg" v-if="item.key === 'Time'" />
+          <Knowledge
+            :title="item.name"
+            class="svg"
+            v-if="item.key === 'Knowledge'"
+          />
         </div>
       </div>
       <div class="chart-menu-bg"></div>
@@ -144,7 +169,7 @@ onMounted(() => {
     background-image: url("../../assets/image/banner.png");
     background-size: cover;
     background-position: center center;
-    z-index: 1;
+    z-index: 99;
   }
   .chart-menu {
     position: absolute;
@@ -153,11 +178,13 @@ onMounted(() => {
     transform: translateY(-50%);
     color: #fff;
 
-    z-index: 2;
+    z-index: 100;
     .chart-type-item {
       padding: 10px;
       cursor: pointer;
-      transition: all .3s linear;
+      transition: all 0.2s linear;
+      // transform: translateY(10px);
+      // animation: translate0 .5s linear;
       .title {
         display: none;
         transition: all 0.2s linear;
@@ -167,14 +194,16 @@ onMounted(() => {
         display: inherit;
         transition: all 0.2s linear;
       }
-      &:hover {
-        transform: scale(1.2);
-      }
+      // &:hover {
+      //   transform: scale(1.4);
+      // }
       &.active {
+        &:hover {
+          transform: none;
+        }
         .title {
           display: inherit;
         }
-
         .svg {
           display: none;
         }
@@ -183,12 +212,18 @@ onMounted(() => {
 
     & > div:nth-of-type(1),
     & > div:nth-last-of-type(1) {
-      margin-left: 20px;
+      transform: translateX(20px);
+      &:hover {
+        transform: scale(1.4) translateX(20px);
+      }
     }
 
     & > div:nth-of-type(2),
     & > div:nth-last-of-type(2) {
-      margin-left: 10px;
+      transform: translateX(10px);
+      &:hover {
+        transform: scale(1.4) translateX(10px);
+      }
     }
   }
 
@@ -240,6 +275,14 @@ onMounted(() => {
         }
       }
     }
+  }
+}
+@keyframes translate0 {
+  0% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
 </style>
