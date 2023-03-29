@@ -15,9 +15,6 @@ export function loadBMap(ak: string) {
       // 'https://api.map.baidu.com/api?&v=3.0&ak=' + ak + '&callback=onBMapCallback'
     script.onerror = reject
     document.head.appendChild(script);
-
-    // <script src="//mapv.baidu.com/build/mapv.min.js"></script>
-    // <script src="https://unpkg.com/mapvgl@1.0.0-beta.168/dist/mapvgl.min.js"></script>
   })
 }
 

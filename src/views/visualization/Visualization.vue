@@ -6,12 +6,8 @@ import Theme from "../../components/icons/Theme.vue";
 import Knowledge from "../../components/icons/Knowledge.vue";
 import Time from "../../components/icons/Time.vue";
 import Cooperate from "../../components/icons/Cooperate.vue";
-import { loadBMap } from "./map.js";
 import Map from "./Map.vue";
-import * as echarts from "echarts";
-// import "echarts/extension/bmap/bmap.js"
-import { mapOption, worldOption } from "./options";
-import worldMap from "./geo.json";
+// import * as echarts from "echarts";
 
 const currentType = ref<string>("Distribution");
 interface ChartTypeMap {
@@ -80,9 +76,6 @@ const chartInit = ref<any>(null);
 // }
 
 onMounted(() => {
-  // loadBMap("CGUBZ-O4D64-ONRUF-XUE5Z-4GYO5-I2FOB").then(() => {
-  // initChart('map')
-  // })
 });
 </script>
 <template>
@@ -94,7 +87,7 @@ onMounted(() => {
     />
     <a-layout-content class="visualization-content flex">
       <div class="chart-box flex-1" ref="myChart" id="chartMain">
-        <Map />
+        <Map v-if="currentType === 'Distribution'" />
       </div>
       <div class="right-slider w-300px">
         <div class="border-bottom-search">
