@@ -6,14 +6,15 @@ import Theme from "../../components/icons/Theme.vue";
 import Knowledge from "../../components/icons/Knowledge.vue";
 import Time from "../../components/icons/Time.vue";
 import Cooperate from "../../components/icons/Cooperate.vue";
-import { loadBMap } from './map.js'
+import { loadBMap } from "./map.js";
+import Map from "./Map.vue";
 import * as echarts from "echarts";
 // import "echarts/extension/bmap/bmap.js"
-import { mapOption, worldOption } from "./options"
-import worldMap from "./geo.json"
+import { mapOption, worldOption } from "./options";
+import worldMap from "./geo.json";
 
 const currentType = ref<string>("");
-const chartType = ref<{ key: string; name: string, id: number }[]>([
+const chartType = ref<{ key: string; name: string; id: number }[]>([
   {
     key: "Theme",
     name: "主题谱",
@@ -41,9 +42,7 @@ const chartType = ref<{ key: string; name: string, id: number }[]>([
   },
 ]);
 
-const toggleChartType = (type: string) => {
-
-}
+const toggleChartType = (type: string) => {};
 const componentMap = {
   Theme,
   Cooperate,
@@ -53,34 +52,37 @@ const componentMap = {
 };
 const myChart = ref<any>(null);
 const chartInit = ref<any>(null);
-const initChart = (type: string) => {
-  echarts.registerMap('world', { geoJSON: worldMap });
+// const initChart = (type: string) => {
+//   echarts.registerMap('world', { geoJSON: worldMap });
 
-  if (chartInit.value) {
-    chartInit.value.clear();
-  } else {
-    chartInit.value = echarts.init(myChart.value);
-    chartInit.value.setOption(worldOption)
-  }
-  window.addEventListener("resize", () => {
-    chartInit.value.resize()
-  })
+//   if (chartInit.value) {
+//     chartInit.value.clear();
+//   } else {
+//     chartInit.value = echarts.init(myChart.value);
+//     chartInit.value.setOption(worldOption)
+//   }
+//   window.addEventListener("resize", () => {
+//     chartInit.value.resize()
+//   })
 
-}
+// }
 
 onMounted(() => {
   // loadBMap("CGUBZ-O4D64-ONRUF-XUE5Z-4GYO5-I2FOB").then(() => {
-  initChart('map')
+  // initChart('map')
   // })
-
-})
+});
 </script>
 <template>
   <div class="h-screen overflow-auto">
-    <Header class="visualization-header" bg-name="visualization-bg" title="对人文学科重绘廓型" />
+    <Header
+      class="visualization-header"
+      bg-name="visualization-bg"
+      title="对人文学科重绘廓型"
+    />
     <a-layout-content class="visualization-content flex">
       <div class="chart-box flex-1" ref="myChart" id="chartMain">
-
+        <Map />
       </div>
       <div class="right-slider w-300px">
         <div class="border-bottom-search">
@@ -92,7 +94,10 @@ onMounted(() => {
         </div>
         <div class="library-list">
           <div class="library-item flex flex-col" v-for="i in 6">
-            <div class="h-120px w-100% item-bg" style="background-image: url('/src/assets/image/card.png')"></div>
+            <div
+              class="h-120px w-100% item-bg"
+              style="background-image: url('/src/assets/image/card.png')"
+            ></div>
             <div class="p-4 library-bottom-desc flex-1">
               <div class="line-clamp-2">
                 德国图书馆、档案馆和博物馆门户（BAMP）
@@ -106,8 +111,12 @@ onMounted(() => {
         </div>
       </div>
       <div class="chart-menu">
-        <div class="chart-type-item" :class="{ active: currentType === item.key }" :key="item.key"
-          v-for="item in chartType">
+        <div
+          class="chart-type-item"
+          :class="{ active: currentType === item.key }"
+          :key="item.key"
+          v-for="item in chartType"
+        >
           <span class="title">{{ item.name }}</span>
 
           <Theme class="svg" v-if="item.key === 'Theme'" />
@@ -117,6 +126,7 @@ onMounted(() => {
           <Knowledge class="svg" v-if="item.key === 'Knowledge'" />
         </div>
       </div>
+      <div class="chart-menu-bg"></div>
     </a-layout-content>
   </div>
 </template>
@@ -124,7 +134,18 @@ onMounted(() => {
 .visualization-content {
   height: calc(100% - 20vh);
   position: relative;
-
+  .chart-menu-bg {
+    width: 100px;
+    height: 90%;
+    position: absolute;
+    left: 2em;
+    top: 50%;
+    transform: translateY(-50%);
+    background-image: url("../../assets/image/banner.png");
+    background-size: cover;
+    background-position: center center;
+    z-index: 1;
+  }
   .chart-menu {
     position: absolute;
     left: 2em;
@@ -132,10 +153,11 @@ onMounted(() => {
     transform: translateY(-50%);
     color: #fff;
 
+    z-index: 2;
     .chart-type-item {
       padding: 10px;
       cursor: pointer;
-
+      transition: all .3s linear;
       .title {
         display: none;
         transition: all 0.2s linear;
@@ -145,9 +167,10 @@ onMounted(() => {
         display: inherit;
         transition: all 0.2s linear;
       }
-
-      &.active,
       &:hover {
+        transform: scale(1.2);
+      }
+      &.active {
         .title {
           display: inherit;
         }
@@ -158,13 +181,13 @@ onMounted(() => {
       }
     }
 
-    &>div:nth-of-type(1),
-    &>div:nth-last-of-type(1) {
+    & > div:nth-of-type(1),
+    & > div:nth-last-of-type(1) {
       margin-left: 20px;
     }
 
-    &>div:nth-of-type(2),
-    &>div:nth-last-of-type(2) {
+    & > div:nth-of-type(2),
+    & > div:nth-last-of-type(2) {
       margin-left: 10px;
     }
   }
@@ -174,10 +197,12 @@ onMounted(() => {
   .right-slider {
     border-left: 1px solid #ccc;
     padding: 10px;
-    background: linear-gradient(270deg,
-        #080f2c 0%,
-        rgba(8, 15, 44, 0.84) 75%,
-        rgba(8, 15, 44, 0) 100%);
+    background: linear-gradient(
+      270deg,
+      #080f2c 0%,
+      rgba(8, 15, 44, 0.84) 75%,
+      rgba(8, 15, 44, 0) 100%
+    );
 
     .ant-input {
       color: #fff;
