@@ -182,6 +182,124 @@ const getCooperate = (chartData: any) => {
   }
 }
 
+const addNodes = (arry: any, cell: any) => {
+  if (
+    arry.some(function (res: any) {
+      return res.id == cell.id;
+    })
+  ) {
+    return;
+  }
+  arry.push(cell);
+}
+
+const getKnowledge = (chartData: any) => {
+  chartData.nodes.map((item: any) => {
+    item.symbolSize = 40;
+    item.category = item.id;
+    item.name = item.id;
+  });
+
+  let nodesTmp = JSON.parse(JSON.stringify(chartData.nodes));
+  let linkList: any = [];
+  let arry = null;
+  let nodeList = JSON.parse(JSON.stringify(chartData.nodes));
+  chartData.links.map((item: any) => {
+    arry = item.name.split("-");
+    linkList.push({
+      source: arry[0],
+      target: arry[1],
+    });
+    if (item.num > 1) {
+      //如果自己到自己且不只一条
+      for (let i = 1; i < item.num; i++) {
+        addNodes(nodeList, {
+          id: arry[1] + i,
+          category: arry[1],
+          symbolSize: 20,
+          name: arry[0],
+        });
+        linkList.push({
+          source: arry[0],
+          target: arry[1] + i,
+        });
+      }
+      if (arry[0] == arry[1]) {
+        for (let i = 1; i < item.num; i++) {
+          addNodes(nodeList, {
+            id: arry[1] + i,
+            category: arry[1],
+            symbolSize: 20,
+            name: arry[0],
+          });
+          linkList.push({
+            source: arry[0],
+            target: arry[1] + i,
+          });
+        }
+      } else {
+        for (let i = 1; i < item.num; i++) {
+          addNodes(nodeList, {
+            id: arry[1] + i,
+            category: arry[1],
+            symbolSize: 20,
+            name: arry[0],
+          });
+          linkList.push({
+            source: arry[0],
+            target: arry[1] + i,
+          });
+        }
+      }
+    }
+  });
+
+  return {
+    grid,
+    color: colors.map(item => {
+      return new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        {
+          offset: 0,
+          color: item[0]
+        },
+        {
+          offset: 1,
+          color: item[1]
+        },
+        // {
+        //   offset: 1,
+        //   color: 'rgba(0,0,0,1)'
+        // }
+      ])
+    }),
+    series: [
+      {
+        type: "graph",
+        layout: "force",
+        data: nodeList,
+        links: linkList,
+        categories: nodesTmp,
+        roam: true,
+        label: {
+          show: true,
+          position: "left",
+          color: '#fff',
+        },
+        force: {
+          repulsion: 100,
+          "edgeLength": 140
+        },
+        itemStyle: {
+          borderColor: '#6960BA80',
+          borderWidth: 2,
+          shadowColor: '#6960BA',
+          shadowBlur: 20,
+        },
+      },
+    ],
+  }
+
+}
 // Theme,
 // Cooperate,
 // Distribution,
@@ -203,6 +321,9 @@ export const getOption = (type: componentMap, chartData: any) => {
       break;
     case componentMap.Cooperate:
       return { ...getCooperate(chartData) }
+      break;
+    case componentMap.Knowledge:
+      return { ...getKnowledge(chartData) }
       break;
     default:
       return null
