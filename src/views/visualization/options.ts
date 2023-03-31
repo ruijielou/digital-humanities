@@ -1,35 +1,6 @@
 import * as echarts from 'echarts';
 import { componentMap } from "./type";
-
-const USADATA = [
-  { name: 'Alaska', value: 731449, pointer: [-131.602021, 55.117982] },
-  { name: 'Arizona', value: 53255, pointer: [-109.042503, 37.000263] },
-  { name: 'Arkansas', value: 49131, pointer: [-94.473842, 36.501861] },
-  { name: 'California', value: 341430, pointer: [-123.233256, 42.006186] },
-  { name: 'Colorado', value: 51582, pointer: [-107.919731, 41.003906] },
-  { name: 'Connecticut', value: 90347, pointer: [-73.053528, 42.039048] },
-  { name: 'Delaware', value: 9192, pointer: [-75.414089, 39.804456] },
-  { name: 'District of Columbia', value: 632323, pointer: [-77.035264, 38.993869] },
-  { name: 'Florida', value: 193568, pointer: [-85.497137, 30.997536] },
-  { name: 'Georgia', value: 99945, pointer: [-83.109191, 35.00118] },
-  { name: 'Hawaii', value: 13913, pointer: [-155.634835, 18.948267] },
-]
-const HKDATA = [
-  { name: 'Eastern', value: 20057.34, pointer: [114.198250, 22.258787] },
-  { name: 'Islands', value: 15477.48, pointer: [113.924026, 22.157084] },
-  { name: 'Kowloon', value: 31686.1, pointer: [114.179657, 22.349068] },
-]
-const chinaData = [
-  {
-    name: '无名', value: 72, pointer: [
-      120.14322240845,
-      30.236064370321
-    ]
-  },
-  { name: '北京', value: 15, pointer: [116.40342230333138, 39.92498414216742] },
-
-];
-export const MAPDATA = [USADATA, HKDATA, chinaData] //测试地图用的数据
+import { styleJson } from "./map"
 
 const colors = [
   ["rgba(245, 68, 168, 1)",
@@ -294,17 +265,164 @@ const getKnowledge = (chartData: any) => {
           borderWidth: 2,
           shadowColor: '#6960BA',
           shadowBlur: 20,
+          color: {
+            type: "radial",
+            x: 0.5,
+            y: 0.5,
+            r: 0.5,
+            colorStops: [
+              {
+                offset: 0.7,
+                color: '#6960BA', // 0% 处的颜色
+              },
+              {
+                offset: 0.7,
+                color: 'rgba(0, 0, 0, .5)', // 80% 处的颜色
+              },
+              {
+                offset: 1,
+                color: "rgba(0, 0, 0, 1)", // 100% 处的颜色
+              },
+            ],
+            global: false,
+          },
         },
       },
     ],
   }
-
 }
-// Theme,
-// Cooperate,
-// Distribution,
-// Time,
-// Knowledge,
+
+const convertData = function (data: any, geoCoordMap: any) {
+  const res = [];
+  for (let i = 0; i < data.length; i++) {
+    const geoCoord = geoCoordMap[data[i].name];
+    if (geoCoord) {
+      res.push({
+        name: data[i].name,
+        value: geoCoord.concat(data[i].value)
+      });
+    }
+  }
+  return res;
+};
+
+const getDistribution = (chartData: any) => {
+  return {
+    tooltip: {
+      trigger: 'item'
+    },
+    // color: ['#2246E8', '#7643DF', '#F243D9'],
+    
+    visualMap: [
+      {
+        type: 'piecewise',
+
+        inverse: true,
+        left: 'right',
+        bottom: 46,
+        // right: 0,
+        pieces: [
+          { min: 1, max: 1, },
+          { min: 20, max: 20 },
+          { min: 40, max: 40 },
+          { min: 60, max: 60 },
+          { min: 80, max: 80 },
+          { min: 116, max: 116 }
+        ],
+        inRange: {
+          color: '#6A6FFA',
+        },
+        itemWidth: 90,
+        align: 'left',
+        dimension: 10,//哪个维度映射
+        textStyle: { color: '#fff' },
+        controller: {
+          inRange: {
+            symbolSize: [300, 100]
+          }
+        },
+      },
+      {
+        min: -6,
+        max: 6,
+        bottom: 10,
+        seriesIndex: 0,
+        itemHeight: 90,
+        right: 25,
+        inRange: {
+          color: ['#2246E899', '#7643DF99', '#F243D999'],
+        },
+        "orient": "horizontal",
+        textStyle: { color: '#fff' },
+      }],
+
+    geo: { // 这个是重点配置区
+      map: 'world',
+      // roam: true,
+      mapStyle: styleJson,
+      label: {
+        normal: {
+          show: false, // 是否显示对应地名
+          textStyle: {
+            color: 'rgba(0,0,0,0.4)'
+          }
+        }
+      },
+      itemStyle: {
+        textStyle: {
+          color: '#fff'
+        },
+        normal: {
+          areaColor: '#292B61',
+          borderColor: '#7643DF99',
+        },
+        emphasis: {
+          areaColor: '#7a8cfced',
+          shadowOffsetX: 0,
+          shadowOffsetY: 0,
+          shadowBlur: 20,
+          borderWidth: 0,
+          shadowColor: 0,
+          color: '#fff'
+        }
+      }
+    },
+    series: [
+      {
+        name: '',
+        type: 'scatter',
+        coordinateSystem: 'geo',
+        data: convertData(chartData.data, chartData.geoCoordMap),
+        symbolSize: (val: any) => {
+          return val[2] * 2;
+        },
+        
+        // colorBy: 'data',
+        encode: {
+          value: 2
+        },
+        itemStyle: {
+          normal: {
+            color: (data) => {
+              console.log(data.color);
+              return data.color
+            }
+          }
+        },
+        label: {
+          formatter: '{b}',
+          position: 'right',
+          show: false
+        },
+        emphasis: {
+          label: {
+            show: true
+          }
+        }
+      },
+    ]
+  };
+}
 
 export const getOption = (type: componentMap, chartData: any) => {
   // const optionsMap = {
@@ -324,6 +442,9 @@ export const getOption = (type: componentMap, chartData: any) => {
       break;
     case componentMap.Knowledge:
       return { ...getKnowledge(chartData) }
+      break;
+    case componentMap.Distribution:
+      return { ...getDistribution(chartData) }
       break;
     default:
       return null

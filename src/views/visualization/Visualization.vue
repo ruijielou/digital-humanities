@@ -6,11 +6,11 @@ import Theme from "../../components/icons/Theme.vue";
 import Knowledge from "../../components/icons/Knowledge.vue";
 import Time from "../../components/icons/Time.vue";
 import Cooperate from "../../components/icons/Cooperate.vue";
-import Map from "./Map.vue";
+import worldGeo from "./geo.json";
 import * as echarts from "echarts";
 import { getOption } from "./options";
-import {componentMap} from "./type";
-import {seriesData} from "./mock";
+import { componentMap } from "./type";
+import { seriesData } from "./mock";
 
 interface ChartTypeMap {
   key: componentMap;
@@ -69,7 +69,7 @@ const toggleChartType = (type: componentMap) => {
     ...chartType.value.splice(reloadIndex),
     ...chartType.value,
   ];
-  if (type === componentMap.Distribution) return; //分布图加载地图组件，不渲染chart
+  // if (type === componentMap.Distribution) return; //分布图加载地图组件，不渲染chart
   spinning.value = true;
   setTimeout(() => {
     initChart(type);
@@ -81,16 +81,18 @@ const activeRightId = ref<number>(1);
 const spinning = ref<boolean>(false); //加载中的样式
 const myChart = ref<any>(null);
 const chartInit = shallowRef<any>(null);
+
 const initChart = (type: componentMap) => {
-  console.log(seriesData[type]);
-  debugger
   const options: any = getOption(type, seriesData[type]);
   if (!options) return;
   if (chartInit.value) {
     chartInit.value.clear();
     chartInit.value.dispose();
   }
-
+  
+  if (type === componentMap.Distribution) {
+    echarts.registerMap("world", { geoJSON: worldGeo });
+  }
   chartInit.value = echarts.init(myChart.value);
   chartInit.value.setOption(options);
 
@@ -114,7 +116,7 @@ const changeView = (id: number) => {
 };
 
 onMounted(() => {
-  // initChart(currentType.value)
+  initChart(currentType.value)
 });
 onUnmounted(() => {
   chartInit.value && chartInit.value.dispose();
@@ -135,12 +137,9 @@ onUnmounted(() => {
           :spinning="spinning"
           class="position-center"
         ></a-spin>
-        <Map v-show="currentType === componentMap.Distribution" />
-        <div
-          class="w-100% h-100%"
-          v-show="currentType !== componentMap.Distribution"
-          ref="myChart"
-        ></div>
+        <!-- <Map v-show="currentType === componentMap.Distribution" /> -->
+        <!-- v-show="currentType !== componentMap.Distribution" -->
+        <div class="w-100% h-100%" ref="myChart"></div>
       </div>
       <div class="right-slider w-300px">
         <div class="border-bottom-search">
