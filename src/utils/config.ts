@@ -37,3 +37,22 @@ export const Storage = {
  */
 export const uniqueURI = (path:string) => path.replace(/(https?:\/)|(\/)+/g, "$1$2");
 
+
+/**
+ * reference https://github.com/scopsy/await-to-js
+ * @description 捕获错误的方法， 对多个异步回掉进行错误捕获，如果有错误才返回err
+ * @param { Promise } promise
+ * @param { Object= } errorExt -
+ * @return { Promise }
+ */
+export const to = (promise:any, errorExt?:any) => {
+  return promise
+    .then((data:any) => [null, data])
+    .catch((err:any) => {
+      if (errorExt) {
+        const parsedError = Object.assign({}, err, errorExt);
+        return [parsedError, undefined];
+      }
+      return [err, undefined];
+    });
+};

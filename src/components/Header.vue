@@ -8,6 +8,8 @@ import IconMessage from "./icons/IconMessage.vue";
 import LogoIcon from "./LogoIcon.vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 import Search from "./Search.vue";
+import { Storage,TOKEN_KEY} from '@/utils/config';
+// const token = Storage.get(TOKEN_KEY);
 // const emit = defineEmits(['fun1', '']);
 
 defineProps<{
@@ -24,8 +26,12 @@ const openToContribute = () => {
 };
 
 const openLoginModal = () => {
-  loginModalRef.value.visible = true;
-  loginModalRef.value.changeLoginType("password");
+  if(!Storage.get(TOKEN_KEY)) {
+    loginModalRef.value.visible = true;
+    loginModalRef.value.changeLoginType("password");
+  }else {
+    router.push({name: 'SubmissionManage'})
+  }
 };
 </script>
 <template>

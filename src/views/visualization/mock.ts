@@ -314,6 +314,7 @@ export const seriesData = {
                 "name": "根节点1",
                 "value": 0,
                 'level': 1,
+                id:1,
                 "list": [
                     {
                         "name": "节点1",
@@ -577,12 +578,13 @@ export const seriesData = {
                     }
                 ]
             },
-            {
-                "name": "根节点2",
-                'level': 1,
-                "value": 1,
-                list: []
-            }
+            // {
+            //     "name": "根节点2",
+            //     'level': 1,
+            //     "value": 99991,
+            //     id: 2,
+            //     list: []
+            // }
         ]
     },
     Knowledge_old: {

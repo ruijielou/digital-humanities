@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
+import {message, Modal} from "ant-design-vue"
+import { useUserStore } from "@/store/user";
 // import type { LoginState } from "../views/home/type";
+import {to} from "@/utils/config"
 
+const userStore = useUserStore();
 interface LoginState {
     username: string;
     password: string;
@@ -19,8 +23,32 @@ const formState = reactive<LoginState>({
   username: "",
   password: "",
 });
-const onFinish = (values: any) => {
+// 登录
+const onFinish = async (values: any) => {
   console.log("Success:", values);
+  if(!values.username || !values.password) {
+    Modal.error({
+      title: () => "提示",
+      content: () => '用户名或者密码不能为空',
+    });
+    return
+  }
+  const [err] = await to(userStore.login({...values}));
+  if (err) {
+    Modal.error({
+      title: () => "提示",
+      content: () => err.message,
+    });
+  } else {
+    // message.success("登录成功！");
+    setTimeout(() => {
+      // changeVisibile();
+      window.location.reload(); //登录成功刷新页面
+    },
+    1000
+    // router.replace(route.query.redirect ?? "/")
+    );
+  }
 };
 
 const onFinishFailed = (errorInfo: any) => {

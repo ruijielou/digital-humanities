@@ -29,7 +29,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response) => {
     const { data, status } = response;
-     if (!data.isSuccess) {
+     if (!data.success) {
       $message.error(data.message || UNKNOWN_ERROR);
 
       //window.localStorage.clear(); 是否要刷新页面，后边根据情况再加判断

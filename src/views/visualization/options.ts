@@ -749,7 +749,7 @@ const getTheme = (chartData: any) => {
       label: {
           normal: {
             show: true,
-            formatter: (data) => {
+            formatter: (data:any) => {
               return  `${data.name}\n${data.value[1]}`
             },
             color: "#fff",
