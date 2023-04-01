@@ -293,13 +293,27 @@ export const seriesData = {
             ]
         },
     ],
-    Theme: {},
+    Theme: [
+        ["Sun",-100],
+        ["Sun",100],
+        ["Mon", 40],
+        ["Mon", -60],
+        ["Mon", -10],
+        ["Tue", -67],
+        ["Wed", 67],
+        ["Thu", 23],
+        ["Thu", 123],
+        ["Fri", 68],
+        ["Sat", 0],
+        ["Sat", 68],
+        ["Sat", -58],
+    ],
     Knowledge: {
         data: [
             {
                 "name": "根节点1",
                 "value": 0,
-                'level':1,
+                'level': 1,
                 "list": [
                     {
                         "name": "节点1",
@@ -565,7 +579,7 @@ export const seriesData = {
             },
             {
                 "name": "根节点2",
-                'level':1,
+                'level': 1,
                 "value": 1,
                 list: []
             }

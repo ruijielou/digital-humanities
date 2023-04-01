@@ -703,6 +703,66 @@ const getKnowledge = (chartData: any) => {
   };
 }
 
+const getTheme = (chartData: any) => {
+  return {
+    grid,
+    tooltip: {},
+    visualMap: {
+      min: -100,
+      max: 100,
+      calculable: true,
+      show: false,
+      inRange: {
+        color: ['#2246E899', '#7643DF99', '#F243D999'],
+        symbolSize: [30, 100],
+      },
+    },
+    xAxis: {
+      type: "category",
+      axisLine: {
+        show: false,
+      },
+      boundaryGap: false,
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: "#483E7F99 ",
+        },
+      },
+      axisLabel: {
+        show: false,
+      },
+      data: chartData.map((item: any) => item[0]),
+    },
+    yAxis: {
+      splitLine: {
+        show: false,
+      },
+      axisLabel: {
+        show: false,
+      },
+    },
+    series: [
+      {
+        type: "scatter",
+        symbol: "circle",
+      label: {
+          normal: {
+            show: true,
+            formatter: (data) => {
+              return  `${data.name}\n${data.value[1]}`
+            },
+            color: "#fff",
+          },
+        },
+        itemStyle: {
+          borderColor: 'source'
+        },
+        data: chartData,
+      },
+    ],
+  };
+}
 export const getOption = (type: componentMap, chartData: any) => {
   // const optionsMap = {
   //   [componentMap.Time]: { ...getTime(chartData) },
@@ -725,9 +785,9 @@ export const getOption = (type: componentMap, chartData: any) => {
     case componentMap.Distribution:
       options = { ...getDistribution(chartData) }
       break;
-    // case componentMap.Knowledge:
-    //   options = { ...getKnowledge(chartData) }
-    //   break;
+    case componentMap.Theme:
+      options = { ...getTheme(chartData) }
+      break;
   }
   return options
 }
