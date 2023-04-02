@@ -8,6 +8,7 @@ export const useUserStore = defineStore({
   state: () => ({
     token: localStorage[TOKEN_KEY],
     name: 'amdin',
+    isOpenLogin:false,
     userInfo: {},
     enumMap: {}
   }),
@@ -24,8 +25,9 @@ export const useUserStore = defineStore({
     },
 
     /** 登录 */
-    async login (params:{username: string, password: string}) {
+    async login (params:{phone: string, password?: string, code?: string}) {
       try {
+        
         const data = await LoginByUser(params);
         this.setToken(data.result.token);
         return this.afterLogin();
@@ -45,6 +47,10 @@ export const useUserStore = defineStore({
         return Promise.reject(error);
         return this.logout();
       }
+    },
+
+    async openLogin() {
+      this.isOpenLogin = true;
     },
 
     /** 退出登陆 */

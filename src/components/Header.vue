@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import LoginModal from "./LoginModal.vue";
 import IconLogin from "./icons/IconLogin.vue";
@@ -9,6 +9,8 @@ import LogoIcon from "./LogoIcon.vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 import Search from "./Search.vue";
 import { Storage,TOKEN_KEY} from '@/utils/config';
+import {LoginTypeMap} from "@/utils/type"
+import { useUserStore } from "@/store/user";
 // const token = Storage.get(TOKEN_KEY);
 // const emit = defineEmits(['fun1', '']);
 
@@ -17,6 +19,7 @@ defineProps<{
   bgName?:string;
 }>();
 
+const userStore = useUserStore();
 const router = useRouter();
 const loginModalRef = ref();
 const visibleSearch = ref<boolean>(false);
@@ -28,11 +31,17 @@ const openToContribute = () => {
 const openLoginModal = () => {
   if(!Storage.get(TOKEN_KEY)) {
     loginModalRef.value.visible = true;
-    loginModalRef.value.changeLoginType("password");
+    loginModalRef.value.changeLoginType(LoginTypeMap.Password);
   }else {
     router.push({name: 'SubmissionManage'})
   }
 };
+watch(
+  () => userStore.isOpenLogin,
+  (val) => {
+    openLoginModal();
+  }
+);
 </script>
 <template>
   <a-layout-header
