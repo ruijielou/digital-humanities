@@ -48,3 +48,15 @@ export function dhuvalidcode <T extends Record<string, any>>(data:T) {
     },
   );
 }
+
+// {{URL}}/app/user/repository/page
+export const repository = {
+  page: () => {
+    return request(
+      {
+        url: `/app/user/repository/page`,
+        method: "get",
+      },
+    );
+  }
+}

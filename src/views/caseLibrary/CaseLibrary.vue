@@ -1,10 +1,20 @@
 <script setup lang="ts">
+import { onMounted } from "vue"
 import LogoText from "../../components/LogoText.vue";
 import Carousel from "./Carousel.vue"
 import Card from "./Card.vue";
 import GLAM from "../../assets/image/GLAM.png";
+import {repository} from "@/api"
 
 import { caseReferred, cardData } from "./mock";
+
+const getPage = async () => {
+  const result = await repository.page()
+}
+onMounted(() => {
+  getPage();
+})
+
 </script>
 <template>
   <div class="h-screen overflow-auto">

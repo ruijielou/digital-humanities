@@ -1,21 +1,21 @@
 import { isNavigationFailure } from 'vue-router';
 import NProgress from 'nprogress';
-import { Storage,TOKEN_KEY} from '@/utils/config';
+import { Storage, TOKEN_KEY } from '@/utils/config';
 import { useUserStoreWithOut } from '@/store/user';
 
 const userStore = useUserStoreWithOut();
 
 NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
-export function createRouterGuards(router:any, whiteNameList:string[]) {
+export function createRouterGuards(router: any, whiteNameList: string[]) {
   router.beforeEach(async (to, _, next) => {
     NProgress.start();
-  
+
     const token = Storage.get(TOKEN_KEY, null);
     if (!token && to.path.includes('/about')) {
       userStore.openLogin();
-      return
-    //  next('/');
+      // return
+      next('/');
     } else {
       next();
     }
@@ -28,7 +28,7 @@ export function createRouterGuards(router:any, whiteNameList:string[]) {
     NProgress.done();
   });
 
-  router.onError((error:Error) => {
+  router.onError((error: Error) => {
     console.log(error, '路由错误');
   });
 }

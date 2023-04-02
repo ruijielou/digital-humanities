@@ -10,24 +10,26 @@ import './assets/styles/index.less';
 import Header from "./components/Header.vue"
 import Footer from "./components/Footer.vue"
 
-import {setupRouter} from "./router/index";
-import {setupStore} from "./store/index";
+import { setupRouter } from "./router/index";
+import { setupStore } from "./store/index";
 
 const app = createApp(App);
 // await setupRouter(app);
 
-app.component('Header', Header);
-app.component('Footer', Footer);
-app.use(Antd);
+
 // app.use(createPinia());
 
 async function setupApp() {
-  // 挂载vuex状态管理
-  await setupStore(app);
+    // 挂载vuex状态管理
+    await setupStore(app);
 
-  await setupRouter(app);
+    await setupRouter(app);
+    
+    app.component('Header', Header);
+    app.component('Footer', Footer);
+    app.use(Antd);
 
-  app.mount('#app');
+    app.mount('#app');
 }
 
 setupApp();

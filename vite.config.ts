@@ -26,4 +26,14 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    proxy: {
+      '^/app': {
+        target: 'http://dhc.api.lipengwencai.com/app',
+        // target: 'http://localhost:7001',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/app/, ' '),
+      },
+    },
+  },
 })

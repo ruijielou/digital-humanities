@@ -4,6 +4,7 @@ import { Storage, TOKEN_KEY, uniqueURI } from "./config";
 import NProgress from "nprogress"; // progress
 const UNKNOWN_ERROR = "未知错误，请重试";
 NProgress.configure({ showSpinner: false }); // NProgress 
+import { useUserStoreWithOut } from '@/store/user';
 
 /** 请求的前缀 */
 const baseApiUrl = import.meta.env.VITE_BASE_API;
@@ -16,8 +17,9 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     const token = Storage.get(TOKEN_KEY);
+    
     if (token && config.headers) {
-      config.headers["Authorization"] = token;
+      config.headers["X-Access-Token"] = token;
     }
     return config;
   },
@@ -45,7 +47,15 @@ service.interceptors.response.use(
   },
   (error) => {
     // 处理 400 或者 500 的错误异常提示
+    console.log(error?.response);
+    
     const errMsg = error?.response?.data?.message ?? UNKNOWN_ERROR;
+    const statusCode = error?.response?.status ?? ''
+    if(statusCode === 401) {
+      const userStore = useUserStoreWithOut();
+      userStore.resetToken();
+      userStore.openLogin();
+    }
     $message.error(errMsg);
     error.message = errMsg;
     return Promise.reject(error);
