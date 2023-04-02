@@ -12,6 +12,13 @@ export enum CategoryType {
     About, //关于
 }
 
+export enum LoginTypeMap {
+  Password=1,
+  Code=2,
+  Logon=3,
+  NewPassword = 4
+}
+
 export interface PageinationType {
   total: number;
   current: number;
