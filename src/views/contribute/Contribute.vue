@@ -1,24 +1,24 @@
 <script lang="ts" setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, computed, watch, shallowRef, onMounted } from "vue";
 import LogoText from "../../components/LogoText.vue";
 import SetpOne from "./StepOne.vue";
 import SetpTwo from "./StepTwo.vue";
-import type { GroupDataItem } from "./type";
+import CustomCase from "./CustomCase.vue";
+import { GroupDataItem, CaseType } from "./type";
+import { repository } from "@/api";
 
 const selectedTag = ref<string[]>([]);
 const currentStep = ref<number>(0);
+const caseType = ref<CaseType>(CaseType.System);
 
 const chooseTag = (value: string) => {
-  selectedTag.value = Array.from(new Set([...selectedTag.value, value])).filter(
-    (item) => item !== "自定义案例库"
-  );
+  caseType.value = CaseType.System;
+  selectedTag.value = Array.from(new Set([...selectedTag.value, value]));
 };
 
 const changeStep = (step: number) => {
-  console.log(step);
   currentStep.value = step || 0;
-
-}
+};
 
 const groupData: GroupDataItem[] = [
   {
@@ -64,41 +64,123 @@ const groupData: GroupDataItem[] = [
 ];
 
 const chooseCustomTag = () => {
-  selectedTag.value = ["自定义案例库"];
+  caseType.value = CaseType.Custom;
+  selectedTag.value = [];
+};
+const customeStep = [
+  { label: "选择案例库", name: "setp-one" },
+  { label: "自定义案例库", name: "CustomCase" },
+  { label: "完善管理信息", name: "SetpTwo" },
+  { label: "完成", name: "finished" },
+];
+const systemStep = [
+  { label: "选择案例库", name: "setp-one" },
+  { label: "完善管理信息", name: "SetpTwo" },
+  { label: "完成", name: "finished" },
+];
+
+const stepData = computed(() => {
+  return caseType.value === CaseType?.Custom
+    ? [...customeStep]
+    : [...systemStep];
+});
+const customCaseRef = ref<any>(null);
+const gotoNext = async () => {
+  if (currentStep.value === 1 && caseType.value === CaseType.Custom) {
+    
+    const formState = customCaseRef.value.formState;
+
+    console.log(formState);
+    
+    createRepository({ ...formState.case });
+  }
+  currentStep.value = currentStep.value + 1;
 };
 
+// const customRepository = reactive<any>({
+//   data: {
+//     name: "",
+//     description: "",
+//     authType: "1",
+//     status: null,
+//   },
+// });
+
+// const setRepository = (data: any) => {
+//   customRepository.data = { ...data };
+// };
+
+const createRepository = async (data: any) => {
+  const res = await repository.insert({ ...data });
+};
+
+// watch(
+//   () => currentStep.value,
+//   (val: number, oldVal: number) => {
+//     if (val === 2 && oldVal === 1 && caseType.value === CaseType.Custom) {
+//       //如果是创建自定义案例
+//     }
+//   }
+// );
+onMounted(() => {
+
+})
 </script>
 <template>
   <div class="h-screen overflow-auto">
-    <Header title="追踪研究线索" bg-name="bg1"  class="contribute-header" />
-    <a-layout-content style="padding-top: 20px; padding-bottom: 20px" class="flex flex-col">
+    <Header title="追踪研究线索" bg-name="bg1" class="contribute-header" />
+    <a-layout-content
+      style="padding-top: 20px; padding-bottom: 20px"
+      class="flex flex-col"
+    >
       <LogoText text="案例投稿" />
       <div class="p-l-100 p-r-100 p-t-5 p-b-5">
         <a-steps :current="currentStep" size="small" @change="changeStep">
-          <a-step title="选择案例库" />
-          <a-step title="完善管理信息" />
-          <a-step title="完成" />
+          <a-step
+            :disabled="true"
+            :title="item.label"
+            :key="item.name"
+            v-for="item in stepData"
+          />
         </a-steps>
       </div>
-      <setp-one :selected-tag="selectedTag" :group-data="groupData" @choose-tag="chooseTag"
-        @choose-custom-tag="chooseCustomTag" v-if="currentStep === 0"></setp-one>
-      <SetpTwo :selected-tag="selectedTag" v-if="currentStep === 1" />
-      <div v-if="currentStep === 2" class="step-3 text-center">
-        <img class="p-t-6" src="../../assets/image/no-content.png" alt="">
-        <div class="text-5 p-t-4">已完成，等待审核中…</div>
+      <custom-case
+          :selected-tag="selectedTag"
+          ref="customCaseRef"
+          v-show="currentStep === 1 && caseType === CaseType.Custom"
+        />
+      <div v-for="(item, index) in stepData">
+        <setp-one
+          :selected-tag="selectedTag"
+          :case-type="caseType"
+          :group-data="groupData"
+          @choose-tag="chooseTag"
+          @choose-custom-tag="chooseCustomTag"
+          v-if="currentStep === index && item.name === 'setp-one'"
+        ></setp-one>
+        <SetpTwo
+          :selected-tag="selectedTag"
+          v-if="currentStep === index && item.name === 'SetpTwo'"
+        />
+        <div
+          v-if="currentStep === index && item.name === 'finished'"
+          class="step-3 text-center"
+        >
+          <img class="p-t-6" src="../../assets/image/no-content.png" alt="" />
+          <div class="text-5 p-t-4">已完成，等待审核中…</div>
+        </div>
       </div>
+
       <div class="text-center p-t-10">
-        <a-button v-if="currentStep === 2" type="primary">完成</a-button>
-        <a-button v-else @click="currentStep = currentStep == 0 ? 1 : 2" type="primary">下一步</a-button>
+        <a-button v-if="currentStep === stepData.length - 1" type="primary"
+          >完成</a-button
+        >
+        <a-button v-else @click="gotoNext" type="primary">下一步</a-button>
       </div>
     </a-layout-content>
   </div>
 </template>
 <style lang="less">
-// .contribute-header {
-//   background-image: url("../../assets/image/bg1.png");
-// }
-
 .group-container {
   padding: 20px 120px;
 
@@ -132,7 +214,5 @@ const chooseCustomTag = () => {
       color: #fff;
     }
   }
-
-
 }
 </style>

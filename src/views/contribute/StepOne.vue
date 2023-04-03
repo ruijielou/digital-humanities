@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { PlusOutlined } from "@ant-design/icons-vue";
-import type { GroupDataItem } from "./type";
+import { GroupDataItem, CaseType } from "./type";
 const emit = defineEmits(['chooseCustomTag', 'chooseTag']);
 defineProps<{
   groupData: GroupDataItem[];
   selectedTag: string[];
+  caseType: CaseType
 }>();
 
 </script>
@@ -13,7 +14,7 @@ defineProps<{
     <div class="group-tags">
       <span
         class="tag-item"
-        :class="{ active: selectedTag.includes('自定义案例库') }"
+        :class="{ active: caseType === CaseType.Custom }"
         @click="emit('chooseCustomTag')"
       >
         <PlusOutlined />

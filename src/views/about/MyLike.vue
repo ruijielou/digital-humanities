@@ -1,6 +1,7 @@
 <!-- 我喜欢的 -->
 <script lang="ts" setup>
 import { ref, reactive } from "vue";
+import { favorite } from "@/api";
 import { ArrowLeftOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import type { PageinationType } from "../../utils/type";
 
@@ -31,7 +32,7 @@ const columns = [
   },
 ];
 
-const dataSource = [
+const dataSourcemock = [
   {
     name: "德国图书馆、档案馆和博物馆门户（BAMP）",
     contry: "德国",
@@ -83,26 +84,33 @@ const dataSource = [
   },
 ];
 
+const dataSource = ref<any[]>([]);
+
 const pagination = reactive<PageinationType>({
   total: 0,
   current: 1,
   pageSize: 10,
 });
 
-
+const getMylike = async () => {
+  const { result } = await favorite.myPage(2);
+  if (result) {
+    dataSource.value = [...result.records];
+  }
+};
+getMylike();
 </script>
 <template>
   <a-layout-content
     style="padding: 20px; margin: 0 auto; width: 100%"
     class="flex flex-col"
   >
-  <div class="lines-purple flex justify-between">
+    <div class="lines-purple flex justify-between">
       <div class="flex items-center m-b-2">
         <h2 class="m-0">我的喜欢</h2>
       </div>
     </div>
     <div class="result-container p-t-8">
-
       <a-table
         :columns="columns"
         :row-key="(record:any) => record.id"
@@ -111,7 +119,10 @@ const pagination = reactive<PageinationType>({
         :loading="loading"
       >
         <template #bodyCell="{ column, text, index }">
-          <div @click="$router.push({name: 'CaseDetail'})" v-if="column.dataIndex === 'name'">
+          <div
+            @click="$router.push({ name: 'CaseDetail' })"
+            v-if="column.dataIndex === 'name'"
+          >
             {{ text }}
           </div>
         </template>

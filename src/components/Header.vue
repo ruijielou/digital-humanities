@@ -62,7 +62,7 @@ watch(
       <span @click="openToContribute" class="m-l-4">
         <IconLogin class="cursor-pointer" />
       </span>
-      <span class="m-l-4">
+      <span class="m-l-4" @click="router.push({name: 'Messages'})">
         <IconMessage class="cursor-pointer" />
       </span>
       <span

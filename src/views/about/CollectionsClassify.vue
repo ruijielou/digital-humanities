@@ -2,6 +2,7 @@
 import { ref, reactive } from "vue";
 import {CaretDownOutlined, ArrowLeftOutlined} from "@ant-design/icons-vue"
 import type { PageinationType } from "../../utils/type";
+import {favorite} from "@/api";
 
 const selectContry = ref<string>("中国");
 const selectFiled = ref<string>("项目时间");
@@ -25,7 +26,7 @@ const columns = [
   },
 ];
 
-const dataSource = [
+const dataSource1 = [
   {
     name: "德国图书馆、档案馆和博物馆门户（BAMP）",
     contry: "德国",
@@ -82,6 +83,14 @@ const pagination = reactive<PageinationType>({
   current: 1,
   pageSize: 10,
 });
+const dataSource = ref<any[]>([]);
+const getMyFavorite = async () => {
+  const { result } = await favorite.myPage(1);
+  if (result) {
+    dataSource.value = [...result.records];
+  }
+};
+getMyFavorite();
 </script>
 <template>
   <a-layout-content

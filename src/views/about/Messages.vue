@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { ArrowLeftOutlined } from "@ant-design/icons-vue";
 import LogoText from "../../components/LogoText.vue";
 import MessageItem from "./components/MessageItem.vue";
 import CommentItem from "./components/CommentItem.vue";
 import type { MessageItemType } from "./type";
-
+import {announcement, comment} from "@/api";
 const messageData = [
   {
     id: 1,
@@ -22,7 +22,7 @@ const messageData = [
   },
 ];
 
-const commentData = [
+const commentDataMock = [
   {
     name: "张三",
     photo: "",
@@ -38,19 +38,26 @@ const commentData = [
 ];
 
 const message = ref<MessageItemType[]>([...messageData]);
-const changeRead = (id: number) => {
-  const updataList = message.value.map((item) => {
-    if (item.id === id) {
-      return {
-        ...item,
-        isRead: true,
-      };
-    }
-    return {
-      ...item,
-    };
-  });
-  message.value = updataList;
+const commentData = ref<any>([]);
+const changeRead = async (id: number) => {
+  
+  const result = announcement.updateRead(id);
+  if(result?.success) {
+    getMessage();
+    // message.success('');
+  }
+  // const updataList = message.value.map((item) => {
+  //   if (item.id === id) {
+  //     return {
+  //       ...item,
+  //       isRead: true,
+  //     };
+  //   }
+  //   return {
+  //     ...item,
+  //   };
+  // });
+  // message.value = updataList;
 };
 
 const messageType = ref<string>("all");
@@ -59,7 +66,49 @@ const filterData = (type: string) => {
   message.value =
     type == "all" ? [...messageData] : [...messageData.filter((item:MessageItemType) => item.type === type)];
 };
-const menuType = ref<string>('message')
+const menuType = ref<string>('message');
+const getMessage = async () => {
+  const {result} = await announcement.myPage();
+  console.log(result);
+  // TODO:暂未数据，没有对数据进行整理
+  
+  // "records": [],
+  //       "total": 0,
+  //       "size": 10,
+  //       "current": 1,
+  //       "orders": [],
+  //       "optimizeCountSql": true,
+  //       "searchCount": true,
+  //       "countId": null,
+  //       "maxLimit": null,
+  //       "pages": 0
+  // message.value = result?.records //调试数据的时候再放开代码
+}
+// comment/myPage
+const getComment = async () => {
+  const {result} = await comment.myPage();
+  console.log(result);
+  // TODO:暂未数据，没有对数据进行整理
+  
+  commentData.value = commentDataMock;
+  // commentData.value = result?.records //调试数据的时候再放开代码
+}
+
+watch(
+  () => menuType.value,
+  (val:string) => {
+    if(val === 'message') {
+      getMessage();
+    }
+    if(val === 'comment') {
+      getComment();
+    }
+  }
+);
+
+onMounted(() => {
+  getMessage();
+});
 </script>
 <template>
   <div>

@@ -3,7 +3,10 @@ export interface GroupDataItem {
     options: string[];
 
 }
-
+export enum CaseType {
+    Custom,
+    System
+  }
 /**
  * @add 可在后边添加的属性
  * @inline 一行显示的表单
