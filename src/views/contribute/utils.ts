@@ -1,15 +1,15 @@
 import { MetaItem } from "./type"
 export const formatterFormInput = (props: any) => {
-    if (!props.metaList) return
+    if (!props.metaGroupList) return
     const data: any = {};
-    const formData: any = {}
-    for (const item of props.metaList) {
+    // const formData: any = {}
+    for (const item of props.metaGroupList.filter(i => i.metaList)) {
         data[`form_${item.id}`] = "";
-        if (formData[item.groupId]) {
-            formData[item.groupId].push(item)
-        } else {
-            formData[item.groupId] = [item]
-        }
+        // if (formData[item.groupId]) {
+        //     formData[item.groupId].push(item)
+        // } else {
+        //     formData[item.groupId] = [item]
+        // }
     }
     for (const item of props.labList) {
          // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 -->
@@ -18,23 +18,23 @@ export const formatterFormInput = (props: any) => {
         //   tag_13
     }
     // const leftMetaList = Object.keys()
-    let maxLength = 0;
-    let maxLengthKey = '';
-    let leftMetaList: any = [];
-    const rightMetaList: any = {};
-    for (const key in formData) {
+    // let maxLength = 0;
+    // let maxLengthKey = '';
+    // let leftMetaList: any = [];
+    // const rightMetaList: any = {};
+    // for (const key in formData) {
         
-        if (formData[key].length > maxLength) {
-            if (leftMetaList.length) {
-                rightMetaList[maxLengthKey] = formData[key];
-            }
-            maxLength = formData[key].length;
-            maxLengthKey = key;
-            leftMetaList = formData[key]
-        } else {
-            rightMetaList[key] = formData[key];
-        }
-    }
+    //     if (formData[key].length > maxLength) {
+    //         if (leftMetaList.length) {
+    //             rightMetaList[maxLengthKey] = formData[key];
+    //         }
+    //         maxLength = formData[key].length;
+    //         maxLengthKey = key;
+    //         leftMetaList = formData[key]
+    //     } else {
+    //         rightMetaList[key] = formData[key];
+    //     }
+    // }
     // const leftMetaList = formData[maxLengthKey];
     // const rightMetaList = {};
     // for (const key in formData) {
@@ -45,7 +45,7 @@ export const formatterFormInput = (props: any) => {
     // if (props.formData) {
     //     firstKey.value = Math.min(Object.keys(props.formData.metaList).join(','));
     //   }
-    return  { leftMetaList, rightMetaList, labList: props.labList, formModal: data }
+    return  { formModal: data }
 }
 
 const data = {

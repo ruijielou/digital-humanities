@@ -104,10 +104,10 @@ const getTwoFormInput = async () => {
   const {result} = await repositorygroup.findAllFormInput(idList);
 
   if(result) {
-    const {leftMetaList, rightMetaList,labList, formModal} = formatterFormInput(result);
+    const {formModal} = formatterFormInput(result);
     stepTwoData.formModal = {...formModal}
     
-    stepTwoData.data = {leftMetaList, rightMetaList,labList}
+    stepTwoData.data = {...result}
     console.log(stepTwoData.data);
     
   }
