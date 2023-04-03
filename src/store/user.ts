@@ -1,15 +1,31 @@
 import { defineStore } from 'pinia';
 import { store } from './index';
-import { Storage,TOKEN_KEY } from '@/utils/config';
-import { LoginByUser } from '@/api';
+import { Storage, TOKEN_KEY } from '@/utils/config';
+import { LoginByUser, dhuuser } from '@/api';
+import type { UserInfo } from "@/utils/type"
 
 export const useUserStore = defineStore({
   id: 'user',
   state: () => ({
     token: localStorage[TOKEN_KEY],
     name: 'amdin',
-    isOpenLogin:false,
-    userInfo: {},
+    isOpenLogin: false,
+    userInfo: <UserInfo>{
+      avatar: null,
+      code: "",
+      company: "",
+      id: 0,
+      idNumber: null,
+      idType: null,
+      lastLoginTime: "",
+      phone: "",
+      professionField: null,
+      realName: null,
+      regTime: null,
+      researchField: null,
+      status: 0,
+      username: "",
+    },
     enumMap: {}
   }),
   actions: {
@@ -17,17 +33,17 @@ export const useUserStore = defineStore({
       this.token = this.name = '';
       this.userInfo = {};
       Storage.clear();
+      // location.reload();
     },
 
-    setToken(token:string) {
+    setToken(token: string) {
       this.token = token ?? '';
       Storage.set(TOKEN_KEY, this.token);
     },
 
     /** 登录 */
-    async login (params:{phone: string, password?: string, code?: string}) {
+    async login(params: { phone: string, password?: string, code?: string }) {
       try {
-        
         const data = await LoginByUser(params);
         this.setToken(data.result.token);
         return this.afterLogin();
@@ -41,10 +57,12 @@ export const useUserStore = defineStore({
       try {
 
         // 在这儿调用获取用户信息的接口 return获取到的数据
-
-        return {  };
+        const { result } = await dhuuser.findUserInfo();
+        console.log(result, 'userinfo');
+        this.userInfo = result;
+        return { ...result };
       } catch (error) {
-        return Promise.reject(error);
+        // return Promise.reject(error);
         return this.logout();
       }
     },

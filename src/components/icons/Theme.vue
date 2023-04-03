@@ -7,7 +7,7 @@
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
   >
-    <title>主题词谱</title>
+    <!-- <title>主题词谱</title> -->
     <g
       id="页面-1"
       stroke="none"

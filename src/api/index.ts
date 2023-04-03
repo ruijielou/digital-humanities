@@ -1,4 +1,5 @@
 import { request } from "@/utils/request";
+import type {UserInfo} from "@/utils/type"
 
 /**
  * @description 通过用户名登录
@@ -59,4 +60,37 @@ export const repository = {
       },
     );
   }
+}
+
+// {{URL}}/app/user/dhuuser/findUserInfo
+
+export const dhuuser = {
+  findUserInfo: () => {
+    return request(
+      {
+        url: `/app/user/dhuuser/findUserInfo`,
+        method: "get",
+      },
+    );
+  },
+  update: (data: UserInfo) => {
+    return request(
+      {
+        url: `/app/user/dhuuser/update`,
+        method: "post",
+        data,
+      },
+    );
+  },
+  // {{URL}}/app/user/dhuuser/updateAuth
+  updateAuth: (data: UserInfo) => {
+    return request(
+      {
+        url: `/app/user/dhuuser/updateAuth`,
+        method: "post",
+        data,
+      },
+    );
+  },
+  // {{URL}}/app/user/dhuuser/update
 }

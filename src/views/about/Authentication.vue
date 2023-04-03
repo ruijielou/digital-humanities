@@ -1,27 +1,86 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
+import { useUserStore } from "@/store/user";
+import { dhuvalidcode, dhuuser } from "@/api";
+import {Modal} from "ant-design-vue"
+
+const { userInfo } = useUserStore();
 const layout = {
   labelCol: { span: 2, offset: 6 },
   wrapperCol: { span: 8 },
 };
 enum CardType {
-  IdCard,
-  Passport,
-  StudentIdCard,
+  IdCard=0,
+  Passport=1,
+  StudentIdCard=2,
 }
 
 const formState = reactive({
   user: {
-    name: "",
-    realName: "",
-    cardType: CardType.IdCard,
-    cardNumber: "",
-    phone: "",
-    verifyCode: "",
+    // ...userInfo
+    username: userInfo.username,
+    realName: userInfo.realName,
+    idType: userInfo.idType,
+    idNumber: userInfo.idNumber,
+    // cardNumber: "",
+    phone: userInfo.phone,
+    code: "",
+    // verifyCode: "",
   },
 });
-const onFinish = (values: any) => {
-  console.log("Success:", values);
+
+// 获取验证码
+const getValidCode = async () => {
+  // 7为实名认证
+  await dhuvalidcode({ username: formState.user.phone, type: 7 });
+  codeTimerStart();
+};
+
+let codeTimer: any = null;
+const countDown = ref<number>(0);
+
+const codeTimerStart = () => {
+  clearInterval(codeTimer);
+  countDown.value = 60;
+  codeTimer = setInterval(() => {
+    countDown.value = countDown.value <= 0 ? 0 : countDown.value - 1;
+    countDown.value === 0 && clearInterval(codeTimer);
+  }, 1000);
+};
+
+const onFinish = async (values: any) => {
+  // console.log("Success:", values);
+  if(!values.user.realName) {
+    Modal.error({
+      title: () => "提示",
+      content: () => "真实姓名不能为空",
+    });
+    return
+  }
+  if(!values.user.idNumber) {
+    Modal.error({
+      title: () => "提示",
+      content: () => "证件号不能为空",
+    });
+    return
+  }
+  if(!values.user.code) {
+    Modal.error({
+      title: () => "提示",
+      content: () => "验证码不能为空",
+    });
+    return
+  }
+  const result = await dhuuser.updateAuth({...values.user});
+  console.log(result);
+  if (result.success) {
+    Modal.success({
+      title: () => "提示",
+      content: () => "认证成功",
+    });
+    location.reload();
+  }
+  
 };
 const getCode = () => {
   console.log("get code is request");
@@ -42,14 +101,18 @@ const getCode = () => {
         name="nest-messages"
         @finish="onFinish"
       >
-        <a-form-item :colon="false" :name="['user', 'name']" label="姓名">
-          <span>{{ formState.user.name }}</span>
+        <a-form-item :colon="false" :name="['user', 'username']" label="姓名">
+          <span>{{ formState.user.username }}</span>
         </a-form-item>
-        <a-form-item :colon="false" :name="['user', 'realName']" label="真实姓名">
+        <a-form-item
+          :colon="false"
+          :name="['user', 'realName']"
+          label="真实姓名"
+        >
           <a-input v-model:value="formState.user.realName" />
         </a-form-item>
-        <a-form-item :colon="false" :name="['user', 'cardType']" label="证件类型">
-          <a-select v-model:value="formState.user.cardType">
+        <a-form-item :colon="false" :name="['user', 'idType']" label="证件类型">
+          <a-select v-model:value="formState.user.idType">
             <a-select-option :value="CardType.IdCard">身份证</a-select-option>
             <a-select-option :value="CardType.Passport">护照</a-select-option>
             <a-select-option :value="CardType.StudentIdCard"
@@ -57,24 +120,38 @@ const getCode = () => {
             >
           </a-select>
         </a-form-item>
-        <a-form-item :colon="false" :name="['user', 'cardNumber']" label="证件号">
-          <a-input v-model:value="formState.user.cardNumber" />
+        <a-form-item :colon="false" :name="['user', 'idNumber']" label="证件号">
+          <a-input v-model:value="formState.user.idNumber" />
         </a-form-item>
         <a-form-item :colon="false" :name="['user', 'phone']" label="验证手机">
           <!-- <a-input v-model:value="formState.user.phone" /> -->
           <span>{{ formState.user.phone }}</span>
         </a-form-item>
-        <a-form-item :colon="false"
-          :name="['user', 'verifyCode']"
+        <a-form-item
+          :colon="false"
+          :name="['user', 'code']"
           @click="getCode"
           label="验证码"
         >
           <div class="flex">
-            <a-input class="flex-1" v-model:value="formState.user.verifyCode" />
-            <a-button class="m-l-3">获取验证码</a-button>
+            <a-input class="flex-1" v-model:value="formState.user.code" />
+            <!-- <a-button class="m-l-3"></a-button> -->
+            <!-- <template #suffix> -->
+            <a-button class="m-l-3" v-if="countDown !== 0">{{ countDown }}秒后重新获取</a-button>
+            <a-button
+              v-else
+              @click="getValidCode()"
+              class="cursor-pointer m-l-3"
+            >
+              获取验证码
+            </a-button>
+            <!-- </template> -->
           </div>
         </a-form-item>
-        <a-form-item :colon="false" :wrapper-col="{ ...layout.wrapperCol, offset: 12 }">
+        <a-form-item
+          :colon="false"
+          :wrapper-col="{ ...layout.wrapperCol, offset: 12 }"
+        >
           <a-button type="primary" html-type="submit">完成</a-button>
         </a-form-item>
       </a-form>
@@ -83,7 +160,8 @@ const getCode = () => {
 </template>
 <style lang="less">
 .authentication {
-  .ant-input,.ant-select-selector {
+  .ant-input,
+  .ant-select-selector {
     background: #f5f5f5 !important;
   }
 }

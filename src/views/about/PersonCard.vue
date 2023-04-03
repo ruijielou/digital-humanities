@@ -4,6 +4,9 @@ import {
   UploadOutlined,
   FormOutlined,
 } from "@ant-design/icons-vue";
+import { useUserStore } from "@/store/user";
+
+const {userInfo} = useUserStore();
 const myMenus = [
     {
         name: 'SubmissionManage',
@@ -34,13 +37,18 @@ const myMenus = [
 <template>
   <div class="person-card">
     <div class="person-detail text-center c-#fff">
-      <a-avatar shape="circle" :size="54" class="m-t-10" title="person">
+      <a-avatar shape="circle" v-if="userInfo.avatar" :src="userInfo.avatar" :size="54" class="m-t-10" :title="userInfo.username">
+        <!-- <template #icon>
+          <UserOutlined />
+        </template> -->
+      </a-avatar>
+      <a-avatar shape="circle" v-else :size="54" class="m-t-10" :title="userInfo.username">
         <template #icon>
           <UserOutlined />
         </template>
       </a-avatar>
-      <div class="m-t-2 m-b-2">张三</div>
-      <div>ID:123456789</div>
+      <div class="m-t-2 m-b-2">{{userInfo.username}}</div>
+      <div>ID:{{userInfo.code}}</div>
       <div class="flex justify-around items-center m-t-10 p-b-5">
         <span class="flex-1 cursor-pointer" @click="$router.push({name: 'PersonInfo'})">
           <form-outlined />

@@ -8,6 +8,11 @@ import {
   ReloadOutlined,
 } from "@ant-design/icons-vue";
 import LogoText from "../../components/LogoText.vue";
+import { useUserStore } from "@/store/user";
+import { Modal } from "ant-design-vue";
+import { dhuuser } from "@/api";
+
+const userStore = useUserStore();
 
 const layout = {
   labelCol: { span: 2, offset: 6 },
@@ -16,16 +21,26 @@ const layout = {
 
 const formState = reactive({
   user: {
-    photo: "",
-    name: "",
-    ID: "",
-    occupation: "1",
-    workUnit: "",
-    specialism: "",
+    ...userStore.userInfo,
+    // photo: "",
+    // name: "",
+    // ID: "",
+    // occupation: "1",
+    // workUnit: "",
+    // specialism: "",
   },
 });
-const onFinish = (values: any) => {
-  console.log("Success:", values);
+const onFinish = async (values: any) => {
+  console.log(values.user, "====user");
+
+  const result = await dhuuser.update({ ...values.user });
+  if (result.success) {
+    Modal.success({
+      title: () => "提示",
+      content: () => "修改成功",
+    });
+    location.reload();
+  }
 };
 const previews = reactive<any>({ url: "", img: {} });
 const visibleUploadImg = ref<boolean>(false);
@@ -76,7 +91,7 @@ const uploadImg = (e: any, num: number) => {
 };
 const handleOk = () => {
   cropper.value.getCropData((data: any) => {
-    formState.user.photo = data;
+    formState.user.avatar = data;
     visibleUploadImg.value = false;
   });
 };
@@ -84,7 +99,7 @@ const realTime = (data: any) => {
   previews.data = { ...data };
 };
 const openModal = () => {
-  option.img = formState.user.photo;
+  option.img = formState.user.avatar;
   visibleUploadImg.value = true;
 };
 </script>
@@ -123,8 +138,8 @@ const openModal = () => {
             >
               <template #icon>
                 <img
-                  v-if="formState.user.photo"
-                  :src="formState.user.photo"
+                  v-if="formState.user.avatar"
+                  :src="formState.user.avatar"
                   alt=""
                 />
                 <UserOutlined v-else />
@@ -134,41 +149,41 @@ const openModal = () => {
           <a-form-item
             style="display: none"
             :colon="false"
-            :name="['user', 'photo']"
+            :name="['user', 'avatar']"
             label="头像"
           >
-            <a-input v-model:value="formState.user.photo" />
+            <a-input v-model:value="formState.user.avatar" />
           </a-form-item>
-          <a-form-item :colon="false" :name="['user', 'name']" label="姓名">
-            <a-input v-model:value="formState.user.name" />
+          <a-form-item :colon="false" :name="['user', 'username']" label="姓名">
+            <a-input v-model:value="formState.user.username" />
           </a-form-item>
-          <a-form-item :colon="false" :name="['user', 'ID']" label="ID">
-            <span>{{ formState.user.ID }}</span>
+          <a-form-item :colon="false" :name="['user', 'code']" label="ID">
+            <span>{{ formState.user.code }}</span>
           </a-form-item>
           <a-form-item
             :colon="false"
-            :name="['user', 'cardType']"
-            label="证件类型"
+            :name="['user', 'professionField']"
+            label="职业"
           >
             <a-radio-group
-              v-model:value="formState.user.occupation"
+              v-model:value="formState.user.professionField"
               name="radioGroup"
             >
-              <a-radio value="1">学生</a-radio>
-              <a-radio value="2">教师</a-radio>
-              <a-radio value="3">研究者</a-radio>
-              <a-radio value="4">其他</a-radio>
+              <a-radio value="学生">学生</a-radio>
+              <a-radio value="教师">教师</a-radio>
+              <a-radio value="研究者">研究者</a-radio>
+              <a-radio value="其他">其他</a-radio>
             </a-radio-group>
           </a-form-item>
-          <a-form-item :colon="false" :name="['user', 'workUnit']" label="单位">
-            <a-input v-model:value="formState.user.workUnit" />
+          <a-form-item :colon="false" :name="['user', 'company']" label="单位">
+            <a-input v-model:value="formState.user.company" />
           </a-form-item>
           <a-form-item
             :colon="false"
-            :name="['user', 'specialism']"
+            :name="['user', 'researchField']"
             label="研究领域"
           >
-            <a-input v-model:value="formState.user.specialism" />
+            <a-input v-model:value="formState.user.researchField" />
           </a-form-item>
           <a-form-item
             :colon="false"

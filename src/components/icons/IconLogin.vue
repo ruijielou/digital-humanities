@@ -1,6 +1,6 @@
 <template>
 <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>投稿</title>
+    <!-- <title>投稿</title> -->
     <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="首页" transform="translate(-1292.000000, -47.000000)" fill="#FFFFFF" fill-rule="nonzero">
             <g id="投稿" transform="translate(1292.000000, 47.000000)">

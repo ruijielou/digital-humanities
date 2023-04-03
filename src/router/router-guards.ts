@@ -1,27 +1,33 @@
 import { isNavigationFailure } from 'vue-router';
 import NProgress from 'nprogress';
-import { Storage, TOKEN_KEY } from '@/utils/config';
+import { Storage, TOKEN_KEY, to as _to } from '@/utils/config';
 import { useUserStoreWithOut } from '@/store/user';
 
 const userStore = useUserStoreWithOut();
 
-NProgress.configure({ showSpinner: false }); // NProgress Configuration
+NProgress.configure({ showSpinner: false });
 
 export function createRouterGuards(router: any, whiteNameList: string[]) {
-  router.beforeEach(async (to, _, next) => {
+  router.beforeEach(async (to:any, _:any, next:any) => {
     NProgress.start();
 
-    const token = Storage.get(TOKEN_KEY, null);
+    const token = Storage.get(TOKEN_KEY, undefined);
     if (!token && to.path.includes('/about')) {
       userStore.openLogin();
-      // return
       next('/');
     } else {
+      if (token) {
+        const [err] = await _to(userStore.afterLogin());
+        // 如果获取用户信息失败，就清除token
+        if (err) {
+          userStore.resetToken();
+        }
+      }
       next();
     }
   });
 
-  router.afterEach((to, from, failure) => {
+  router.afterEach((to:any, from:any, failure:any) => {
     if (isNavigationFailure(failure)) {
       console.error('failed navigation', failure);
     }

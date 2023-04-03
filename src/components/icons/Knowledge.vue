@@ -1,6 +1,6 @@
 <template>
 <svg width="25px" height="24px" viewBox="0 0 25 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>知识图谱</title>
+    <!-- <title>知识图谱</title> -->
     <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.801670619">
         <g id="分布谱" transform="translate(-57.000000, -366.000000)" fill="#FFFFFF" fill-rule="nonzero">
             <g id="编组-2" transform="translate(0.000000, 183.000000)">

@@ -8,15 +8,15 @@ import IconMessage from "./icons/IconMessage.vue";
 import LogoIcon from "./LogoIcon.vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 import Search from "./Search.vue";
-import { Storage,TOKEN_KEY} from '@/utils/config';
-import {LoginTypeMap} from "@/utils/type"
+import { Storage, TOKEN_KEY } from "@/utils/config";
+import { LoginTypeMap } from "@/utils/type";
 import { useUserStore } from "@/store/user";
 // const token = Storage.get(TOKEN_KEY);
 // const emit = defineEmits(['fun1', '']);
 
 defineProps<{
   title?: string;
-  bgName?:string;
+  bgName?: string;
 }>();
 
 const userStore = useUserStore();
@@ -29,24 +29,26 @@ const openToContribute = () => {
 };
 
 const openLoginModal = () => {
-  if(!Storage.get(TOKEN_KEY)) {
+  if (!Storage.get(TOKEN_KEY)) {
     loginModalRef.value.visible = true;
     loginModalRef.value.changeLoginType(LoginTypeMap.Password);
-  }else {
-    router.push({name: 'SubmissionManage'})
+  } else {
+    router.push({ name: "SubmissionManage" });
   }
 };
 watch(
   () => userStore.isOpenLogin,
   (val) => {
-    openLoginModal();
+    val && openLoginModal();
   }
 );
 </script>
 <template>
   <a-layout-header
     class="flex justify-between items-start layout-header"
-    :style="{backgroundImage: bgName ? `url(/src/assets/image/${bgName}.png)` : 'none'}"
+    :style="{
+      backgroundImage: bgName ? `url(/src/assets/image/${bgName}.png)` : 'none',
+    }"
   >
     <LogoIcon />
     <div class="header-title">{{ title }}</div>
@@ -63,8 +65,22 @@ watch(
       <span class="m-l-4">
         <IconMessage class="cursor-pointer" />
       </span>
-      <span class="m-l-4" @click="openLoginModal">
-        <IconUser class="cursor-pointer" />
+      <span
+        class="m-l-4 inline-block"
+        @click="openLoginModal"
+        :title="userStore.userInfo?.username || ''"
+      >
+        <a-avatar
+          shape="circle"
+          :size="54"
+          v-if="userStore.userInfo?.avatar"
+          :src="userStore.userInfo?.avatar"
+          class="m-t-10"
+          title="person"
+        >
+        </a-avatar>
+        <IconUser v-else class="cursor-pointer" />
+        <!-- {{ userStore.userInfo?.username  }} -->
       </span>
     </div>
     <a-modal
@@ -81,11 +97,11 @@ watch(
 </template>
 <style lang="less">
 .layout-header {
- 
   background-size: cover;
   background-position: center center;
   position: relative;
-  height: 20vh; padding: 10px 40px;
+  height: 20vh;
+  padding: 10px 40px;
   .header-title {
     font-size: 44px;
     font-weight: 500;
