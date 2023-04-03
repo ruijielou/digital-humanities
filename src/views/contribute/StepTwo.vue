@@ -47,12 +47,9 @@ const initForm = () => {
   }
 };
 onMounted(() => {
-  initForm();
+  // initForm();
 });
 
-const getOption = (data: string) => {
-  const splitData = data.split(";").filter((item) => item);
-};
 
 const handleChange = (info, key) => {
   if (info.file.status === "uploading") {
@@ -69,15 +66,17 @@ const handleChange = (info, key) => {
     message.error("upload error");
   }
 };
-// watch(
-//   () => props.formModal,
-//   (val) => {
-//     if (val) {
-//       formState.data = { ...val };
-//     }
-//   }
-// );
-// formatterFormInput();
+const getData = () => {
+  console.log('dddewrerwerwerwerwer');
+  
+  return formState.data
+}
+watch(() => props.formData,
+(val) => {
+  initForm();
+})
+
+defineExpose({ formState });
 </script>
 <template>
   <div class="step-two group-container">
@@ -105,12 +104,12 @@ const handleChange = (info, key) => {
     >
       <div
         class="group-item flex-1 m-r-5"
-        :key="StepTwoForm.introduction.title"
+        v-if="formData?.leftMetaList"
       >
         <div class="group-item-title">
           <span class="line-title">
             <span>
-              {{ StepTwoForm.introduction.title }}
+             项目简介
             </span>
           </span>
         </div>
@@ -189,7 +188,7 @@ const handleChange = (info, key) => {
           <a-input v-else v-model:value="formState.data[`form_${col.id}`]" />
         </a-form-item>
       </div>
-      <div class="right-container flex-1 m-l-5">
+      <div class="right-container flex-1 m-l-5" v-if="formData?.rightMetaList">
         <template v-for="(item, key) in formData.rightMetaList">
           <div class="group-item">
             <div class="group-item-title">

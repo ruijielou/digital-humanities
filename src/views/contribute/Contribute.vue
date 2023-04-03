@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, shallowRef, onMounted } from "vue";
+import { ref, reactive, computed, watch, nextTick, onMounted } from "vue";
 import {Modal} from "ant-design-vue"
 import LogoText from "../../components/LogoText.vue";
 import SetpOne from "./StepOne.vue";
@@ -35,6 +35,10 @@ const isCurrentStepTwo = () => {
   return stepData.value.some((item:any, index: number) => index === currentStep.value + 1 && item.name === 'SetpTwo')
 }
 
+const getCurrentTypeTemplate = () => {
+  return stepData.value.find((item:any, index: number) => index === currentStep.value).name
+}
+
 const chooseTag = (value: any) => {
   caseType.value = CaseType.System;
   // const newArr = Array.from(new Set([...selectedTag.value.map(item => item.id), value.id]));
@@ -57,6 +61,7 @@ const chooseCustomTag = () => {
 };
 
 const customCaseRef = ref<any>(null);
+const stepTwoRef = ref<any>(null);
 const stepTwoData = reactive<any>({
   data: null,
   formModal: null
@@ -70,7 +75,16 @@ const gotoNext = async () => {
     //
     await getTwoFormInput();
   }
+  if(getCurrentTypeTemplate() === 'SetpTwo') {
+    nextTick(() => {
+      const data = stepTwoRef.value;
+      console.log(data, "======dsdfsdfafaa");
+      
+    })
+  }
+ setTimeout(() => {
   currentStep.value = currentStep.value + 1;
+ }, 2000);
   
 };
 
@@ -146,9 +160,10 @@ onMounted(() => {
         ></setp-one>
         <SetpTwo
           :selected-tag="selectedTag"
+          ref="stepTwoRef"
           :form-modal="stepTwoData.formModal"
           :form-data="stepTwoData.data"
-          v-if="currentStep === index && item.name === 'SetpTwo'"
+          v-show="currentStep === index && item.name === 'SetpTwo'"
         />
         <div
           v-if="currentStep === index && item.name === 'finished'"
