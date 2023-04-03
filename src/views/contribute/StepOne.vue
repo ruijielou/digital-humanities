@@ -4,7 +4,7 @@ import { GroupDataItem, CaseType } from "./type";
 const emit = defineEmits(['chooseCustomTag', 'chooseTag']);
 defineProps<{
   groupData: GroupDataItem[];
-  selectedTag: string[];
+  selectedTag: any[];
   caseType: CaseType
 }>();
 
@@ -27,12 +27,12 @@ defineProps<{
       </div>
       <div class="group-tags">
         <span
-          v-for="(tag, i) in item.options"
+          v-for="(tag, i) in item.repositoryList"
           @click="emit('chooseTag', tag)"
           :key="i"
           class="tag-item"
-          :class="{ active: selectedTag.includes(tag) }"
-          >{{ tag }}</span
+          :class="{ active: selectedTag.some(item => item.id === tag.id) }"
+          >{{ tag.name }}</span
         >
       </div>
     </div>

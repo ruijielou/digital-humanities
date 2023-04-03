@@ -49,6 +49,18 @@ export function dhuvalidcode <T extends Record<string, any>>(data:T) {
     },
   );
 }
+// sys/common/upload
+export function commonUpload (formData:any) {
+  return request(
+    {
+      url: `/app/common/upload`,
+      // /app/common/upload
+      method: "post",
+      data: formData,
+    },
+  );
+}
+
 
 // {{URL}}/app/user/repository/page
 export const repository = {
@@ -175,6 +187,25 @@ export const favoritegroup = {
       },
     );
   },
-  // {{URL}}/app/user/favorite/myPage?type=1
 }
-// app/user/repository/insert
+// {{URL}}/app/user/repositorygroup//findList
+
+export const repositorygroup = {
+  findList: () => {
+    return request(
+      {
+        url: `/app/user/repositorygroup/findList`,
+        method: "get",
+      },
+    );
+  },
+  findAllFormInput: (idList: number[]) => {
+    return request(
+      {
+        url: `/app/user/repositorygroup/findAllFormInput?repositoryIds=${idList.join(',')}`,
+        method: "get",
+      },
+    );
+  },
+}
+// /app/user/repositorygroup/findAllFormInput?repositoryIds=17

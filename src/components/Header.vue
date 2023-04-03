@@ -62,24 +62,27 @@ watch(
       <span @click="openToContribute" class="m-l-4">
         <IconLogin class="cursor-pointer" />
       </span>
-      <span class="m-l-4" @click="router.push({name: 'Messages'})">
+      <span class="m-l-4" @click="router.push({ name: 'Messages' })">
         <IconMessage class="cursor-pointer" />
       </span>
+      <!-- <span v-if="userStore.userInfo?.avatar">
+       
+      </span> -->
       <span
-        class="m-l-4 inline-block"
+        class="m-l-4 cursor-pointer"
         @click="openLoginModal"
         :title="userStore.userInfo?.username || ''"
       >
         <a-avatar
-          shape="circle"
-          :size="54"
           v-if="userStore.userInfo?.avatar"
-          :src="userStore.userInfo?.avatar"
-          class="m-t-10"
+          shape="circle"
+          :size="20"
+          class="m-b-3"
+          :src="`${userStore.userInfo?.avatar}`"
           title="person"
         >
         </a-avatar>
-        <IconUser v-else class="cursor-pointer" />
+        <IconUser v-else />
         <!-- {{ userStore.userInfo?.username  }} -->
       </span>
     </div>
@@ -102,6 +105,11 @@ watch(
   position: relative;
   height: 20vh;
   padding: 10px 40px;
+  .header-icons {
+    & > span {
+      display: inline-block;
+    }
+  }
   .header-title {
     font-size: 44px;
     font-weight: 500;

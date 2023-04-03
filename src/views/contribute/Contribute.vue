@@ -1,72 +1,14 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, shallowRef, onMounted } from "vue";
+import {Modal} from "ant-design-vue"
 import LogoText from "../../components/LogoText.vue";
 import SetpOne from "./StepOne.vue";
 import SetpTwo from "./StepTwo.vue";
 import CustomCase from "./CustomCase.vue";
 import { GroupDataItem, CaseType } from "./type";
-import { repository } from "@/api";
+import { repository, repositorygroup } from "@/api";
+import {formatterFormInput} from "./utils"
 
-const selectedTag = ref<string[]>([]);
-const currentStep = ref<number>(0);
-const caseType = ref<CaseType>(CaseType.System);
-
-const chooseTag = (value: string) => {
-  caseType.value = CaseType.System;
-  selectedTag.value = Array.from(new Set([...selectedTag.value, value]));
-};
-
-const changeStep = (step: number) => {
-  currentStep.value = step || 0;
-};
-
-const groupData: GroupDataItem[] = [
-  {
-    title: "数字GLAM",
-    options: [
-      "GLAM融合案例库",
-      "数字图书馆案例库",
-      "数字博物馆案例库",
-      "数字档案馆案例库",
-      "数字艺术案例库",
-    ],
-  },
-  {
-    title: "研究领域",
-    options: [
-      "女性文学案例库",
-      "中国古典文献案例库",
-      "文字、语言案例库",
-      "地图、GIS案例库",
-      "数字文化遗产案例库",
-      "海外研究中国案例库",
-      "数字记忆案例库",
-      "其他学科领域案例库",
-    ],
-  },
-  {
-    title: "机构平台",
-    options: [
-      "数字人文会议获奖案例库",
-      "高校数字人文研究项目案例库",
-      "联盟、企业案例库",
-    ],
-  },
-  {
-    title: "基础设施",
-    options: [
-      "数字学术平台案例库",
-      "数字计划案例库",
-      "数字人文工具案例库",
-      "法律、法规案例库",
-    ],
-  },
-];
-
-const chooseCustomTag = () => {
-  caseType.value = CaseType.Custom;
-  selectedTag.value = [];
-};
 const customeStep = [
   { label: "选择案例库", name: "setp-one" },
   { label: "自定义案例库", name: "CustomCase" },
@@ -83,47 +25,91 @@ const stepData = computed(() => {
   return caseType.value === CaseType?.Custom
     ? [...customeStep]
     : [...systemStep];
-});
-const customCaseRef = ref<any>(null);
-const gotoNext = async () => {
-  if (currentStep.value === 1 && caseType.value === CaseType.Custom) {
-    
-    const formState = customCaseRef.value.formState;
+}) as any;
 
-    console.log(formState);
-    
-    createRepository({ ...formState.case });
+const selectedTag = ref<any[]>([]);
+const currentStep = ref<number>(0);
+const caseType = ref<CaseType>(CaseType.System);
+
+const isCurrentStepTwo = () => {
+  return stepData.value.some((item:any, index: number) => index === currentStep.value + 1 && item.name === 'SetpTwo')
+}
+
+const chooseTag = (value: any) => {
+  caseType.value = CaseType.System;
+  // const newArr = Array.from(new Set([...selectedTag.value.map(item => item.id), value.id]));
+  if(selectedTag.value.some(item => item.id === value.id)) {
+    selectedTag.value = selectedTag.value.filter(a => a.id !== value.id);
+    return
   }
-  currentStep.value = currentStep.value + 1;
+  selectedTag.value = [...selectedTag.value, {...value}];
 };
 
-// const customRepository = reactive<any>({
-//   data: {
-//     name: "",
-//     description: "",
-//     authType: "1",
-//     status: null,
-//   },
-// });
+const changeStep = (step: number) => {
+  currentStep.value = step || 0;
+};
 
-// const setRepository = (data: any) => {
-//   customRepository.data = { ...data };
-// };
+
+const groupData = ref<any>([]);
+const chooseCustomTag = () => {
+  caseType.value = CaseType.Custom;
+  selectedTag.value = [];
+};
+
+const customCaseRef = ref<any>(null);
+const stepTwoData = reactive<any>({
+  data: null,
+  formModal: null
+})
+const gotoNext = async () => {
+  if (currentStep.value === 1 && caseType.value === CaseType.Custom) {
+    const formState = customCaseRef.value.formState;
+    createRepository({ ...formState.case });
+  }
+  if(isCurrentStepTwo()) {
+    //
+    await getTwoFormInput();
+  }
+  currentStep.value = currentStep.value + 1;
+  
+};
 
 const createRepository = async (data: any) => {
   const res = await repository.insert({ ...data });
 };
 
-// watch(
-//   () => currentStep.value,
-//   (val: number, oldVal: number) => {
-//     if (val === 2 && oldVal === 1 && caseType.value === CaseType.Custom) {
-//       //如果是创建自定义案例
-//     }
-//   }
-// );
-onMounted(() => {
+const getTwoFormInput = async () => {
+  const idList: number[] = selectedTag.value.map(item => item.id);
+  if(idList.length == 0) {
+    Modal.error({
+      title: () => "提示",
+      content: () => "请选择至少一个案例",
+    });
+    return
+  }
+  const {result} = await repositorygroup.findAllFormInput(idList);
 
+  if(result) {
+    const {leftMetaList, rightMetaList,labList, formModal} = formatterFormInput(result);
+    stepTwoData.formModal = {...formModal}
+    
+    stepTwoData.data = {leftMetaList, rightMetaList,labList}
+    console.log(stepTwoData.data);
+    
+  }
+  
+}
+const getStepOneLabels = async () => {
+  // repositorygroup/findList
+  const res = await repositorygroup.findList();
+
+  if(res.success) {
+    groupData.value = [...res.result]
+  }
+}
+
+onMounted(() => {
+  getStepOneLabels();
 })
 </script>
 <template>
@@ -160,6 +146,8 @@ onMounted(() => {
         ></setp-one>
         <SetpTwo
           :selected-tag="selectedTag"
+          :form-modal="stepTwoData.formModal"
+          :form-data="stepTwoData.data"
           v-if="currentStep === index && item.name === 'SetpTwo'"
         />
         <div

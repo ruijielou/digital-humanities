@@ -10,7 +10,7 @@ import {
 import LogoText from "../../components/LogoText.vue";
 import { useUserStore } from "@/store/user";
 import { Modal } from "ant-design-vue";
-import { dhuuser } from "@/api";
+import { dhuuser, commonUpload } from "@/api";
 
 const userStore = useUserStore();
 
@@ -69,14 +69,15 @@ const option = reactive<any>({
 });
 const loading = ref<boolean>(false);
 const cropper = ref<any>(null);
+let uploadFile:any = null;
 const uploadImg = (e: any, num: number) => {
   //上传图片
-  var file = e.target.files[0];
+  uploadFile = e.target.files[0];
   if (!/\.(gif|jpg|jpeg|png|bmp|GIF|JPG|PNG)$/.test(e.target.value)) {
     alert("图片类型必须是.gif,jpeg,jpg,png,bmp中的一种");
     return false;
   }
-  var reader = new FileReader();
+  let reader = new FileReader();
   reader.onload = (e: any) => {
     let data;
     if (typeof e.target.result === "object") {
@@ -87,12 +88,26 @@ const uploadImg = (e: any, num: number) => {
     }
     option.img = data;
   };
-  reader.readAsArrayBuffer(file);
+  reader.readAsArrayBuffer(uploadFile);
 };
 const handleOk = () => {
-  cropper.value.getCropData((data: any) => {
-    formState.user.avatar = data;
-    visibleUploadImg.value = false;
+  cropper.value.getCropBlob(async (data: any) => {
+    // formState.user.avatar = data;
+    //转换成file类型
+    const formData: any = new FormData();
+    let file: any = new File([data], uploadFile.name, {
+      type: data.type,
+    });
+    file.uid = Date.now();
+    formData.append("biz", "temp");
+    formData.append("file", file);
+  
+    const res = await commonUpload(formData);
+    console.log(res);
+    if(res.success) {
+      formState.user.avatar = res?.message;
+      visibleUploadImg.value = false;
+    }
   });
 };
 const realTime = (data: any) => {

@@ -1,12 +1,25 @@
 export interface GroupDataItem {
     title: string;
-    options: string[];
+    repositoryList: any[];
 
 }
 export enum CaseType {
     Custom,
     System
-  }
+}
+
+export interface MetaItem {
+    dataType: number;
+    groupId: number;
+    id: number;
+    isRequired: number;
+    name: string;
+    opts: string;
+    parentId: number | null;
+    refId: number | null;
+    subType: number;
+}
+
 /**
  * @add 可在后边添加的属性
  * @inline 一行显示的表单

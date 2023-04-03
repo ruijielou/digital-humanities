@@ -21,6 +21,10 @@ service.interceptors.request.use(
     if (token && config.headers) {
       config.headers["X-Access-Token"] = token;
     }
+    if(config.url?.includes('common/upload')){
+      config.headers['Content-Type'] = 'multipart/form-data'
+    }
+    
     return config;
   },
   (error) => {

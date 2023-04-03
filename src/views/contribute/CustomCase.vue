@@ -87,12 +87,6 @@ defineExpose({ formState });
             <a-radio value="2">仅自己看</a-radio>
           </a-radio-group>
         </a-form-item>
-        <!-- <a-form-item
-          :colon="false"
-          :wrapper-col="{ ...layout.wrapperCol, offset: 12 }"
-        >
-          <a-button type="primary" html-type="submit">完成</a-button>
-        </a-form-item> -->
       </a-form>
     </div>
   </div>

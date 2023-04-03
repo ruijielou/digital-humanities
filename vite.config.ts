@@ -34,6 +34,12 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/app/, ' '),
       },
+      '^/temp': {
+        target: 'http://dhc.api.lipengwencai.com/temp',
+        // target: 'http://localhost:7001',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/temp/, ' '),
+      },
     },
   },
 })
