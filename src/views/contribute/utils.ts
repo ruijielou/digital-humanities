@@ -4,15 +4,20 @@ export const formatterFormInput = (props: any) => {
     const data: any = {};
     // const formData: any = {}
     for (const item of props.metaGroupList.filter(i => i.metaList)) {
-        data[`form_${item.id}`] = "";
-        // if (formData[item.groupId]) {
-        //     formData[item.groupId].push(item)
-        // } else {
-        //     formData[item.groupId] = [item]
-        // }
+        if (item.dataType === 13) {
+            //如果是输入多个值， 初始化为数组
+            data[`form_${item.id}`] = {
+                [`form_${item.id}_1`]: '',
+            };
+
+        } else {
+
+            data[`form_${item.id}`] = "";
+        }
+
     }
     for (const item of props.labList) {
-         // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 -->
+        // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 -->
 
         data[`tag_${item.id}`] = [];
         //   tag_13
@@ -23,7 +28,7 @@ export const formatterFormInput = (props: any) => {
     // let leftMetaList: any = [];
     // const rightMetaList: any = {};
     // for (const key in formData) {
-        
+
     //     if (formData[key].length > maxLength) {
     //         if (leftMetaList.length) {
     //             rightMetaList[maxLengthKey] = formData[key];
@@ -45,7 +50,7 @@ export const formatterFormInput = (props: any) => {
     // if (props.formData) {
     //     firstKey.value = Math.min(Object.keys(props.formData.metaList).join(','));
     //   }
-    return  { formModal: data }
+    return { formModal: data }
 }
 
 const data = {

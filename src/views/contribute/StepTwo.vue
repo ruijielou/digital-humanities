@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch } from "vue";
 import { FormInstance, message } from "ant-design-vue";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons-vue";
+import {
+  LoadingOutlined,
+  PlusOutlined,
+  PlusSquareOutlined,
+} from "@ant-design/icons-vue";
 import { StepTwoForm, MetaItem } from "./type";
 
 const props = defineProps<{
@@ -70,6 +74,11 @@ const getData = () => {
 
   return formState.data;
 };
+
+const createItem = (id:string) => {
+  formState.data[id][`form_${id}_2`] = ''
+}
+
 watch(
   () => props.formData,
   (val) => {
@@ -101,91 +110,9 @@ defineExpose({ formState });
       ref="formRef"
       :model="formState"
     >
-      <div class="group-item flex-1 m-r-5" v-if="formData?.metaGroupList">
-        <div class="group-item-title">
-          <span class="line-title">
-            <span> {{formData.metaGroupList[0].name}} </span>
-          </span>
-        </div>
-        <template  v-for="(col, index) in (formData.metaGroupList[0].metaList)">
-          <a-form-item
-            :colon="false"
-            :name="['data', `form_${col.id}`]"
-            :label="col.name"
-            :rules="[
-              {
-                required: col.isRequired == 1 ? true : false,
-                message: col.name + '不能为空',
-              },
-            ]"
-          >
-            <!-- :rules="col.isRequired == 1 ? [{required: true, message: col.name + '不能为空', trigger: 'change',}] : null" -->
-            <a-textarea
-              v-if="col.dataType === 2"
-              v-model:value="formState.data[`form_${col.id}`]"
-              :rows="4"
-            />
-            <a-date-picker
-              class="w-100%"
-              v-else-if="col.dataType === 3"
-              v-model:value="formState.data[`form_${col.id}`]"
-              value-format="YYYY-MM-DD"
-            />
-            <a-input-number
-              v-else-if="col.dataType === 4"
-              v-model:value="formState.data[`form_${col.id}`]"
-            />
-            <a-radio-group
-              v-else-if="col.dataType === 5"
-              v-model:value="formState.data[`form_${col.id}`]"
-              :options="col.opts.split(';').filter((a) => a)"
-            />
-            <!-- // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 -->
-            <a-checkbox-group
-              v-else-if="col.dataType === 6"
-              v-model:value="formState.data[`form_${col.id}`]"
-              :options="col.opts.split(';').filter((a) => a)"
-            />
-            <a-select
-              ref="select"
-              v-else-if="col.dataType === 7"
-              class="w-100%"
-              v-model:value="formState.data[`form_${col.id}`]"
-            >
-              <a-select-option
-                v-for="o in col.opts.split(';').filter((a) => a)"
-                :value="o"
-                >{{ o }}</a-select-option
-              >
-            </a-select>
-            <a-upload
-              v-else-if="col.dataType === 9"
-              class="w-100%"
-              v-model:file-list="formState.data[`form_${col.id}`]"
-              list-type="picture-card"
-              :show-upload-list="false"
-              @change="handleChange($event, `form_${col.id}`)"
-            >
-              <img
-                v-if="formState.user.headUrl"
-                width="100"
-                height="100"
-                :src="formState.data[`form_${col.id}`]"
-                alt="avatar"
-              />
-              <div v-else>
-                <loading-outlined v-if="loading"></loading-outlined>
-                <plus-outlined v-else></plus-outlined>
-                <div class="ant-upload-text">Upload</div>
-              </div>
-            </a-upload>
-            <a-input v-else v-model:value="formState.data[`form_${col.id}`]" />
-          </a-form-item>
-        </template>
-      </div>
-      <div class="right-container flex-1 m-l-5" v-if="formData?.metaGroupList">
+      <div class="form-container flex-1 m-l-5" v-if="formData?.metaGroupList">
         <template v-for="(item, key) in formData.metaGroupList">
-          <div class="group-item" v-if="key != 0">
+          <div class="group-item">
             <div class="group-item-title">
               <span class="line-title">
                 <span>
@@ -205,6 +132,7 @@ defineExpose({ formState });
                 },
               ]"
             >
+              <!-- <div class="flex"> -->
               <!-- :rules="col.isRequired == 1 ? [{required: true, message: col.name + '不能为空', trigger: 'change',}] : null" -->
               <a-textarea
                 v-if="col.dataType === 2"
@@ -265,10 +193,24 @@ defineExpose({ formState });
                   <div class="ant-upload-text">Upload</div>
                 </div>
               </a-upload>
+              <div class="flex" v-else-if="col.dataType === 13">
+                <a-input v-for="key in formState.data[`form_${col.id}`]" v-model:value="formState.data[`form_${col.id}`][key]" />
+                <span
+                  class="m-l-3 cursor-pointer"
+                  @click="createItem(`form_${col.id}`)"
+                  v-if="col.dataType === 13"
+                >
+                  <plus-square-outlined
+                    style="font-size: 28px; color: #d9d9d9"
+                  />
+                </span>
+              </div>
               <a-input
                 v-else
                 v-model:value="formState.data[`form_${col.id}`]"
               />
+
+              <!-- </div> -->
             </a-form-item>
           </div>
         </template>
@@ -308,3 +250,22 @@ defineExpose({ formState });
     </a-form>
   </div>
 </template>
+<style lang="less">
+.form-container {
+  display: flex;
+  flex-flow: column wrap;
+  .group-item:nth-child(1) {
+    order: 1;
+  }
+  .group-item {
+    order: 2;
+  }
+}
+.form-container::before,
+.form-container::after {
+  content: "";
+  flex-basis: 100%;
+  width: 0;
+  order: 2;
+}
+</style>

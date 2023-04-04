@@ -202,10 +202,10 @@ export const repositorygroup = {
   findAllFormInput: (idList: number[]) => {
     return request(
       {
-        url: `/app/user/repositorygroup/findAllFormInput?repositoryIds=${idList.join(',')}`,
+      // }/app/user/repositorygroup/findFormList
+        url: `/app/user/repositorygroup/findFormListGroup?repositoryIds=${idList.join(',')}`,
         method: "get",
       },
     );
   },
 }
-// /app/user/repositorygroup/findAllFormInput?repositoryIds=17

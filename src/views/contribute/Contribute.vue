@@ -187,6 +187,7 @@ onMounted(() => {
 .group-container {
   padding: 20px 120px;
 
+
   .group-tags {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
