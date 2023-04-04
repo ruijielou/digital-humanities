@@ -1,55 +1,25 @@
-import { MetaItem } from "./type"
+// import { MetaItem } from "./type"
 export const formatterFormInput = (props: any) => {
-    if (!props.metaGroupList) return
+    if (!props.result) return { formModal: null }
     const data: any = {};
-    // const formData: any = {}
-    for (const item of props.metaGroupList.filter(i => i.metaList)) {
+    const metaList = props.result.reduce((prev: any, cur: any) => {
+        return cur.metaList ? [...prev, ...cur.metaList] : [...prev]
+    }, []);
+
+    for (const item of metaList) {
         if (item.dataType === 13) {
             //如果是输入多个值， 初始化为数组
-            data[`form_${item.id}`] = {
-                [`form_${item.id}_1`]: '',
+            data[item.filed] = {
+                [`${item.filed}_1`]: '',
             };
-
+        } else if (item.dataType === 14 || item.dataType === 6) {
+            data[item.filed] = [];
         } else {
-
-            data[`form_${item.id}`] = "";
+            data[item.filed] = "";
         }
-
     }
-    for (const item of props.labList) {
-        // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 -->
 
-        data[`tag_${item.id}`] = [];
-        //   tag_13
-    }
-    // const leftMetaList = Object.keys()
-    // let maxLength = 0;
-    // let maxLengthKey = '';
-    // let leftMetaList: any = [];
-    // const rightMetaList: any = {};
-    // for (const key in formData) {
-
-    //     if (formData[key].length > maxLength) {
-    //         if (leftMetaList.length) {
-    //             rightMetaList[maxLengthKey] = formData[key];
-    //         }
-    //         maxLength = formData[key].length;
-    //         maxLengthKey = key;
-    //         leftMetaList = formData[key]
-    //     } else {
-    //         rightMetaList[key] = formData[key];
-    //     }
-    // }
-    // const leftMetaList = formData[maxLengthKey];
-    // const rightMetaList = {};
-    // for (const key in formData) {
-    //     if(key !== maxLengthKey) {
-
-    //     }
-    // }
-    // if (props.formData) {
-    //     firstKey.value = Math.min(Object.keys(props.formData.metaList).join(','));
-    //   }
+    //  1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接
     return { formModal: data }
 }
 
