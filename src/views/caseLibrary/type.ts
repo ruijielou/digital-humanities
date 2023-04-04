@@ -5,6 +5,7 @@ export interface Person {
 }
 
 export interface CardType {
+  id: number;
   title: string;
   code?: string;
   caseNumber: number;

@@ -26,17 +26,17 @@ onMounted(() => {
       <div class="case-container">
         <LogoText text="特选案例" />
         <div class="case-referred case-group flex m-auto">
-          <Card class="flex-3"  @click="$router.push({name: 'CaseDetail'})" :no-show-number="true" :card="caseReferred[0]" />
+          <Card class="flex-3"  @click="$router.push({name: 'CaseDetail', params: {id: caseReferred[0].id}})" :no-show-number="true" :card="caseReferred[0]" />
           <div class="flex-2 flex flex-col">
             <Card
               class="flex-1"
-              @click="$router.push({name: 'CaseDetail'})"
+              @click="$router.push({name: 'CaseDetail', params: {id: caseReferred[1].id}})"
               :hoverCard="true"
               :no-show-number="true"
               :card="caseReferred[1]"
             />
             <Card
-            @click="$router.push({name: 'CaseDetail'})"
+            @click="$router.push({name: 'CaseDetail', params: {id: caseReferred[2].id}})"
               class="flex-1"
               :hoverCard="true"
               :no-show-number="true"
@@ -52,7 +52,7 @@ onMounted(() => {
           <Carousel>
             <template #cards>
               <div class="h-100%" v-for="item in cardData">
-                <Card  @click="$router.push({name: 'CaseDetail'})" style="width: 25vw; height: 55vh" :card="item" />
+                <Card  @click="$router.push({name: 'CaseDetail', params: {id: item.id}})" style="width: 25vw; height: 55vh" :card="item" />
               </div>
             </template>
           </Carousel>
@@ -64,7 +64,7 @@ onMounted(() => {
           <Carousel :hover-dark="true">
             <template #cards>
               <div class="h-100%" v-for="item in cardData">
-                <Card  @click="$router.push({name: 'CaseDetail'})" style="width: 25vw; height: 55vh" :card="item" />
+                <Card  @click="$router.push({name: 'CaseDetail',params: {id: item.id}})" style="width: 25vw; height: 55vh" :card="item" />
               </div>
             </template>
           </Carousel>
@@ -103,9 +103,6 @@ onMounted(() => {
   </div>
 </template>
 <style lang="less">
-// .caselibrary-header {
-  // background-image: url("../../assets/image/caselibrary-bg.png");
-// }
 .case-container {
   background-size: cover;
   background-position: center center;

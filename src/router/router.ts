@@ -28,7 +28,7 @@ export default [
     component: () => import("../views/caseLibrary/MoreLibrary.vue"),
   },
   {
-    path: "/casedetail",
+    path: "/casedetail/:id",
     name: "CaseDetail",
     component: () => import("../views/caseLibrary/CaseDetail.vue"),
   },

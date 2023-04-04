@@ -90,8 +90,8 @@ const moreOperation = () => {
         :pagination="pagination"
         :loading="loading"
       >
-        <template #bodyCell="{ column, text, index }">
-          <div @click="$router.push({name: 'CaseDetail'})" v-if="column.dataIndex === 'name'">
+        <template #bodyCell="{ column, text, index, record }">
+          <div @click="$router.push({name: 'CaseDetail', params: {id: record.id}})" v-if="column.dataIndex === 'name'">
             {{ `${index + 1}` }}
             <span class="m-l-6">{{text}}</span>
           </div>

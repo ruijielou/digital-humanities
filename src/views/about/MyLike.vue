@@ -118,9 +118,9 @@ getMylike();
         :pagination="pagination"
         :loading="loading"
       >
-        <template #bodyCell="{ column, text, index }">
+        <template #bodyCell="{ column, text, record }">
           <div
-            @click="$router.push({ name: 'CaseDetail' })"
+            @click="$router.push({ name: 'CaseDetail', params: {id: record.id} })"
             v-if="column.dataIndex === 'name'"
           >
             {{ text }}

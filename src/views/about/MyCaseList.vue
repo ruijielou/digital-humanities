@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import { ref, reactive } from "vue";
 import type { PageinationType } from "../../utils/type";
+import { caseApi } from "@/api";
+// case/myPage
 
 const loading = ref<boolean>(false);
+const dataSource = ref<any>([]);
 const columns = [
   {
     title: "名称",
@@ -18,69 +21,23 @@ const columns = [
   },
   {
     title: "项目时间",
-    dataIndex: "projectTime",
+    dataIndex: "createTime",
   },
 ];
 
-const dataSource = [
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 1,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 2,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 3,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 4,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 5,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 6,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 7,
-  },
-];
+const getCaseData = async () => {
+  const { result } = await caseApi.myPage();
+
+  result && (dataSource.value = [...result.records]);
+};
+
+getCaseData();
 
 const pagination = reactive<PageinationType>({
   total: 0,
   current: 1,
   pageSize: 10,
 });
-
-
 </script>
 <template>
   <a-layout-content
@@ -88,7 +45,6 @@ const pagination = reactive<PageinationType>({
     class="flex flex-col"
   >
     <div class="result-container">
-
       <a-table
         :columns="columns"
         :row-key="(record:any) => record.id"
@@ -96,8 +52,12 @@ const pagination = reactive<PageinationType>({
         :pagination="pagination"
         :loading="loading"
       >
-        <template #bodyCell="{ column, text, index }">
-          <div class="c-#5b3df2 cursor-pointer"  @click="$router.push({name: 'CaseDetail'})" v-if="column.dataIndex === 'name'">
+        <template #bodyCell="{ column, record, text }">
+          <div
+            class="c-#5b3df2 cursor-pointer"
+            @click="$router.push({ name: 'CaseDetail', params:{id: record.id} })"
+            v-if="column.dataIndex === 'name'"
+          >
             {{ text }}
           </div>
         </template>

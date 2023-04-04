@@ -9,6 +9,7 @@ enum CaseType {
   CaseLibrary, //我的案例库
 }
 const currentType = ref<number>(CaseType.CaseLibrary);
+
 </script>
 <template>
   <div class="p-8 w-100% submission-manage">

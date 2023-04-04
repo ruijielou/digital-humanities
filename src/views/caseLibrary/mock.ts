@@ -5,6 +5,7 @@ export const caseReferred: CardType[] = [
     {
         title: "欧洲时光机",
         code: "01",
+        id: 1,
         caseNumber: 1,
         recentUpdates: "",
         comments: [
@@ -35,6 +36,7 @@ export const caseReferred: CardType[] = [
     {
         title: "芬兰SAMPO",
         code: "02",
+        id: 2,
         caseNumber: 1,
         recentUpdates: "",
         comments: [
@@ -65,6 +67,7 @@ export const caseReferred: CardType[] = [
     {
         title: "芬兰SAMPO",
         code: "03",
+        id: 3,
         caseNumber: 1,
         recentUpdates: "",
         comments: [

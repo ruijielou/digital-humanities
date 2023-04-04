@@ -1,5 +1,5 @@
 import { request } from "@/utils/request";
-import type {UserInfo} from "@/utils/type"
+import type { UserInfo } from "@/utils/type"
 
 /**
  * @description 通过用户名登录
@@ -7,12 +7,12 @@ import type {UserInfo} from "@/utils/type"
  * @param {phone, password}
  */
 // {{URL}}/app/common/login/login?phone=15680696883&password=123456
-export function LoginByUser <T extends Record<string, any>>(data:T) {
+export function LoginByUser<T extends Record<string, any>>(data: T) {
   let url = `/app/common/login/login?phone=${data.phone}`;
-  if(data.password) {
+  if (data.password) {
     url += `&password=${data.password}`
   }
-  if(data.code) {
+  if (data.code) {
     url += `&code=${data.password}`
   }
   return request(
@@ -23,7 +23,7 @@ export function LoginByUser <T extends Record<string, any>>(data:T) {
   );
 }
 // {{URL}}/app/common/login/reg?phone=15680696883&code=7527&password=123456&pwdLevel=3
-export function LoginReg <T extends Record<string, any>>(data:T) {
+export function LoginReg<T extends Record<string, any>>(data: T) {
   return request(
     {
       url: `/app/common/login/reg?phone=${data.phone}&code=${data.code}&password=${data.password}`,
@@ -32,7 +32,7 @@ export function LoginReg <T extends Record<string, any>>(data:T) {
   );
 }
 // {{URL}}/app/common/login/updatePwdByPhone?phone={{USERNAME}}&code=4316&newPwd=123456
-export function updatePwdByPhone <T extends Record<string, any>>(data:T) {
+export function updatePwdByPhone<T extends Record<string, any>>(data: T) {
   return request(
     {
       url: `/app/common/login/updatePwdByPhone?phone=${data.phone}&code=${data.code}&newPwd=${data.password}`,
@@ -41,7 +41,7 @@ export function updatePwdByPhone <T extends Record<string, any>>(data:T) {
   );
 }
 // {{URL}}/app/common/dhuvalidcode/send?phone={{USERNAME}}&type=1
-export function dhuvalidcode <T extends Record<string, any>>(data:T) {
+export function dhuvalidcode<T extends Record<string, any>>(data: T) {
   return request(
     {
       url: `/app/common/dhuvalidcode/send?phone=${data.username}&type=${data.type}`,
@@ -50,7 +50,7 @@ export function dhuvalidcode <T extends Record<string, any>>(data:T) {
   );
 }
 // sys/common/upload
-export function commonUpload (formData:any) {
+export function commonUpload(formData: any) {
   return request(
     {
       url: `/app/common/upload`,
@@ -145,6 +145,7 @@ export const comment = {
       },
     );
   },
+  // {{URL}}/app/user/comment/insert
   insert: (data: any) => {
     return request(
       {
@@ -156,7 +157,6 @@ export const comment = {
   },
 }
 
-// {{URL}}/app/user/favorite/myPage?type=2
 export const favorite = {
   myPage: (type: number) => {
     return request(
@@ -177,7 +177,6 @@ export const favorite = {
   },
 }
 
-// {{URL}}/app/user/favoritegroup/myPage
 export const favoritegroup = {
   myPage: () => {
     return request(
@@ -188,7 +187,6 @@ export const favoritegroup = {
     );
   },
 }
-// {{URL}}/app/user/repositorygroup//findList
 
 export const repositorygroup = {
   findList: () => {
@@ -199,11 +197,10 @@ export const repositorygroup = {
       },
     );
   },
-  findAllFormInput: (idList: number[]) => {
+  findAllFormInput: (ids: string) => {
     return request(
       {
-      // }/app/user/repositorygroup/findFormList
-        url: `/app/user/repositorygroup/findFormListGroup?repositoryIds=${idList.join(',')}`,
+        url: `/app/user/repositorygroup/findFormListGroup?repositoryIds=${ids}`,
         method: "get",
       },
     );
@@ -211,7 +208,6 @@ export const repositorygroup = {
 }
 
 export const caseApi = {
-  // {{URL}}/app/user/case/add
   add: (data: any) => {
     return request(
       {
@@ -221,4 +217,21 @@ export const caseApi = {
       },
     );
   },
+  myPage: () => {
+    return request(
+      {
+        url: `/app/user/case/myPage`,
+        method: "get",
+      },
+    );
+  },
+  findDetail: (id: string) => {
+    return request(
+      {
+        url: `/app/user/case/findDetail?id=${id}`,
+        method: "get",
+      },
+    );
+  },
 }
+// {{URL}}/app/user/favorite/insert

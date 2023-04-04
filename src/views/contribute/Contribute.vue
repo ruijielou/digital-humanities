@@ -119,7 +119,7 @@ const getTwoFormInput = async () => {
     });
     return;
   }
-  const { result } = await repositorygroup.findAllFormInput(idList);
+  const { result } = await repositorygroup.findAllFormInput(idList.join(','));
 
   if (result) {
     const { formModal } = formatterFormInput({ result });
