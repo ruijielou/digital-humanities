@@ -85,9 +85,9 @@ const gotoNext = async () => {
       console.log(data, "======dsdfsdfafaa");
     });
   }
-  setTimeout(() => {
-    currentStep.value = currentStep.value + 1;
-  }, 2000);
+  // setTimeout(() => {
+  currentStep.value = currentStep.value + 1;
+  // }, 2000);
 };
 
 const createRepository = async (data: any) => {

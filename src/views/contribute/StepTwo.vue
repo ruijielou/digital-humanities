@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch } from "vue";
 import { FormInstance, message } from "ant-design-vue";
-// import {
-//   LoadingOutlined,
-//   PlusOutlined,
-//   PlusSquareOutlined,
-// } from "@ant-design/icons-vue";
-// import { StepTwoForm, MetaItem } from "./type";
+import {
+  LoadingOutlined,
+  PlusOutlined,
+  PlusSquareOutlined,
+  MinusSquareOutlined,
+} from "@ant-design/icons-vue";
+import { StepTwoForm, MetaItem } from "./type";
 
 const props = defineProps<{
   selectedTag: any[] | null;
@@ -75,7 +76,10 @@ const getData = () => {
 };
 
 const createItem = (id: string) => {
-  formState.caseData[id][`form_${id}_2`] = "";
+  formState.caseData[id].push({ [`${id}_2`]: "" });
+};
+const removeItem = (id: string, nodeId: string) => {
+  delete formState.caseData[id][nodeId];
 };
 
 watch(
@@ -98,8 +102,8 @@ defineExpose({ formState });
       </div>
     </div>
     <a-form class="flex" labelAlign="left" v-bind="layout" ref="formRef" :model="formState">
-      <div class="form-container flex-1 m-l-5" v-if="formData?.metaGroupList">
-        <template v-for="(item, key) in formData.metaGroupList">
+      <div class="form-container flex-1 m-l-5" v-if="formData">
+        <template v-for="(item, key) in formData">
           <div class="group-item">
             <div class="group-item-title">
               <span class="line-title">
@@ -154,11 +158,14 @@ defineExpose({ formState });
                     <div class="ant-upload-text">Upload</div>
                   </div>
                 </a-upload>
-                <div class="flex" v-else-if="col.dataType === 13">
-                  <a-input v-for="key in formState.caseData[`${col.filed}`]"
-                    v-model:value="formState.caseData[`${col.filed}`][key]" />
-                  <span class="m-l-3 cursor-pointer" @click="createItem(`${col.filed}`)" v-if="col.dataType === 13">
-                    <plus-square-outlined style="font-size: 28px; color: #d9d9d9" />
+                <div class="flex m-b-2" v-else-if="col.dataType === 13"
+                  v-for="(key, tagIndex) in Object.keys(formState.caseData[`${col.filed}`])">
+                  <a-input v-model:value="formState.caseData[`${col.filed}`][key]" />
+                  <span class="m-l-3 cursor-pointer" v-if="col.dataType === 13">
+                    <plus-square-outlined @click="createItem(`${col.filed}`)" v-if="tagIndex === 0"
+                      style="font-size: 28px; color: #d9d9d9" />
+                    <minus-square-outlined @click="removeItem(col.filed, key)" v-else
+                      style="font-size: 28px; color: #d9d9d9" />
                   </span>
                 </div>
                 <a-input v-else v-model:value="formState.caseData[`${col.filed}`]" />
