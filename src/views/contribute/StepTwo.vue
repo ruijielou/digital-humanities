@@ -1,25 +1,24 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch } from "vue";
 import { FormInstance, message } from "ant-design-vue";
-import {
-  LoadingOutlined,
-  PlusOutlined,
-  PlusSquareOutlined,
-} from "@ant-design/icons-vue";
-import { StepTwoForm, MetaItem } from "./type";
+// import {
+//   LoadingOutlined,
+//   PlusOutlined,
+//   PlusSquareOutlined,
+// } from "@ant-design/icons-vue";
+// import { StepTwoForm, MetaItem } from "./type";
 
 const props = defineProps<{
   selectedTag: any[] | null;
   formModal?: any;
   formData: any;
-  // rightMetaList: any;
 }>();
 
 const formRef = ref<FormInstance>();
 const loading = ref<boolean>(false);
 const firstKey = ref<number | string>("1");
 const formState = reactive<any>({
-  data: {},
+  caseData: {},
 });
 
 // metaList
@@ -47,7 +46,7 @@ const config = {
 };
 const initForm = () => {
   if (props.formModal) {
-    formState.data = { ...props.formModal };
+    formState.caseData = { ...props.formModal };
   }
 };
 onMounted(() => {
@@ -61,7 +60,7 @@ const handleChange = (info, key) => {
   }
   if (info.file.status === "done") {
     if (info.file.response.data) {
-      formState.data[key] = info.file.response.data[0];
+      formState.caseData[key] = info.file.response.data[0];
     }
   }
   if (info.file.status === "error") {
@@ -72,12 +71,12 @@ const handleChange = (info, key) => {
 const getData = () => {
   console.log("dddewrerwerwerwerwer");
 
-  return formState.data;
+  return formState.caseData;
 };
 
-const createItem = (id:string) => {
-  formState.data[id][`form_${id}_2`] = ''
-}
+const createItem = (id: string) => {
+  formState.caseData[id][`form_${id}_2`] = "";
+};
 
 watch(
   () => props.formData,
@@ -95,21 +94,10 @@ defineExpose({ formState });
         <span class="line-title"><span> 所属案例库 </span> </span>
       </div>
       <div class="group-tags">
-        <span
-          v-for="(tag, i) in selectedTag"
-          :key="i"
-          class="tag-item selected"
-          >{{ tag.name }}</span
-        >
+        <span v-for="(tag, i) in selectedTag" :key="i" class="tag-item selected">{{ tag.name }}</span>
       </div>
     </div>
-    <a-form
-      class="flex"
-      labelAlign="left"
-      v-bind="layout"
-      ref="formRef"
-      :model="formState"
-    >
+    <a-form class="flex" labelAlign="left" v-bind="layout" ref="formRef" :model="formState">
       <div class="form-container flex-1 m-l-5" v-if="formData?.metaGroupList">
         <template v-for="(item, key) in formData.metaGroupList">
           <div class="group-item">
@@ -120,132 +108,64 @@ defineExpose({ formState });
                 </span>
               </span>
             </div>
-            <a-form-item
-              :colon="false"
-              :name="['data', `form_${col.id}`]"
-              v-for="col in item.metaList"
-              :label="col.name"
-              :rules="[
+            <template v-for="col in item.metaList">
+              <a-form-item class="w-33%" :colon="false" :name="['caseData', `${col.filed}`]" v-if="col.dataType === 14"
+                label=" " :rules="[
                 {
                   required: col.isRequired == 1 ? true : false,
                   message: col.name + '不能为空',
                 },
-              ]"
-            >
-              <!-- <div class="flex"> -->
-              <!-- :rules="col.isRequired == 1 ? [{required: true, message: col.name + '不能为空', trigger: 'change',}] : null" -->
-              <a-textarea
-                v-if="col.dataType === 2"
-                v-model:value="formState.data[`form_${col.id}`]"
-                :rows="4"
-              />
-              <a-date-picker
-                class="w-100%"
-                v-else-if="col.dataType === 3"
-                v-model:value="formState.data[`form_${col.id}`]"
-                value-format="YYYY-MM-DD"
-              />
-              <a-input-number
-                v-else-if="col.dataType === 4"
-                v-model:value="formState.data[`form_${col.id}`]"
-              />
-              <a-radio-group
-                v-else-if="col.dataType === 5"
-                v-model:value="formState.data[`form_${col.id}`]"
-                :options="col.opts.split(';').filter((a) => a)"
-              />
-              <!-- // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 -->
-              <a-checkbox-group
-                v-else-if="col.dataType === 6"
-                v-model:value="formState.data[`form_${col.id}`]"
-                :options="col.opts.split(';').filter((a) => a)"
-              />
-              <a-select
-                ref="select"
-                v-else-if="col.dataType === 7"
-                class="w-100%"
-                v-model:value="formState.data[`form_${col.id}`]"
-              >
-                <a-select-option
-                  v-for="o in col.opts.split(';').filter((a) => a)"
-                  :value="o"
-                  >{{ o }}</a-select-option
-                >
-              </a-select>
-              <a-upload
-                v-else-if="col.dataType === 9"
-                class="w-100%"
-                v-model:file-list="formState.data[`form_${col.id}`]"
-                list-type="picture-card"
-                :show-upload-list="false"
-                @change="handleChange($event, `form_${col.id}`)"
-              >
-                <img
-                  v-if="formState.user.headUrl"
-                  width="100"
-                  height="100"
-                  :src="formState.data[`form_${col.id}`]"
-                  alt="avatar"
-                />
-                <div v-else>
-                  <loading-outlined v-if="loading"></loading-outlined>
-                  <plus-outlined v-else></plus-outlined>
-                  <div class="ant-upload-text">Upload</div>
-                </div>
-              </a-upload>
-              <div class="flex" v-else-if="col.dataType === 13">
-                <a-input v-for="key in formState.data[`form_${col.id}`]" v-model:value="formState.data[`form_${col.id}`][key]" />
-                <span
-                  class="m-l-3 cursor-pointer"
-                  @click="createItem(`form_${col.id}`)"
-                  v-if="col.dataType === 13"
-                >
-                  <plus-square-outlined
-                    style="font-size: 28px; color: #d9d9d9"
-                  />
-                </span>
-              </div>
-              <a-input
-                v-else
-                v-model:value="formState.data[`form_${col.id}`]"
-              />
+              ]">
+                <a-select ref="select" class="w-100%" mode="multiple" :max-tag-count="1"
+                  v-model:value="formState.caseData[`${col.filed}`]">
+                  <a-select-option v-for="o in col.optList" :value="o.value"
+                    :placeholder="col.name">{{ o.text }}</a-select-option>
+                </a-select>
+              </a-form-item>
+              <a-form-item v-else :colon="false" :name="['caseData', `${col.filed}`]" :label="col.name" :rules="[
+                {
+                  required: col.isRequired == 1 ? true : false,
+                  message: col.name + '不能为空',
+                },
+              ]">
+                <a-textarea v-if="col.dataType === 2" v-model:value="formState.caseData[`form_${col.id}`]" :rows="4" />
+                <a-date-picker class="w-100%" v-else-if="col.dataType === 3"
+                  v-model:value="formState.caseData[`${col.filed}`]" value-format="YYYY-MM-DD" />
+                <a-input-number v-else-if="col.dataType === 4" v-model:value="formState.caseData[`${col.filed}`]" />
+                <a-radio-group v-else-if="col.dataType === 5" v-model:value="formState.caseData[`${col.filed}`]"
+                  :options="col.optList" />
+                <!-- // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 -->
+                <a-checkbox-group v-else-if="col.dataType === 6" v-model:value="formState.caseData[`${col.filed}`]"
+                  :options="col.optList">
 
-              <!-- </div> -->
-            </a-form-item>
+                </a-checkbox-group>
+                <a-select ref="select" v-else-if="col.dataType === 7" class="w-100%"
+                  v-model:value="formState.caseData[`${col.filed}`]">
+                  <a-select-option v-for="o in col.optList" :value="o">{{ o }}</a-select-option>
+                </a-select>
+                <a-upload v-else-if="col.dataType === 9" class="w-100%"
+                  v-model:file-list="formState.caseData[`${col.filed}`]" list-type="picture-card"
+                  :show-upload-list="false" @change="handleChange($event, `${col.filed}`)">
+                  <img v-if="formState.user.headUrl" width="100" height="100" :src="formState.caseData[`${col.filed}`]"
+                    alt="avatar" />
+                  <div v-else>
+                    <loading-outlined v-if="loading"></loading-outlined>
+                    <plus-outlined v-else></plus-outlined>
+                    <div class="ant-upload-text">Upload</div>
+                  </div>
+                </a-upload>
+                <div class="flex" v-else-if="col.dataType === 13">
+                  <a-input v-for="key in formState.caseData[`${col.filed}`]"
+                    v-model:value="formState.caseData[`${col.filed}`][key]" />
+                  <span class="m-l-3 cursor-pointer" @click="createItem(`${col.filed}`)" v-if="col.dataType === 13">
+                    <plus-square-outlined style="font-size: 28px; color: #d9d9d9" />
+                  </span>
+                </div>
+                <a-input v-else v-model:value="formState.caseData[`${col.filed}`]" />
+              </a-form-item>
+            </template>
           </div>
         </template>
-
-        <div class="group-item">
-          <div class="group-item-title">
-            <span class="line-title">
-              <span> 标签（可多选） </span>
-            </span>
-          </div>
-          <div class="flex flex-wrap">
-            <a-form-item
-              class="w-33%"
-              :colon="false"
-              :name="['data', `tag_${tag.id}`]"
-              v-for="tag in formData.labList"
-              label=" "
-            >
-              <a-select
-                ref="select"
-                class="w-100%"
-                mode="multiple"
-                :max-tag-count="1"
-                v-model:value="formState.data[`tag_${tag.id}`]"
-              >
-                <a-select-option
-                  v-for="o in tag.opts"
-                  :value="o.id"
-                  :placeholder="tag.title"
-                  >{{ o.title }}</a-select-option
-                >
-              </a-select>
-            </a-form-item>
-          </div>
-        </div>
       </div>
     </a-form>
   </div>
