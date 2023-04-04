@@ -3,21 +3,21 @@ import { ref, reactive, computed, watch, nextTick, onMounted } from "vue";
 import { Modal } from "ant-design-vue";
 import LogoText from "../../components/LogoText.vue";
 import SetpOne from "./StepOne.vue";
-import SetpTwo from "./StepTwo.vue";
+import StepTwo from "./StepTwo.vue";
 import CustomCase from "./CustomCase.vue";
-import { GroupDataItem, CaseType } from "./type";
-import { repository, repositorygroup } from "@/api";
+import { CaseType } from "./type";
+import { repository, repositorygroup,caseApi } from "@/api";
 import { formatterFormInput } from "./utils";
 
 const customeStep = [
   { label: "选择案例库", name: "setp-one" },
   { label: "自定义案例库", name: "CustomCase" },
-  { label: "完善管理信息", name: "SetpTwo" },
+  { label: "完善管理信息", name: "StepTwo" },
   { label: "完成", name: "finished" },
 ];
 const systemStep = [
   { label: "选择案例库", name: "setp-one" },
-  { label: "完善管理信息", name: "SetpTwo" },
+  { label: "完善管理信息", name: "StepTwo" },
   { label: "完成", name: "finished" },
 ];
 
@@ -30,13 +30,6 @@ const stepData = computed(() => {
 const selectedTag = ref<any[]>([]);
 const currentStep = ref<number>(0);
 const caseType = ref<CaseType>(CaseType.System);
-
-const isCurrentStepTwo = () => {
-  return stepData.value.some(
-    (item: any, index: number) =>
-      index === currentStep.value + 1 && item.name === "SetpTwo"
-  );
-};
 
 const getCurrentTypeTemplate = () => {
   return stepData.value.find(
@@ -69,30 +62,52 @@ const stepTwoRef = ref<any>(null);
 const stepTwoData = reactive<any>({
   data: null,
   formModal: null,
-  submitData: null,
 });
+
 const gotoNext = async () => {
   if (currentStep.value === 1 && caseType.value === CaseType.Custom) {
-    const formState = customCaseRef.value.formState;
-    createRepository({ ...formState.case });
+    const caseData: any = await customCaseRef.value?.formValidate();
+    if (!caseData.case) return;
+    const caseState = customCaseRef.value.formState;
+    const res = await repository.insert({ ...caseState.case });
+    if (!res) return;
+    const tagItem = { name: caseState.case.name, id: res.id };
+    selectedTag.value = [{ ...tagItem }];
   }
-  if (isCurrentStepTwo()) {
-    //
+  if (
+    stepData.value[currentStep.value + 1] &&
+    stepData.value[currentStep.value + 1]["name"] === "StepTwo"
+  ) {
     await getTwoFormInput();
   }
-  if (getCurrentTypeTemplate() === "SetpTwo") {
-    nextTick(() => {
-      const data = stepTwoRef.value;
-      console.log(data, "======dsdfsdfafaa");
-    });
+
+  //最后一步处理内容 提交表单内容
+  if (getCurrentTypeTemplate() == "StepTwo") {
+    const formState: any = await stepTwoRef.value?.formValidate();
+
+    if (!formState) return;
+    console.log(formState);
+    const idList: number[] = selectedTag.value.map((item) => item.id);
+    const submitData = {...formatterStepTwoData({...formState.caseData}),authType:1,repositoryIds: idList.join(',')};
+    const response = await caseApi.add(submitData);
+    if(!response) return
   }
-  // setTimeout(() => {
   currentStep.value = currentStep.value + 1;
-  // }, 2000);
 };
 
-const createRepository = async (data: any) => {
-  const res = await repository.insert({ ...data });
+const formatterStepTwoData = (data:any) => {
+  const newFormData:any = {}
+  for (const key in data) {
+    if(data[key].constructor == Object) {
+      //如果为对象类型
+      newFormData[key] = Object.values(data[key]).filter((item) => item != '').join(',');
+    }else if(data[key].constructor == Array) {
+      newFormData[key] = data[key].map(item => item + '').join(',')
+    }else {
+      newFormData[key] = data[key];
+    }
+  }
+  return {...newFormData}
 };
 
 const getTwoFormInput = async () => {
@@ -100,7 +115,7 @@ const getTwoFormInput = async () => {
   if (idList.length == 0) {
     Modal.error({
       title: () => "提示",
-      content: () => "请选择至少一个案例",
+      content: () => "请选择案例",
     });
     return;
   }
@@ -110,21 +125,20 @@ const getTwoFormInput = async () => {
     const { formModal } = formatterFormInput({ result });
     stepTwoData.formModal = { ...formModal };
     stepTwoData.data = { ...result };
-    console.log(stepTwoData.data);
   }
 };
+
+// 获取第一步的标签列表
 const getStepOneLabels = async () => {
   const res = await repositorygroup.findList();
-
   if (res.success) {
     groupData.value = [...res.result];
   }
 };
 
-const setTwoData = (data: any) => {
-  stepTwoData.submitData = { ...data };
-  console.log(stepTwoData.submitData, "=====stepTwoData");
-};
+const reloadPage = () => {
+  location.reload();
+}
 
 onMounted(() => {
   getStepOneLabels();
@@ -133,29 +147,56 @@ onMounted(() => {
 <template>
   <div class="h-screen overflow-auto">
     <Header title="追踪研究线索" bg-name="bg1" class="contribute-header" />
-    <a-layout-content style="padding-top: 20px; padding-bottom: 20px" class="flex flex-col">
+    <a-layout-content
+      style="padding-top: 20px; padding-bottom: 20px"
+      class="flex flex-col"
+    >
       <LogoText text="案例投稿" />
       <div class="p-l-100 p-r-100 p-t-5 p-b-5">
         <a-steps :current="currentStep" size="small" @change="changeStep">
-          <a-step :disabled="true" :title="item.label" :key="item.name" v-for="item in stepData" />
+          <a-step
+            :disabled="true"
+            :title="item.label"
+            :key="item.name"
+            v-for="item in stepData"
+          />
         </a-steps>
       </div>
-      <custom-case :selected-tag="selectedTag" ref="customCaseRef"
-        v-show="currentStep === 1 && caseType === CaseType.Custom" />
+      <custom-case
+        :selected-tag="selectedTag"
+        ref="customCaseRef"
+        v-show="currentStep === 1 && caseType === CaseType.Custom"
+      />
+      <StepTwo
+        :selected-tag="selectedTag"
+        ref="stepTwoRef"
+        :form-modal="stepTwoData.formModal"
+        :form-data="stepTwoData.data"
+        v-show="getCurrentTypeTemplate() == 'StepTwo'"
+      />
       <div v-for="(item, index) in stepData">
-        <setp-one :selected-tag="selectedTag" :case-type="caseType" :group-data="groupData" @choose-tag="chooseTag"
-          @choose-custom-tag="chooseCustomTag" v-if="currentStep === index && item.name === 'setp-one'"></setp-one>
-        <SetpTwo @setTwoData="setTwoData" :selected-tag="selectedTag" ref="stepTwoRef"
-          :form-modal="stepTwoData.formModal" :form-data="stepTwoData.data"
-          v-show="currentStep === index && item.name === 'SetpTwo'" />
-        <div v-if="currentStep === index && item.name === 'finished'" class="step-3 text-center">
+        <setp-one
+          :selected-tag="selectedTag"
+          :case-type="caseType"
+          :group-data="groupData"
+          @choose-tag="chooseTag"
+          @choose-custom-tag="chooseCustomTag"
+          v-if="currentStep === index && item.name === 'setp-one'"
+        ></setp-one>
+
+        <div
+          v-if="currentStep === index && item.name === 'finished'"
+          class="step-3 text-center"
+        >
           <img class="p-t-6" src="../../assets/image/no-content.png" alt="" />
           <div class="text-5 p-t-4">已完成，等待审核中…</div>
         </div>
       </div>
 
-      <div class="text-center p-t-10" v-if="getCurrentTypeTemplate() !== 'SetpTwo'">
-        <a-button v-if="currentStep === stepData.length - 1" type="primary">完成</a-button>
+      <div class="text-center p-t-10">
+        <a-button v-if="currentStep === stepData.length - 1" @click="reloadPage" type="primary"
+          >完成</a-button
+        >
         <a-button v-else @click="gotoNext" type="primary">下一步</a-button>
       </div>
     </a-layout-content>

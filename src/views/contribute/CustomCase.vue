@@ -13,7 +13,7 @@ const formState = reactive<any>({
   case: {
     name: "",
     description: "",
-    authType: '1',
+    authType: "1",
     status: null,
   },
 });
@@ -37,9 +37,12 @@ const onFinish = async (values: any) => {
     location.reload();
   }
 };
+const createFormRef = ref<any>(null);
+const formValidate = async () => {
+  return await createFormRef.value.validate();
+};
 
-defineExpose({ formState });
-
+defineExpose({ formState, formValidate });
 </script>
 <template>
   <div class="p-8 w-100% authentication">
@@ -48,13 +51,20 @@ defineExpose({ formState });
         :model="formState"
         v-bind="layout"
         labelAlign="left"
+        ref="createFormRef"
         name="nest-case"
-        >
+      >
         <!-- @finish="onFinish" -->
         <a-form-item
           :colon="false"
           :name="['case', 'status']"
           label="案例库名称分类"
+          :rules="[
+            {
+              required: true,
+              message: '案例库名称分类不能为空',
+            },
+          ]"
         >
           <a-select v-model:value="formState.case.status">
             <a-select-option :value="1">分类1</a-select-option>
@@ -62,8 +72,18 @@ defineExpose({ formState });
             <a-select-option :value="3">分类3</a-select-option>
           </a-select>
         </a-form-item>
-        <a-form-item :colon="false" :name="['case', 'name']" label="案例库名称">
-            <a-input v-model:value="formState.case.name" />
+        <a-form-item
+          :colon="false"
+          :name="['case', 'name']"
+          label="案例库名称"
+          :rules="[
+            {
+              required: true,
+              message: '案例库名称不能为空',
+            },
+          ]"
+        >
+          <a-input v-model:value="formState.case.name" />
         </a-form-item>
         <a-form-item
           :colon="false"
@@ -71,7 +91,11 @@ defineExpose({ formState });
           label="案例库简介"
         >
           <!-- <a-input  v-model:value="formState.case.description" /> -->
-          <a-textarea v-model:value="formState.case.description" placeholder="案例库简介" :rows="4" />
+          <a-textarea
+            v-model:value="formState.case.description"
+            placeholder="案例库简介"
+            :rows="4"
+          />
         </a-form-item>
 
         <a-form-item

@@ -209,3 +209,16 @@ export const repositorygroup = {
     );
   },
 }
+
+export const caseApi = {
+  // {{URL}}/app/user/case/add
+  add: (data: any) => {
+    return request(
+      {
+        url: `/app/user/case/add`,
+        method: "post",
+        data
+      },
+    );
+  },
+}
