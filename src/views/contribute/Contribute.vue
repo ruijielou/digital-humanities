@@ -69,6 +69,7 @@ const stepTwoRef = ref<any>(null);
 const stepTwoData = reactive<any>({
   data: null,
   formModal: null,
+  submitData: null,
 });
 const gotoNext = async () => {
   if (currentStep.value === 1 && caseType.value === CaseType.Custom) {
@@ -120,6 +121,11 @@ const getStepOneLabels = async () => {
   }
 };
 
+const setTwoData = (data: any) => {
+  stepTwoData.submitData = { ...data };
+  console.log(stepTwoData.submitData, "=====stepTwoData");
+};
+
 onMounted(() => {
   getStepOneLabels();
 });
@@ -139,15 +145,16 @@ onMounted(() => {
       <div v-for="(item, index) in stepData">
         <setp-one :selected-tag="selectedTag" :case-type="caseType" :group-data="groupData" @choose-tag="chooseTag"
           @choose-custom-tag="chooseCustomTag" v-if="currentStep === index && item.name === 'setp-one'"></setp-one>
-        <SetpTwo :selected-tag="selectedTag" ref="stepTwoRef" :form-modal="stepTwoData.formModal"
-          :form-data="stepTwoData.data" v-show="currentStep === index && item.name === 'SetpTwo'" />
+        <SetpTwo @setTwoData="setTwoData" :selected-tag="selectedTag" ref="stepTwoRef"
+          :form-modal="stepTwoData.formModal" :form-data="stepTwoData.data"
+          v-show="currentStep === index && item.name === 'SetpTwo'" />
         <div v-if="currentStep === index && item.name === 'finished'" class="step-3 text-center">
           <img class="p-t-6" src="../../assets/image/no-content.png" alt="" />
           <div class="text-5 p-t-4">已完成，等待审核中…</div>
         </div>
       </div>
 
-      <div class="text-center p-t-10">
+      <div class="text-center p-t-10" v-if="getCurrentTypeTemplate() !== 'SetpTwo'">
         <a-button v-if="currentStep === stepData.length - 1" type="primary">完成</a-button>
         <a-button v-else @click="gotoNext" type="primary">下一步</a-button>
       </div>

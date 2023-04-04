@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch } from "vue";
 import { FormInstance, message } from "ant-design-vue";
+import { uuid } from "@/utils/config";
 import {
   LoadingOutlined,
   PlusOutlined,
@@ -8,7 +9,7 @@ import {
   MinusSquareOutlined,
 } from "@ant-design/icons-vue";
 import { StepTwoForm, MetaItem } from "./type";
-
+const emit = defineEmits(["setTwoData"]);
 const props = defineProps<{
   selectedTag: any[] | null;
   formModal?: any;
@@ -40,7 +41,7 @@ const formState = reactive<any>({
  */
 const layout = {
   labelCol: { span: 5 },
-  wrapperCol: { span: 18 },
+  wrapperCol: { span: 19 },
 };
 const config = {
   rules: [{ type: "string" as const, required: true, message: "不能为空" }],
@@ -76,7 +77,8 @@ const getData = () => {
 };
 
 const createItem = (id: string) => {
-  formState.caseData[id].push({ [`${id}_2`]: "" });
+  const uid = uuid();
+  formState.caseData[id][`${uid}`] = "";
 };
 const removeItem = (id: string, nodeId: string) => {
   delete formState.caseData[id][nodeId];
@@ -89,6 +91,10 @@ watch(
   }
 );
 
+const submit = () => {
+  emit("setTwoData", formState.caseData);
+};
+
 defineExpose({ formState });
 </script>
 <template>
@@ -96,6 +102,7 @@ defineExpose({ formState });
     <div class="group-item">
       <div class="group-item-title">
         <span class="line-title"><span> 所属案例库 </span> </span>
+        <span class="lines"></span>
       </div>
       <div class="group-tags">
         <span v-for="(tag, i) in selectedTag" :key="i" class="tag-item selected">{{ tag.name }}</span>
@@ -111,21 +118,24 @@ defineExpose({ formState });
                   {{ item.name }}
                 </span>
               </span>
+              <span class="lines"></span>
             </div>
             <template v-for="col in item.metaList">
-              <a-form-item class="w-33%" :colon="false" :name="['caseData', `${col.filed}`]" v-if="col.dataType === 14"
-                label=" " :rules="[
+              <div class="w-33% inline-block" v-if="col.dataType === 14">
+                <a-form-item :colon="false" :labelCol="{span: 0}" :wrapperCol="{span: 22}"
+                  :name="['caseData', `${col.filed}`]" :rules="[
                 {
                   required: col.isRequired == 1 ? true : false,
                   message: col.name + '不能为空',
                 },
               ]">
-                <a-select ref="select" class="w-100%" mode="multiple" :max-tag-count="1"
-                  v-model:value="formState.caseData[`${col.filed}`]">
-                  <a-select-option v-for="o in col.optList" :value="o.value"
-                    :placeholder="col.name">{{ o.text }}</a-select-option>
-                </a-select>
-              </a-form-item>
+                  <a-select ref="select" class="w-100%" mode="multiple" :max-tag-count="1"
+                    v-model:value="formState.caseData[`${col.filed}`]">
+                    <a-select-option v-for="o in col.optList" :value="o.value"
+                      :placeholder="col.name">{{ o.text }}</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </div>
               <a-form-item v-else :colon="false" :name="['caseData', `${col.filed}`]" :label="col.name" :rules="[
                 {
                   required: col.isRequired == 1 ? true : false,
@@ -145,7 +155,7 @@ defineExpose({ formState });
                 </a-checkbox-group>
                 <a-select ref="select" v-else-if="col.dataType === 7" class="w-100%"
                   v-model:value="formState.caseData[`${col.filed}`]">
-                  <a-select-option v-for="o in col.optList" :value="o">{{ o }}</a-select-option>
+                  <a-select-option v-for="o in col.optList" :value="o.value">{{ o.text }}</a-select-option>
                 </a-select>
                 <a-upload v-else-if="col.dataType === 9" class="w-100%"
                   v-model:file-list="formState.caseData[`${col.filed}`]" list-type="picture-card"
@@ -158,9 +168,9 @@ defineExpose({ formState });
                     <div class="ant-upload-text">Upload</div>
                   </div>
                 </a-upload>
-                <div class="flex m-b-2" v-else-if="col.dataType === 13"
+                <div class="flex" v-else-if="col.dataType === 13"
                   v-for="(key, tagIndex) in Object.keys(formState.caseData[`${col.filed}`])">
-                  <a-input v-model:value="formState.caseData[`${col.filed}`][key]" />
+                  <a-input class="m-b-3" v-model:value="formState.caseData[`${col.filed}`][key]" />
                   <span class="m-l-3 cursor-pointer" v-if="col.dataType === 13">
                     <plus-square-outlined @click="createItem(`${col.filed}`)" v-if="tagIndex === 0"
                       style="font-size: 28px; color: #d9d9d9" />
@@ -173,6 +183,9 @@ defineExpose({ formState });
             </template>
           </div>
         </template>
+        <div style="width: 100%;">
+          <a-button @click="submit" type="primary">下一步</a-button>
+        </div>
       </div>
     </a-form>
   </div>
@@ -186,6 +199,7 @@ defineExpose({ formState });
   }
   .group-item {
     order: 2;
+    width: 42%;
   }
 }
 .form-container::before,

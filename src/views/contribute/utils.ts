@@ -1,4 +1,5 @@
 // import { MetaItem } from "./type"
+import { uuid } from "@/utils/config"
 export const formatterFormInput = (props: any) => {
     if (!props.result) return { formModal: null }
     const data: any = {};
@@ -9,7 +10,8 @@ export const formatterFormInput = (props: any) => {
     for (const item of metaList) {
         if (item.dataType === 13) {
             //如果是输入多个值， 初始化为数组
-            data[item.filed] = { [`${item.filed}_1`]: '' };
+            const uid = uuid();
+            data[item.filed] = { [uid]: '' };
         } else if (item.dataType === 14 || item.dataType === 6) {
             data[item.filed] = [];
         } else {

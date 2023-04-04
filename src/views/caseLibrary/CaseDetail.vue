@@ -8,10 +8,10 @@ import {
   StarOutlined,
   MinusSquareOutlined,
   PlusSquareOutlined,
-  UserOutlined
+  UserOutlined,
 } from "@ant-design/icons-vue";
 const showDetailKey = ref<string[]>(["introduction"]);
-const comment = ref<string>('');
+const comment = ref<string>("");
 
 const projectDetialData = {
   introduction: {
@@ -66,7 +66,7 @@ const projectDetialData = {
     dataset7:
       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
   },
-  personnel:{
+  personnel: {
     key: "项目人员",
     projetcName: "欧洲时光机 （Time Machine",
     link: "https://www.timemach",
@@ -102,10 +102,7 @@ const changeCurrentKey = (key: string) => {
 <template>
   <div class="h-screen overflow-auto">
     <Header title="打开数字人文万花筒" bg-name="caselibrary-bg" />
-    <a-layout-content
-      style="padding: 20px 0; margin: 0 auto; width: 80%"
-      class="flex flex-col"
-    >
+    <a-layout-content style="padding: 20px 0; margin: 0 auto; width: 80%" class="flex flex-col">
       <div class="return-prev-page cursor-pointer" @click="$router.go(-1)">
         <arrow-left-outlined />
         <span class="p-l-2">返回</span>
@@ -128,18 +125,14 @@ const changeCurrentKey = (key: string) => {
           <div class="flex flex-col flex-1 m-r-18">
             <div class="group-item" v-for="(item, key) in projectDetialData">
               <div class="group-item-title flex justify-between">
-                <span class="line-title"
-                  ><span>{{ item.key }}</span></span
-                >
-                <span class="cursor-pointer" @click="changeCurrentKey(key)">
+                <span class="line-title"><span>{{ item.key }}</span></span>
+                <span class="lines"></span>
+                <span class="cursor-pointer m-l-2" @click="changeCurrentKey(key)">
                   <minus-square-outlined v-if="showDetailKey.includes(key)" />
                   <plus-square-outlined v-else />
                 </span>
               </div>
-              <div
-                class="detail-list transition-all"
-                v-show="showDetailKey.includes(key)"
-              >
+              <div class="detail-list transition-all" v-show="showDetailKey.includes(key)">
                 <div class="p-b-2 detail-item" v-for="(col, colkey) in item">
                   <span>{{
                     StepTwoForm[key].formCols.find((a:any) => a.key == colkey)
@@ -162,11 +155,8 @@ const changeCurrentKey = (key: string) => {
             <div class="m-b-10">
               <div>应用技术：</div>
               <div>
-                <a-tag
-                  v-for="k in 20"
-                  :color="k > 10 ? Colors[11] : Colors[10]"
-                  >{{ k > 10 ? `应用技术${k}` : `自定义标签${k}` }}</a-tag
-                >
+                <a-tag v-for="k in 20"
+                  :color="k > 10 ? Colors[11] : Colors[10]">{{ k > 10 ? `应用技术${k}` : `自定义标签${k}` }}</a-tag>
               </div>
             </div>
             <div class="m-b-10">
@@ -179,26 +169,16 @@ const changeCurrentKey = (key: string) => {
               <div>评论：</div>
               <div class="p-4 comment-list">
                 <div class="comment-input flex">
-                  <a-avatar
-                    shape="circle"
-                    :size="24"
-                    class="m-r-2"
-                    title="person"
-                  >
+                  <a-avatar shape="circle" :size="24" class="m-r-2" title="person">
                     <template #icon>
                       <UserOutlined />
                     </template>
                   </a-avatar>
                   <a-textarea v-model:value="comment" placeholder="Basic usage" :rows="4" />
-  
+
                 </div>
                 <div class="flex p-t-5">
-                    <a-avatar
-                    shape="circle"
-                    :size="24"
-                    class="m-r-2"
-                    title="person"
-                  >
+                  <a-avatar shape="circle" :size="24" class="m-r-2" title="person">
                     <template #icon>
                       <UserOutlined />
                     </template>
