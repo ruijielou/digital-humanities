@@ -63,11 +63,20 @@ export function commonUpload(formData: any) {
 
 
 // {{URL}}/app/user/repository/page
+// {{URL}}/app/user/repository/findRepositoryGroupIndex
 export const repository = {
   page: () => {
     return request(
       {
         url: `/app/user/repository/page`,
+        method: "get",
+      },
+    );
+  },
+  findRepositoryGroupIndex: () => {
+    return request(
+      {
+        url: `/app/user/repository/findRepositoryGroupIndex`,
         method: "get",
       },
     );
@@ -145,7 +154,14 @@ export const comment = {
       },
     );
   },
-  // {{URL}}/app/user/comment/insert
+  page: (id: string) => {
+    return request(
+      {
+        url: `/app/user/comment/page?contentId=${id}`,
+        method: "get",
+      },
+    );
+  },
   insert: (data: any) => {
     return request(
       {
@@ -228,10 +244,10 @@ export const caseApi = {
   findDetail: (id: string) => {
     return request(
       {
-        url: `/app/user/case/findDetail?id=${id}`,
+        url: `/app/user/case/findViewDetail?id=${id}`,
         method: "get",
       },
     );
   },
 }
-// {{URL}}/app/user/favorite/insert
+// {{URL}}/app/user/repository/findRepositoryGroupIndex

@@ -14,18 +14,18 @@ const props = withDefaults(
     hoverCard: false,
   }
 );
+
 </script>
 <template>
   <div
     class="m-5 w-100 flex flex-col card-item"
     :class="{ hoverCard: hoverCard }"
-    :style="{ backgroundImage: hoverCard ? `url(${card.image})` : '' }"
-   
+    :style="{ backgroundImage: hoverCard ? `url(${card.lastCover})` : '' }"
   >
     <div
       class="flex-1 card-image"
       :style="{
-        backgroundImage: `url(${card.image})`,
+        backgroundImage: `url(${card.cover})`,
         opacity: hoverCard ? 0 : 1,
       }"
     ></div>
@@ -74,10 +74,10 @@ const props = withDefaults(
       flex-direction: column;
       transition: all 0.3s linear;
       &::after {
-        content: '';
+        content: "";
         position: absolute;
         top: 0;
-        left:0;
+        left: 0;
         width: 100%;
         height: 16px;
         background: #f243d9;

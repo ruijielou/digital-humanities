@@ -22,9 +22,9 @@ const commentList = ref<any>([]);
 const route = useRoute();
 const formModel = reactive<any>({
   data: {},
-  projectDetialData: {},
-  tags: [],
-  technology: [],
+  metaGroupList: [],
+  labList: [],
+  technologyList: [],
   assPorject: [],
 });
 
@@ -107,7 +107,7 @@ const formModel = reactive<any>({
 //       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
 //   },
 // };
-// const projectDetialData =
+// const metaGroupList =
 const changeCurrentKey = (key: number) => {
   showDetailKey.value = showDetailKey.value.includes(key)
     ? showDetailKey.value.filter((item) => item != key)
@@ -118,41 +118,64 @@ const getDetail = async () => {
   if (!id) return;
   const { result } = await caseApi.findDetail(id as string);
 
-  formModel.projectDetialData = { ...result };
-  if (result) {
-    await getFormMeta(result.repositoryIds);
-  }
+  formModel.metaGroupList = [ ...result.metaGroupList ];
+  formModel.labList = [ ...result.labList ];
+  formModel.technologyList = [ ...result.technologyList ];
+  formModel.relateList = [ ...result.relateList ];
+  changeCurrentKey(formModel.metaGroupList[0].id);
+  // if (result) {
+  //   await getFormMeta(result.repositoryIds);
+  // }
 };
+interface TagItem {
+  value: number;
+  text: string;
+  ext?: string;
+}
+const tagList = ref<TagItem[]>([]);
 const getFormMeta = async (ids: string) => {
   if (!ids) return;
   const { result } = await repositorygroup.findAllFormInput(ids);
 
-  const filedIdList = [
-    ...result
-      .find((item) => item.name === "标签")
-      ?.metaList.map((a) => a.filed),
-  ];
-  const technologyList = [
-    ...result.find((item) => item.name === "技术").metaList.map((a) => a.filed),
-  ];
-  const assPorject = [
-    ...result
-      .find((item) => item.name === "关联项目")
-      ?.metaList.map((a) => a.filed),
-  ];
-  formModel.tags = [...filedIdList];
-  formModel.technology = [...technologyList];
-  formModel.assPorject = [...assPorject];
+  // const filedIdList = [
+  //   ...result
+  //     .find((item) => item.name === "标签")
+  //     ?.metaList.map((a) => a.filed),
+  // ];
+  // const tagList = [
+  //   ...result
+  //     .find((item) => item.name === "标签")
+  //     ?.metaList.optList,
+  // ];
+  // tagList.value = result
+  //   .find((item) => item.name === "标签")
+  //   .metaList.reduce((prev: any, cur: any) => {
+  //     return cur.optList ? [...prev, ...cur.optList] : [...prev];
+  //   }, []);
+  // const technologyList = [
+  //   ...result.find((item) => item.name === "技术").metaList.map((a) => a.filed),
+  // ];
+  // const assPorject = [
+  //   ...result
+  //     .find((item) => item.name === "关联项目")
+  //     ?.metaList.map((a) => a.filed),
+  // ];
+  
+  // formModel.labList = [...filedIdList];
+  // formModel.technology = [...technologyList];
+  // formModel.assPorject = [...assPorject];
 
-  formModel.data = [
-    ...result.filter(
-      (item) =>
-        item.name !== "标签" && item.name !== "技术" && item.name !== "关联项目"
-    ),
-  ];
-  changeCurrentKey(result[0].groupId);
+  // formModel.data = [
+  //   ...result.filter(
+  //     (item) =>
+  //       item.name !== "标签" && item.name !== "技术" && item.name !== "关联项目"
+  //   ),
+  // ];
+  // changeCurrentKey(result[0].groupId);
 };
-
+const getTagItem = (id) => {
+  return tagList.value.find(item => item.value == id)
+}
 getDetail();
 
 const publishComment = async () => {
@@ -177,7 +200,7 @@ const publishComment = async () => {
   }
 };
 const getCommentList = async () => {
-  const { result } = await comment.myPage();
+  const { result } = await comment.page(route.params.id as string);
   if (result) {
     commentList.value = [...result.records];
   }
@@ -213,9 +236,9 @@ const favorited = async (type: number) => {
       </div>
       <div class="p-t-5 lines-purple flex justify-between">
         <div>
-          <h2>{{ formModel.projectDetialData.name }}</h2>
+          <h2>{{ 'NAME'}}</h2>
           <p class="c-#999 text-3 m-t-2">
-            发布人：{{ formModel.projectDetialData.username }}
+            发布人：
           </p>
         </div>
         <div class="tool-group">
@@ -229,32 +252,32 @@ const favorited = async (type: number) => {
         </div>
         <div class="flex">
           <div class="flex flex-col flex-1 m-r-18">
-            <div class="group-item" v-for="item in formModel.data">
+            <div class="group-item" v-for="item in formModel.metaGroupList">
               <div class="group-item-title flex justify-between">
                 <span class="line-title"
-                  ><span>{{ item.name }}</span></span
+                  ><span>{{ item.title }}</span></span
                 >
                 <span class="lines"></span>
                 <span
                   class="cursor-pointer m-l-2"
-                  @click="changeCurrentKey(item.groupId)"
+                  @click="changeCurrentKey(item.id)"
                 >
                   <minus-square-outlined
-                    v-if="showDetailKey.includes(item.groupId)"
+                    v-if="showDetailKey.includes(item.id)"
                   />
                   <plus-square-outlined v-else />
                 </span>
               </div>
               <div
                 class="detail-list transition-all"
-                v-show="showDetailKey.includes(item.groupId)"
+                v-show="showDetailKey.includes(item.id)"
               >
                 <div
                   class="p-b-2 detail-item"
                   v-for="(col, colkey) in item.metaList"
                 >
-                  <span> {{ col.name }} </span>
-                  <span>{{ formModel.projectDetialData[col.filed] }}</span>
+                  <span> {{ col.title }}: </span>
+                  <span>{{ col.text }}</span>
                 </div>
               </div>
             </div>
@@ -263,33 +286,31 @@ const favorited = async (type: number) => {
             <div class="labels-container m-b-10">
               <div>标签：</div>
               <div>
-                <template v-for="(item, k) in formModel.tags">
+                <template v-for="(item, k) in formModel.labList">
                   <a-tag
-                    v-if="formModel.projectDetialData[item]"
-                    :color="Colors[k % 10]"
-                    >{{ formModel.projectDetialData[item] }}</a-tag
+                    :color="`#${item.ext}`"
+                    >{{ item.text }}</a-tag
                   >
                 </template>
               </div>
             </div>
             <div class="m-b-10">
               <div>应用技术：</div>
-              <div v-if="formModel.technology">
-                <template v-for="(item, k) in formModel.technology">
+              <div v-if="formModel.technologyList">
+                <template v-for="(item, k) in formModel.technologyList">
                   <a-tag
-                    v-if="formModel.projectDetialData[item]"
                     :color="k > 10 ? Colors[11] : Colors[10]"
-                    >{{ formModel.projectDetialData[item] }}</a-tag
+                    >{{ item.text }}</a-tag
                   >
                 </template>
               </div>
             </div>
             <div class="m-b-10">
               <div>关联项目：</div>
-              <div v-if="formModel.assPorject" class="p-4 bg-#f7f7f7">
-                <template v-for="(item, k) in formModel.assPorject">
+              <div v-if="formModel.relateList" class="p-4 bg-#f7f7f7">
+                <template v-for="(item, k) in formModel.relateList">
                   <p>
-                    {{ k + 1 }}. {{ formModel.projectDetialData[item] || "空" }}
+                    {{ k + 1 }}. {{ item.text }}
                   </p>
                 </template>
               </div>
