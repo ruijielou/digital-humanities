@@ -251,3 +251,15 @@ export const caseApi = {
   },
 }
 // {{URL}}/app/user/repository/findRepositoryGroupIndex
+// user/caseinfo/page
+// {{URL}}/app/user/caseinfo/page?pageSize=10&current=2
+export const caseinfo = {
+  page: () => {
+    return request(
+      {
+        url: `/app/user/caseinfo/page`,
+        method: "get",
+      },
+    );
+  },
+ }

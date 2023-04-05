@@ -7,6 +7,7 @@ import {
   SortDescendingOutlined,
   SortAscendingOutlined,
 } from "@ant-design/icons-vue";
+import {caseinfo} from "@/api"
 
 const selectContry = ref<string>("中国");
 const selectFiled = ref<string>("项目时间");
@@ -63,6 +64,7 @@ const sliderData = [
     ],
   },
 ];
+
 const columns = [
   {
     title: "名称",
@@ -70,78 +72,41 @@ const columns = [
   },
   {
     title: "国别",
-    dataIndex: "contry",
+    dataIndex: "country",
   },
   {
     title: "所属机构",
-    dataIndex: "organization",
+    dataIndex: "subOrg",
   },
   {
     title: "项目时间",
-    dataIndex: "projectTime",
+    dataIndex: "itemTime",
   },
 ];
-const dataSource = [
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 1,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 2,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 3,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 4,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 5,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 6,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 7,
-  },
-];
+
+const dataSource = ref<any>([]);
 
 const pagination = reactive<PageinationType>({
   total: 0,
   current: 1,
   pageSize: 10,
 });
+const getLibraryList = async () => {
+  const { result } = await caseinfo.page();
+  if (result) {
+    dataSource.value = [...result.records];
+  }
+};
+getLibraryList();
+
 </script>
 <template>
   <div class="h-screen overflow-auto">
-    <Header title="打开数字人文万花筒"  bg-name="caselibrary-bg" class="morelibrary-header" />
+    <Header
+      title="打开数字人文万花筒"
+      bg-name="caselibrary-bg"
+      class="morelibrary-header"
+    />
     <a-layout-content class="flex more-library-content">
       <div class="slider-box h-100%">
         <div class="slider-items" v-for="item in sliderData">
@@ -160,9 +125,11 @@ const pagination = reactive<PageinationType>({
       </div>
       <div class="flex-1 h-100% p-l-20 p-r-20">
         <div class="p-t-5 lines-purple">
-            <h2>GLAM融合案例库</h2>
+          <h2>GLAM融合案例库</h2>
         </div>
-        <p class="c-#999 text-3 m-t-2">简介：简介内容简介内容简介内容简介内容简</p>
+        <p class="c-#999 text-3 m-t-2">
+          简介：简介内容简介内容简介内容简介内容简
+        </p>
         <div class="result-container p-t-5">
           <div class="result-filter flex p-b-4">
             <a-dropdown type="primary">
@@ -208,17 +175,16 @@ const pagination = reactive<PageinationType>({
             :data-source="dataSource"
             :pagination="pagination"
             :loading="loading"
-            :scroll="{y: '45vh' }"
+            :scroll="{ y: '45vh' }"
           >
-            <template #bodyCell="{ column, text, index }">
-              <template v-if="column.dataIndex === 'name'"
-                >{{ index }} {{ text }}</template
+            <template #bodyCell="{ column, text, index, record }">
+              <div class="cursor-pointer c-#5b3df2" v-if="column.dataIndex === 'name'" @click="$router.push({name: 'CaseDetail',params: {id: record.id}})"
+                >{{ index + 1 }}. {{ text }}</div
               >
             </template>
           </a-table>
         </div>
       </div>
-      
     </a-layout-content>
     <Footer />
   </div>
