@@ -209,6 +209,15 @@ export const favoritegroup = {
       },
     );
   },
+  insert: (data: {authType: number,title: string}) => {
+    return request(
+      {
+        url: `/app/user/favoritegroup/insert`,
+        method: "post",
+        data
+      },
+    );
+  },
 }
 
 export const repositorygroup = {
@@ -256,10 +265,18 @@ export const caseApi = {
       },
     );
   },
-  findDetail: (id: string) => {
+  findViewDetail: (id: string) => {
     return request(
       {
         url: `/app/user/case/findViewDetail?id=${id}`,
+        method: "get",
+      },
+    );
+  },
+  findDetail: (id: string) => {
+    return request(
+      {
+        url: `/app/user/case/findDetail?id=${id}`,
         method: "get",
       },
     );

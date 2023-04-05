@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { Colors } from "../../utils/type";
+import CollectionModal from "@/components/CollectionGroup.vue";
 import {
   ArrowLeftOutlined,
   HeartOutlined,
@@ -10,14 +11,15 @@ import {
   UserOutlined,
 } from "@ant-design/icons-vue";
 import { useRoute } from "vue-router";
-import { caseApi, repositorygroup, comment, favorite } from "@/api";
-import { Modal } from "ant-design-vue";
+import { caseApi, comment, favorite } from "@/api";
+import { message } from "ant-design-vue";
 import { useUserStore } from "@/store/user";
 
 const { userInfo } = useUserStore();
 
 const showDetailKey = ref<number[]>([0]);
 const caseComment = ref<string>("");
+const CollectionRef = ref<any>(null);
 const commentList = ref<any>([]);
 const route = useRoute();
 const formModel = reactive<any>({
@@ -116,74 +118,26 @@ const changeCurrentKey = (key: number) => {
 const getDetail = async () => {
   const { id } = route.params;
   if (!id) return;
-  const { result } = await caseApi.findDetail(id as string);
+  const caseInfo = await caseApi.findDetail(id as string);
+  if (caseInfo && caseInfo.result) {
+    formModel.data = { ...caseInfo.result };
+  }
 
-  formModel.metaGroupList = [ ...result.metaGroupList ];
-  formModel.labList = [ ...result.labList ];
-  formModel.technologyList = [ ...result.technologyList ];
-  formModel.relateList = [ ...result.relateList ];
-  changeCurrentKey(formModel.metaGroupList[0].id);
-  // if (result) {
-  //   await getFormMeta(result.repositoryIds);
-  // }
-};
-interface TagItem {
-  value: number;
-  text: string;
-  ext?: string;
-}
-const tagList = ref<TagItem[]>([]);
-const getFormMeta = async (ids: string) => {
-  if (!ids) return;
-  const { result } = await repositorygroup.findAllFormInput(ids);
-
-  // const filedIdList = [
-  //   ...result
-  //     .find((item) => item.name === "标签")
-  //     ?.metaList.map((a) => a.filed),
-  // ];
-  // const tagList = [
-  //   ...result
-  //     .find((item) => item.name === "标签")
-  //     ?.metaList.optList,
-  // ];
-  // tagList.value = result
-  //   .find((item) => item.name === "标签")
-  //   .metaList.reduce((prev: any, cur: any) => {
-  //     return cur.optList ? [...prev, ...cur.optList] : [...prev];
-  //   }, []);
-  // const technologyList = [
-  //   ...result.find((item) => item.name === "技术").metaList.map((a) => a.filed),
-  // ];
-  // const assPorject = [
-  //   ...result
-  //     .find((item) => item.name === "关联项目")
-  //     ?.metaList.map((a) => a.filed),
-  // ];
+  const { result } = await caseApi.findViewDetail(id as string);
+  if (!result) return;
   
-  // formModel.labList = [...filedIdList];
-  // formModel.technology = [...technologyList];
-  // formModel.assPorject = [...assPorject];
-
-  // formModel.data = [
-  //   ...result.filter(
-  //     (item) =>
-  //       item.name !== "标签" && item.name !== "技术" && item.name !== "关联项目"
-  //   ),
-  // ];
-  // changeCurrentKey(result[0].groupId);
+  formModel.metaGroupList = result.metaGroupList && [...result.metaGroupList];
+  formModel.labList = result.labList && [...result.labList];
+  formModel.technologyList = result.technologyList && [...result.technologyList];
+  formModel.relateList = result.relateList && [...result.relateList];
+  changeCurrentKey(formModel.metaGroupList[0].id);
 };
-const getTagItem = (id) => {
-  return tagList.value.find(item => item.value == id)
-}
+
 getDetail();
 
 const publishComment = async () => {
   if (!caseComment.value) {
-    Modal.error({
-      title: () => "提示",
-      content: () => "评论内容不能为空",
-    });
+    message.error("评论内容不能为空");
     return;
   }
   const params = {
@@ -192,10 +146,7 @@ const publishComment = async () => {
   };
   const res = await comment.insert(params);
   if (res.success) {
-    Modal.success({
-      title: () => "提示",
-      content: () => "评论成功",
-    });
+    message.success("评论成功");
     getCommentList();
   }
 };
@@ -216,10 +167,7 @@ const favorited = async (type: number) => {
   };
   const res = await favorite.insert(params);
   if (res.success) {
-    Modal.success({
-      title: () => "提示",
-      content: () => res.message,
-    });
+    message.success(res.message);
   }
 };
 </script>
@@ -236,14 +184,16 @@ const favorited = async (type: number) => {
       </div>
       <div class="p-t-5 lines-purple flex justify-between">
         <div>
-          <h2>{{ 'NAME'}}</h2>
+          <h2>{{ formModel.data.name }}</h2>
           <p class="c-#999 text-3 m-t-2">
-            发布人：
+            发布人：{{ formModel.data.username }}
           </p>
         </div>
         <div class="tool-group">
           <a-button @click="favorited(1)"><heart-outlined />喜欢</a-button>
-          <a-button class="m-l-4"><star-outlined />收藏</a-button>
+          <a-button class="m-l-4" @click="CollectionRef.modalVisibility = true"
+            ><star-outlined />收藏</a-button
+          >
         </div>
       </div>
       <div class="detail-content">
@@ -287,10 +237,7 @@ const favorited = async (type: number) => {
               <div>标签：</div>
               <div>
                 <template v-for="(item, k) in formModel.labList">
-                  <a-tag
-                    :color="`#${item.ext}`"
-                    >{{ item.text }}</a-tag
-                  >
+                  <a-tag :color="`#${item.ext}`">{{ item.text }}</a-tag>
                 </template>
               </div>
             </div>
@@ -298,10 +245,9 @@ const favorited = async (type: number) => {
               <div>应用技术：</div>
               <div v-if="formModel.technologyList">
                 <template v-for="(item, k) in formModel.technologyList">
-                  <a-tag
-                    :color="k > 10 ? Colors[11] : Colors[10]"
-                    >{{ item.text }}</a-tag
-                  >
+                  <a-tag :color="k > 10 ? Colors[11] : Colors[10]">{{
+                    item.text
+                  }}</a-tag>
                 </template>
               </div>
             </div>
@@ -309,9 +255,7 @@ const favorited = async (type: number) => {
               <div>关联项目：</div>
               <div v-if="formModel.relateList" class="p-4 bg-#f7f7f7">
                 <template v-for="(item, k) in formModel.relateList">
-                  <p>
-                    {{ k + 1 }}. {{ item.text }}
-                  </p>
+                  <p>{{ k + 1 }}. {{ item.text }}</p>
                 </template>
               </div>
             </div>
@@ -378,62 +322,7 @@ const favorited = async (type: number) => {
       </div>
     </a-layout-content>
     <Footer />
-    <!-- <a-modal
-      v-model:visible="caseMoveModal"
-      class="border-bottom-search"
-      @ok="handleOk"
-    >
-      <template #title>
-        <div class="text-center">迁移</div>
-      </template>
-      <a-input>
-        <template #suffix>
-          <SearchOutlined />
-        </template>
-      </a-input>
-      <a-checkbox-group v-model:value="checkedMoves">
-        <div class="p-3">
-          <a-checkbox value="数字学术平台案例库">数字学术平台案例库</a-checkbox>
-        </div>
-        <div class="p-3">
-          <a-checkbox value="数字计划案例库">数字计划案例库</a-checkbox>
-        </div>
-        <div class="p-3">
-          <a-checkbox value="数字人文工具案例库">数字人文工具案例库</a-checkbox>
-        </div>
-        <div class="p-3">
-          <a-checkbox value="联盟、企业案例库">联盟、企业案例库</a-checkbox>
-        </div>
-      </a-checkbox-group>
-      <div class="p-3 flex items-center">
-        <a-radio v-model:checked="openCaseClasstify"></a-radio>
-        <a-select class="flex-1" v-model:value="caseClasstify">
-          <a-select-option :value="0">分类1</a-select-option>
-          <a-select-option :value="1">分类2</a-select-option>
-          <a-select-option :value="2">分类3</a-select-option>
-          <a-select-option :value="3">分类4</a-select-option>
-        </a-select>
-      </div>
-      <div class="p-3 p-l-9 flex items-center">
-        <a-input
-          class="flex-1 m-r-3"
-          v-model="caseName"
-          placeholder="案例库名称"
-        ></a-input>
-        <a-switch v-model:checked="openCaseName" />
-      </div>
-      <template #footer>
-        <div class="text-center">
-          <a-button
-            key="submit"
-            type="primary"
-            :loading="loading"
-            @click="handleOk"
-            >创建</a-button
-          >
-        </div>
-      </template>
-    </a-modal> -->
+    <CollectionModal @reload="getDetail" :content-id="$route.params.id" ref="CollectionRef" />
   </div>
 </template>
 <style lang="less">
