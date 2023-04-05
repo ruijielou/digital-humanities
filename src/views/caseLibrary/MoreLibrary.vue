@@ -7,12 +7,13 @@ import {
   SortDescendingOutlined,
   SortAscendingOutlined,
 } from "@ant-design/icons-vue";
-import {caseinfo} from "@/api"
+import { caseinfo, repositorygroup } from "@/api";
 
 const selectContry = ref<string>("中国");
 const selectFiled = ref<string>("项目时间");
 const loading = ref<boolean>(false);
-const sliderData = [
+const sliderData = ref<any>([])
+const datas = [
   {
     key: "numberGlam",
     name: "数字GLAM",
@@ -92,12 +93,36 @@ const pagination = reactive<PageinationType>({
   pageSize: 10,
 });
 const getLibraryList = async () => {
-  const { result } = await caseinfo.page();
+  const { result } = await caseinfo.page(
+    `pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
+  );
   if (result) {
     dataSource.value = [...result.records];
+    pagination.total = result.total;
+    pagination.current = result.current;
+    pagination.pageSize = result.size;
   }
 };
 getLibraryList();
+
+/**
+ * @description 分页改变
+ */
+const handleTableChange = async (newpager: any) => {
+  console.log(newpager);
+  pagination.total = newpager.total;
+  pagination.current = newpager.current;
+  pagination.pageSize = newpager.pageSize;
+  getLibraryList();
+};
+const getSlider = async () => {
+  const { result } = await repositorygroup.list();
+  if (result) {
+    console.log(result);
+    sliderData.value = [...result];
+  }
+};
+getSlider();
 
 </script>
 <template>
@@ -112,12 +137,12 @@ getLibraryList();
         <div class="slider-items" v-for="item in sliderData">
           <div class="p-l-10 p-t-10">
             <span class="line-title text-4.5 truncate">
-              <span>{{ item.name }}</span>
+              <span>{{ item.title }}</span>
             </span>
           </div>
           <div
             class="p-l-10 p-t-3 text-3.5 truncate cursor-pointer"
-            v-for="text in item.options"
+            v-for="text in item.repositoryList"
           >
             {{ text }}
           </div>
@@ -176,11 +201,21 @@ getLibraryList();
             :pagination="pagination"
             :loading="loading"
             :scroll="{ y: '45vh' }"
+            @change="handleTableChange"
           >
             <template #bodyCell="{ column, text, index, record }">
-              <div class="cursor-pointer c-#5b3df2" v-if="column.dataIndex === 'name'" @click="$router.push({name: 'CaseDetail',params: {id: record.id}})"
-                >{{ index + 1 }}. {{ text }}</div
+              <div
+                class="cursor-pointer c-#5b3df2"
+                v-if="column.dataIndex === 'name'"
+                @click="
+                  $router.push({
+                    name: 'CaseDetail',
+                    params: { id: record.id },
+                  })
+                "
               >
+                {{ index + 1 }}. {{ text }}
+              </div>
             </template>
           </a-table>
         </div>
@@ -190,11 +225,7 @@ getLibraryList();
   </div>
 </template>
 <style lang="less">
-// .morelibrary-header {
-//   background-image: url("../../assets/image/caselibrary-bg.png");
-// }
 .more-library-content {
-  //   min-height: calc(100vh - 20vh);
   .slider-box {
     width: 200px;
     height: calc(100vh - 20vh);

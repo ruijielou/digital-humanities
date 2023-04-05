@@ -92,6 +92,13 @@ const pagination = reactive<PageinationType>({
   pageSize: 10,
 });
 
+const handleTableChange = async (newpager: any) => {
+  pagination.total = newpager.total;
+  pagination.current = newpager.current;
+  pagination.pageSize = newpager.pageSize;
+  getMylike();
+};
+
 const getMylike = async () => {
   const { result } = await favorite.myPage(2);
   if (result) {
@@ -117,6 +124,7 @@ getMylike();
         :data-source="dataSource"
         :pagination="pagination"
         :loading="loading"
+        @change="handleTableChange"
       >
         <template #bodyCell="{ column, text, record }">
           <div

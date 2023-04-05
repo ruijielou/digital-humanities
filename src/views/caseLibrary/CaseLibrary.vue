@@ -7,18 +7,22 @@ import GLAM from "../../assets/image/GLAM.png";
 import { repository } from "@/api";
 
 const cardData = ref<any>([]);
-const firstCase = reactive<any>({
-  data: {}
-})
+const spinning = ref<boolean>(false);
+
 const getPage = async () => {
+  spinning.value = true;
   const { result } = await repository.findRepositoryGroupIndex();
   if (result) {
-    const firstCase = result.find(item => item.title === '特选案例') || {};
-    if(firstCase) {
+    const firstCase = result.find((item) => item.title === "特选案例") || {};
+    if (firstCase) {
       firstCase.isFirst = true;
     }
-    cardData.value = [{...firstCase}, ...result.filter(item => item.title !== '特选案例')];
+    cardData.value = [
+      { ...firstCase },
+      ...result.filter((item) => item.title !== "特选案例"),
+    ];
   }
+  spinning.value = false;
 };
 onMounted(() => {
   getPage();
@@ -26,6 +30,11 @@ onMounted(() => {
 </script>
 <template>
   <div class="h-screen overflow-auto">
+    <a-spin
+      v-if="spinning"
+      :spinning="spinning"
+      class="position-center h-100"
+    ></a-spin>
     <Header
       title="打开数字人文万花筒"
       bg-name="caselibrary-bg"
@@ -44,10 +53,7 @@ onMounted(() => {
           :style="{ color: index != 0 && index % 2 == 1 ? '#fff' : '' }"
           :text="item.title"
         />
-        <div
-          v-if="item.isFirst"
-          class="case-referred case-group flex m-auto"
-        >
+        <div v-if="item.isFirst" class="case-referred case-group flex m-auto">
           <Card
             class="flex-3"
             v-if="item.repositoryList[0]"
@@ -58,7 +64,7 @@ onMounted(() => {
               })
             "
             :no-show-number="true"
-            :card="{...item.repositoryList[0], code: 1}"
+            :card="{ ...item.repositoryList[0], code: 1 }"
           />
           <div class="flex-2 flex flex-col">
             <template v-for="(card, cardIndex) in item.repositoryList">
@@ -73,7 +79,7 @@ onMounted(() => {
                 "
                 :hoverCard="true"
                 :no-show-number="true"
-                :card="{...card, code: cardIndex + 1}"
+                :card="{ ...card, code: cardIndex + 1 }"
               />
             </template>
           </div>
@@ -81,7 +87,10 @@ onMounted(() => {
         <div v-else class="case-group flex m-auto">
           <Carousel>
             <template #cards>
-              <div class="h-100%" v-for="(card, cardIndex) in item.repositoryList">
+              <div
+                class="h-100%"
+                v-for="(card, cardIndex) in item.repositoryList"
+              >
                 <Card
                   @click="
                     $router.push({
@@ -97,74 +106,6 @@ onMounted(() => {
           </Carousel>
         </div>
       </div>
-
-      <!-- <div class="case-container" :style="{ backgroundImage: `url(${GLAM})` }">
-        <LogoText style="color: #fff" text="数字GLAM" />
-        <div class="case-group flex m-auto">
-          <Carousel>
-            <template #cards>
-              <div class="h-100%" v-for="item in cardData">
-                <Card
-                  @click="
-                    $router.push({
-                      name: 'CaseDetail',
-                      params: { id: item.id },
-                    })
-                  "
-                  style="width: 25vw; height: 55vh"
-                  :card="item"
-                />
-              </div>
-            </template>
-          </Carousel>
-        </div>
-      </div>
-      <div class="case-container">
-        <LogoText text="研究领域" />
-        <div class="case-group flex m-auto">
-          <Carousel :hover-dark="true">
-            <template #cards>
-              <div class="h-100%" v-for="item in cardData">
-                <Card
-                  @click="
-                    $router.push({
-                      name: 'CaseDetail',
-                      params: { id: item.id },
-                    })
-                  "
-                  style="width: 25vw; height: 55vh"
-                  :card="item"
-                />
-              </div>
-            </template>
-          </Carousel>
-        </div>
-      </div>
-
-      <div class="case-container" :style="{ backgroundImage: `url(${GLAM})` }">
-        <LogoText style="color: #fff" text="机构平台" />
-        <div class="case-group flex m-auto">
-          <Carousel>
-            <template #cards>
-              <div class="h-100%" v-for="item in cardData">
-                <Card style="width: 25vw; height: 55vh" :card="item" />
-              </div>
-            </template>
-          </Carousel>
-        </div>
-      </div>
-      <div class="case-container">
-        <LogoText text="基础设置" />
-        <div class="case-group flex m-auto">
-          <Carousel>
-            <template #cards>
-              <div class="h-100%" v-for="item in cardData">
-                <Card style="width: 25vw; height: 55vh" :card="item" />
-              </div>
-            </template>
-          </Carousel>
-        </div>
-      </div> -->
       <div class="more-container">
         <span class="border-btn" @click="$router.push({ name: 'MoreLibrary' })"
           >更多</span

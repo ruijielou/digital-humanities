@@ -87,6 +87,13 @@ const pagination = reactive<PageinationType>({
   current: 1,
   pageSize: 10,
 });
+const handleTableChange = async (newpager: any) => {
+  console.log(newpager);
+  pagination.total = newpager.total;
+  pagination.current = newpager.current;
+  pagination.pageSize = newpager.pageSize;
+//getdata there
+};
 const rowSelection = ref({
   checkStrictly: false,
   onChange: (selectedRowKeys: (string | number)[], selectedRows: any[]) => {
@@ -159,6 +166,7 @@ const handleOk = (e: MouseEvent) => {
         :pagination="pagination"
         :loading="loading"
         :row-selection="rowSelection"
+        @change="handleTableChange"
       >
         <template #bodyCell="{ column, text, index }">
             <!-- class="c-#5b3df2 cursor-pointer"  -->

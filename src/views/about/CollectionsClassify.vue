@@ -83,6 +83,13 @@ const pagination = reactive<PageinationType>({
   current: 1,
   pageSize: 10,
 });
+const handleTableChange = async (newpager: any) => {
+  console.log(newpager);
+  pagination.total = newpager.total;
+  pagination.current = newpager.current;
+  pagination.pageSize = newpager.pageSize;
+  getMyFavorite();
+};
 const dataSource = ref<any[]>([]);
 const getMyFavorite = async () => {
   const { result } = await favorite.myPage(1);
@@ -152,6 +159,7 @@ getMyFavorite();
         :data-source="dataSource"
         :pagination="pagination"
         :loading="loading"
+        @change="handleTableChange"
       >
         <template #bodyCell="{ column, text, index }">
           <template v-if="column.dataIndex === 'name'"

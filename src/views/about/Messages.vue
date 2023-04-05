@@ -90,8 +90,8 @@ const getComment = async () => {
   console.log(result);
   // TODO:暂未数据，没有对数据进行整理
   
-  commentData.value = commentDataMock;
-  // commentData.value = result?.records //调试数据的时候再放开代码
+  // commentData.value = commentDataMock;
+  commentData.value = result?.records //调试数据的时候再放开代码
 }
 
 watch(

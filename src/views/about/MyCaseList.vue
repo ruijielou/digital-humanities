@@ -38,6 +38,12 @@ const pagination = reactive<PageinationType>({
   current: 1,
   pageSize: 10,
 });
+const handleTableChange = async (newpager: any) => {
+  pagination.total = newpager.total;
+  pagination.current = newpager.current;
+  pagination.pageSize = newpager.pageSize;
+  getCaseData();
+};
 </script>
 <template>
   <a-layout-content
@@ -51,11 +57,14 @@ const pagination = reactive<PageinationType>({
         :data-source="dataSource"
         :pagination="pagination"
         :loading="loading"
+        @change="handleTableChange"
       >
         <template #bodyCell="{ column, record, text }">
           <div
             class="c-#5b3df2 cursor-pointer"
-            @click="$router.push({ name: 'CaseDetail', params:{id: record.id} })"
+            @click="
+              $router.push({ name: 'CaseDetail', params: { id: record.id } })
+            "
             v-if="column.dataIndex === 'name'"
           >
             {{ text }}

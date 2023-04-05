@@ -89,6 +89,13 @@ const pagination = reactive<PageinationType>({
   current: 1,
   pageSize: 10,
 });
+const handleTableChange = async (newpager: any) => {
+  pagination.total = newpager.total;
+  pagination.current = newpager.current;
+  pagination.pageSize = newpager.pageSize;
+//  getdata
+};
+
 const showSearchRes = ref<boolean>(false);
 const searchFormState: UnwrapRef<any> = reactive({
   name: '',
@@ -297,6 +304,7 @@ const searchFormState: UnwrapRef<any> = reactive({
           :data-source="dataSource"
           :pagination="pagination"
           :loading="loading"
+          @change="handleTableChange"
         >
           <template #bodyCell="{ column, text, index }">
             <template v-if="column.dataIndex === 'name'"

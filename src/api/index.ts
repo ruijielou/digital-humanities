@@ -61,10 +61,8 @@ export function commonUpload(formData: any) {
   );
 }
 
-
-// {{URL}}/app/user/repository/page
-// {{URL}}/app/user/repository/findRepositoryGroupIndex
 export const repository = {
+
   page: () => {
     return request(
       {
@@ -146,10 +144,19 @@ export const announcement = {
 }
 // {{URL}}/app/user/comment/myPage
 export const comment = {
-  myPage: () => {
+  myPage: (query?:string) => {
     return request(
       {
-        url: `/app/user/comment/myPage`,
+        url: `/app/user/comment/myPage?${query}`,
+        method: "get",
+      },
+    );
+  },
+  // {{URL}}/app/user/comment/del?id=2
+  del: (id: number) => {
+    return request(
+      {
+        url: `/app/user/comment/del?id=${id}`,
         method: "get",
       },
     );
@@ -205,6 +212,14 @@ export const favoritegroup = {
 }
 
 export const repositorygroup = {
+  list: () => {
+    return request(
+      {
+        url: `/app/user/repositorygroup/list`,
+        method: "get",
+      },
+    );
+  },
   findList: () => {
     return request(
       {
@@ -250,14 +265,12 @@ export const caseApi = {
     );
   },
 }
-// {{URL}}/app/user/repository/findRepositoryGroupIndex
-// user/caseinfo/page
-// {{URL}}/app/user/caseinfo/page?pageSize=10&current=2
+
 export const caseinfo = {
-  page: () => {
+  page: (query?:string) => {
     return request(
       {
-        url: `/app/user/caseinfo/page`,
+        url: `/app/user/caseinfo/page?${query}`,
         method: "get",
       },
     );
