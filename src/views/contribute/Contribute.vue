@@ -8,7 +8,9 @@ import CustomCase from "./CustomCase.vue";
 import { CaseType } from "./type";
 import { repository, repositorygroup, caseApi } from "@/api";
 import { formatterFormInput } from "./utils";
-
+type AnyObject<T = any> = {
+  [key: string]: T | any;
+};
 const customeStep = [
   { label: "选择案例库", name: "setp-one" },
   { label: "自定义案例库", name: "CustomCase" },
@@ -27,13 +29,13 @@ const stepData = computed(() => {
     : [...systemStep];
 }) as any;
 
-const selectedTag = ref<any[]>([]);
+const selectedTag = ref<AnyObject[]>([]);
 const currentStep = ref<number>(0);
 const caseType = ref<CaseType>(CaseType.System);
 
 const getCurrentTypeTemplate = () => {
   return stepData.value.find(
-    (item: any, index: number) => index === currentStep.value
+    (item: AnyObject, index: number) => index === currentStep.value
   ).name;
 };
 
@@ -66,7 +68,7 @@ const stepTwoData = reactive<any>({
 
 const gotoNext = async () => {
   if (currentStep.value === 1 && caseType.value === CaseType.Custom) {
-    const caseData: any = await customCaseRef.value?.formValidate();
+    const caseData: AnyObject = await customCaseRef.value?.formValidate();
     if (!caseData.case) return;
     const caseState = customCaseRef.value.formState;
     const res = await repository.insert({ ...caseState.case });
@@ -98,8 +100,8 @@ const gotoNext = async () => {
   currentStep.value = currentStep.value + 1;
 };
 
-const formatterStepTwoData = (data: any) => {
-  const newFormData: any = {};
+const formatterStepTwoData = (data: AnyObject) => {
+  const newFormData: AnyObject = {};
   for (const key in data) {
     if (data[key] && data[key] != "") {
       if (data[key].constructor == Array) {

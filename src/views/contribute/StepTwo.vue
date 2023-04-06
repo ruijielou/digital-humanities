@@ -10,21 +10,20 @@ import {
   CloseCircleOutlined,
 } from "@ant-design/icons-vue";
 import { commonUpload } from "@/api";
-// import { StepTwoForm, MetaItem } from "./type";
-// const emit = defineEmits(["setTwoData"]);
+
 const props = defineProps<{
   selectedTag: any[] | null;
   formModal?: any;
   formData: any;
 }>();
 
+const fileList = ref<any>([]);
 const formRef = ref<any>(null);
 const loading = ref<boolean>(false);
 const formState = reactive<any>({
   caseData: {},
 });
 
-// metaList
 // metaList中 dataType:
 // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接
 /**
@@ -44,9 +43,7 @@ const layout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 19 },
 };
-// const config = {
-//   rules: [{ type: "string" as const, required: true, message: "不能为空" }],
-// };
+
 const initForm = () => {
   if (props.formModal) {
     formState.caseData = { ...props.formModal };

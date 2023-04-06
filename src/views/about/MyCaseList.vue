@@ -5,7 +5,7 @@ import { caseApi } from "@/api";
 // case/myPage
 
 const loading = ref<boolean>(false);
-const dataSource = ref<any>([]);
+const dataSource = ref<{[key:string]: string}[]>([]);
 const columns = [
   {
     title: "名称",

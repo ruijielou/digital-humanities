@@ -72,7 +72,7 @@ defineExpose({ modalVisibility });
         <a-radio :value="item.id">{{ item.title }}</a-radio>
       </div>
       <div class="p-3 flex items-center">
-        <a-radio :value='999'>
+        <a-radio value='999'>
           <a-input class="flex-1 m-r-3" v-model:value="collectionFloderName" placeholder="案例库名称"></a-input>
         </a-radio>
         <a-switch v-model:checked="isOpen">公开</a-switch>
@@ -80,7 +80,7 @@ defineExpose({ modalVisibility });
     </a-radio-group>
     <template #footer>
       <div class="text-center">
-        <a-button type="primary" :loading="loading" v-if="checkedFloder === 999" @click="createGroup">创建</a-button>
+        <a-button type="primary" :loading="loading" v-if="checkedFloder == '999'" @click="createGroup">创建</a-button>
         <a-button type="primary" :loading="loading" v-else @click="submitCollection">确定</a-button>
       </div>
     </template>
