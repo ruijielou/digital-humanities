@@ -6,7 +6,6 @@ import { Modal, message } from "ant-design-vue";
 
 const modalVisibility = ref<boolean>(false);
 const isOpen = ref<boolean>(false); //是否为公开
-const isCreateNew = ref<boolean>(false); //是否为新建
 const loading = ref<boolean>(false);
 const checkedFloder = ref<string>("");
 const collectionGroup = ref<any>([]);
@@ -31,7 +30,7 @@ const createGroup = async () => {
     return;
   }
   const res = await favoritegroup.insert({
-    authType: 1,
+    authType: isOpen.value ? 1 : 3,
     title: collectionFloderName.value,
   });
   if (res.success) {
@@ -68,41 +67,21 @@ defineExpose({ modalVisibility });
         <SearchOutlined />
       </template>
     </a-input>
-    <a-radio-group
-      v-model:value="checkedFloder"
-      v-if="collectionGroup.length"
-    >
+    <a-radio-group v-model:value="checkedFloder" v-if="collectionGroup.length">
       <div class="p-3" v-for="item in collectionGroup">
         <a-radio :value="item.id">{{ item.title }}</a-radio>
       </div>
+      <div class="p-3 flex items-center">
+        <a-radio :value='999'>
+          <a-input class="flex-1 m-r-3" v-model:value="collectionFloderName" placeholder="案例库名称"></a-input>
+        </a-radio>
+        <a-switch v-model:checked="isOpen">公开</a-switch>
+      </div>
     </a-radio-group>
-    <div class="p-3 flex items-center">
-      <a-radio v-model="isCreateNew"></a-radio>
-      <a-input
-        class="flex-1 m-r-3"
-        v-model:value="collectionFloderName"
-        placeholder="案例库名称"
-      ></a-input>
-      {{ collectionFloderName }}
-      <a-switch v-model:checked="isOpen">公开</a-switch>
-    </div>
     <template #footer>
       <div class="text-center">
-        <a-button
-          key="submit"
-          type="primary"
-          :loading="loading"
-          @click="createGroup"
-          >创建</a-button
-        >
-        <a-button
-          key="submit"
-          type="primary"
-          :loading="loading"
-          v-if="checkedFloder"
-          @click="submitCollection"
-          >确定</a-button
-        >
+        <a-button type="primary" :loading="loading" v-if="checkedFloder === 999" @click="createGroup">创建</a-button>
+        <a-button type="primary" :loading="loading" v-else @click="submitCollection">确定</a-button>
       </div>
     </template>
   </a-modal>
