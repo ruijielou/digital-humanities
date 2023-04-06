@@ -125,7 +125,6 @@ const getTwoFormInput = async () => {
 
   if (result) {
     const { formModal } = formatterFormInput({ result });
-
     stepTwoData.formModal = { ...formModal };
     stepTwoData.data = [...result];
   }
