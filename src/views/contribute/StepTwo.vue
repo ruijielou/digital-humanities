@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch } from "vue";
 import { FormInstance, message } from "ant-design-vue";
-import { uuid } from "@/utils/config";
+import { getBase64 } from "@/utils/config";
 import {
   LoadingOutlined,
   PlusOutlined,
   PlusSquareOutlined,
   MinusSquareOutlined,
 } from "@ant-design/icons-vue";
+import { commonUpload } from "@/api";
 // import { StepTwoForm, MetaItem } from "./type";
 // const emit = defineEmits(["setTwoData"]);
 const props = defineProps<{
@@ -58,31 +59,56 @@ const formValidate = async () => {
   return await formRef.value.validate();
 };
 
-
-const handleChange = (info:any, key:any) => {
+/**
+ * 上传图片
+ */
+let uploadFile: any = null;
+let uploadFileCurrentKey = "";
+const changeImg = (info: any, key: any) => {
+  uploadFile = info.file;
+  uploadFileCurrentKey = key;
   if (info.file.status === "uploading") {
     loading.value = true;
     return;
   }
   if (info.file.status === "done") {
     if (info.file.response.data) {
-      formState.caseData[key] = info.file.response.data[0];
+      // getBase64(info.file.originFileObj, (base64Url: string) => {
+      //   formState.caseData[key] = base64Url;
+      //   loading.value = false;
+      // });
     }
   }
   if (info.file.status === "error") {
     loading.value = false;
-    message.error("upload error");
+    message.error("上传文件出错");
   }
 };
 
-const createItem = (id: string) => {
-  const uid = uuid();
-  formState.caseData[id][`${uid}`] = "";
+const customRequest = async () => {
+  const formData: any = new FormData();
+  const file: any = new File([uploadFile], uploadFile.name, {
+    type: uploadFile.type,
+  });
+  file.uid = Date.now();
+  formData.append("biz", "temp");
+  formData.append("file", file);
+
+  const res = await commonUpload(formData);
+  console.log(res);
+  if (res.success) {
+    formState.caseData[uploadFileCurrentKey] = res?.message;
+  }
 };
 
-const removeItem = (id: string, nodeId: string) => {
-  delete formState.caseData[id][nodeId];
-};
+// const createItem = (id: string) => {
+//   const uid = uuid();
+//   formState.caseData[id][`${uid}`] = "";
+// };
+
+// const removeItem = (id: string, nodeId: string) => {
+//   delete formState.caseData[id][nodeId];
+// };
 
 watch(
   () => props.formData,
@@ -91,9 +117,9 @@ watch(
   }
 );
 
-// const submit = () => {
-//   emit("setTwoData", formState.caseData);
-// };
+const selectMutipleChange = (value: []) => {
+  console.log(`selected ${value}`);
+};
 
 defineExpose({ formState, formValidate });
 </script>
@@ -107,10 +133,11 @@ defineExpose({ formState, formValidate });
       <div class="group-tags">
         <span v-for="(tag, i) in selectedTag" :key="i" class="tag-item selected">{{ tag.name }}</span>
       </div>
+      {{formState.caseData}}
     </div>
     <a-form class="flex" labelAlign="left" v-bind="layout" ref="formRef" :model="formState">
       <div class="form-container flex-1" style="padding-right: 3em;" v-if="formData">
-        <template v-for="(item, key) in formData" >
+        <template v-for="(item, key) in formData">
           <div class="group-item" v-if="key == 0">
             <div class="group-item-title">
               <span class="line-title">
@@ -157,18 +184,23 @@ defineExpose({ formState, formValidate });
                   v-model:value="formState.caseData[`${col.filed}`]">
                   <a-select-option v-for="o in col.optList" :value="o.value">{{ o.text }}</a-select-option>
                 </a-select>
-                <a-upload v-else-if="col.dataType === 9" class="w-100%"
+                <a-upload v-else-if="col.dataType === 9" class="w-100%" :customRequest="customRequest"
                   v-model:file-list="formState.caseData[`${col.filed}`]" list-type="picture-card"
-                  :show-upload-list="false" @change="handleChange($event, `${col.filed}`)">
-                  <img v-if="formState.user.headUrl" width="100" height="100" :src="formState.caseData[`${col.filed}`]"
-                    alt="avatar" />
+                  :show-upload-list="false" @change="changeImg($event, `${col.filed}`)" :maxCount="1">
+                  {{formState.caseData[`${col.filed}`]}}
+                  <img v-if="formState.caseData[`${col.filed}`].length" width="100" height="100"
+                    :src="formState.caseData[`${col.filed}`]" alt="avatar" />
                   <div v-else>
                     <loading-outlined v-if="loading"></loading-outlined>
                     <plus-outlined v-else></plus-outlined>
-                    <div class="ant-upload-text">Upload</div>
+                    <div class="ant-upload-text">上传</div>
                   </div>
                 </a-upload>
-                <div class="flex" v-else-if="col.dataType === 13"
+                <a-select v-else-if="col.dataType === 13" v-model:value="formState.caseData[`${col.filed}`]" mode="tags"
+                  style="width: 100%" :token-separators="[',']" @change="selectMutipleChange">
+                  <a-select-option v-for="o in col.optList" :value="o.value">{{ o.text }}</a-select-option>
+                </a-select>
+                <!-- <div class="flex" v-else-if="col.dataType === 13"
                   v-for="(key, tagIndex) in Object.keys(formState.caseData[`${col.filed}`])">
                   <a-input class="m-b-3" v-model:value="formState.caseData[`${col.filed}`][key]" />
                   <span class="m-l-3 cursor-pointer" v-if="col.dataType === 13">
@@ -177,8 +209,9 @@ defineExpose({ formState, formValidate });
                     <minus-square-outlined @click="removeItem(col.filed, key)" v-else
                       style="font-size: 28px; color: #d9d9d9" />
                   </span>
-                </div>
+                </div> -->
                 <a-input v-else v-model:value="formState.caseData[`${col.filed}`]" />
+                {{formState.caseData[`${col.filed}`]}}
               </a-form-item>
             </template>
           </div>
@@ -223,7 +256,7 @@ defineExpose({ formState, formValidate });
                 <a-input-number v-else-if="col.dataType === 4" v-model:value="formState.caseData[`${col.filed}`]" />
                 <a-radio-group v-else-if="col.dataType === 5" v-model:value="formState.caseData[`${col.filed}`]"
                   :options="col.optList" />
-                <!-- // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 -->
+                <!-- // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 13.可添加 -->
                 <a-checkbox-group v-else-if="col.dataType === 6" v-model:value="formState.caseData[`${col.filed}`]"
                   :options="col.optList">
 
@@ -232,18 +265,22 @@ defineExpose({ formState, formValidate });
                   v-model:value="formState.caseData[`${col.filed}`]">
                   <a-select-option v-for="o in col.optList" :value="o.value">{{ o.text }}</a-select-option>
                 </a-select>
-                <a-upload v-else-if="col.dataType === 9" class="w-100%"
+                <a-upload v-else-if="col.dataType === 9" class="w-100%" :customRequest="customRequest"
                   v-model:file-list="formState.caseData[`${col.filed}`]" list-type="picture-card"
-                  :show-upload-list="false" @change="handleChange($event, `${col.filed}`)">
-                  <img v-if="formState.user.headUrl" width="100" height="100" :src="formState.caseData[`${col.filed}`]"
-                    alt="avatar" />
+                  :show-upload-list="false" @change="changeImg($event, `${col.filed}`)" :maxCount="1">
+                  <img v-if="formState.caseData[`${col.filed}`].length" width="100" height="100"
+                    :src="formState.caseData[`${col.filed}`]" alt="avatar" />
                   <div v-else>
                     <loading-outlined v-if="loading"></loading-outlined>
                     <plus-outlined v-else></plus-outlined>
-                    <div class="ant-upload-text">Upload</div>
+                    <div class="ant-upload-text">上传</div>
                   </div>
                 </a-upload>
-                <div class="flex" v-else-if="col.dataType === 13"
+                <a-select v-else-if="col.dataType === 13" v-model:value="formState.caseData[`${col.filed}`]" mode="tags"
+                  style="width: 100%" :token-separators="[',']" @change="selectMutipleChange">
+                  <a-select-option v-for="o in col.optList" :value="o.value">{{ o.text }}</a-select-option>
+                </a-select>
+                <!-- <div class="flex" v-else-if="col.dataType === 13"
                   v-for="(key, tagIndex) in Object.keys(formState.caseData[`${col.filed}`])">
                   <a-input class="m-b-3" v-model:value="formState.caseData[`${col.filed}`][key]" />
                   <span class="m-l-3 cursor-pointer" v-if="col.dataType === 13">
@@ -252,7 +289,7 @@ defineExpose({ formState, formValidate });
                     <minus-square-outlined @click="removeItem(col.filed, key)" v-else
                       style="font-size: 28px; color: #d9d9d9" />
                   </span>
-                </div>
+                </div> -->
                 <a-input v-else v-model:value="formState.caseData[`${col.filed}`]" />
               </a-form-item>
             </template>
@@ -265,7 +302,7 @@ defineExpose({ formState, formValidate });
 <style lang="less">
 .form-container {
   display: flex;
- flex-direction: column;
+  flex-direction: column;
 
   // flex-flow: column wrap;
   // .group-item:nth-child(1) {
