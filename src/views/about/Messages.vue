@@ -83,7 +83,7 @@ onMounted(() => {
     >
       <div
         class="return-prev-page cursor-pointer absolute z-2"
-        @click="$router.go(-1)"
+        @click="$router.push({name: 'About'})"
       >
         <arrow-left-outlined />
         <span class="p-l-2">个人中心</span>
