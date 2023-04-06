@@ -153,7 +153,8 @@ onMounted(() => {
       <LogoText text="案例投稿" />
       <div class="p-l-100 p-r-100 p-t-5 p-b-5">
         <a-steps :current="currentStep" size="small" @change="changeStep">
-          <a-step :disabled="true" :title="item.label" :key="item.name" v-for="item in stepData" />
+          <a-step :disabled="currentStep == stepData.length-1 ? true : false" :title="item.label" :key="item.name"
+            v-for="item in stepData" />
         </a-steps>
       </div>
       <custom-case :selected-tag="selectedTag" ref="customCaseRef"
