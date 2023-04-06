@@ -73,7 +73,6 @@ defineExpose({ modalVisibility });
       v-if="collectionGroup.length"
     >
       <div class="p-3" v-for="item in collectionGroup">
-        <!-- <a-checkbox :value="item.id">{{ item.title }}</a-checkbox> -->
         <a-radio :value="item.id">{{ item.title }}</a-radio>
       </div>
     </a-radio-group>
