@@ -5,6 +5,15 @@ export interface CategoryItem {
   type: number;
 }
 
+export enum BooleanStatus {
+  True = 1,
+  False = 2
+}
+export enum LikeStatus {
+  Favorite = 1,
+  Like = 2
+}
+
 export enum CategoryType {
   CaseLibrary, //案例库
   CaseSpectrum, //案例谱

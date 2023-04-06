@@ -69,7 +69,7 @@ const option = reactive<any>({
 });
 const loading = ref<boolean>(false);
 const cropper = ref<any>(null);
-let uploadFile:any = null;
+let uploadFile: any = null;
 const uploadImg = (e: any, num: number) => {
   //上传图片
   uploadFile = e.target.files[0];
@@ -101,10 +101,10 @@ const handleOk = () => {
     file.uid = Date.now();
     formData.append("biz", "temp");
     formData.append("file", file);
-  
+
     const res = await commonUpload(formData);
     console.log(res);
-    if(res.success) {
+    if (res.success) {
       formState.user.avatar = res?.message;
       visibleUploadImg.value = false;
     }

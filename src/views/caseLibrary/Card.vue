@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CardFooter from "./CardFooter.vue";
 import type { CardType } from "./type";
-// const card
+
 const props = withDefaults(
   defineProps<{
     card: CardType;
@@ -20,12 +20,12 @@ const props = withDefaults(
   <div
     class="m-5 w-100 flex flex-col card-item"
     :class="{ hoverCard: hoverCard }"
-    :style="{ backgroundImage: hoverCard ? `url(${card.lastCover})` : '' }"
+    :style="{ backgroundImage: hoverCard ? `url(${card?.lastCover})` : '' }"
   >
     <div
       class="flex-1 card-image"
       :style="{
-        backgroundImage: `url(${card.cover})`,
+        backgroundImage: `url(${card.cover || '/src/assets/image/card.png'})`,
         opacity: hoverCard ? 0 : 1,
       }"
     ></div>

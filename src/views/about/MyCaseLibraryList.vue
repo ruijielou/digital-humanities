@@ -2,7 +2,10 @@
 import { ref, reactive } from "vue";
 import { ArrowLeftOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import type { PageinationType } from "../../utils/type";
+import { caseinfo } from "@/api";
+import { useRoute } from "vue-router"
 
+const route = useRoute();
 const caseMoveModal = ref<boolean>(false);
 const openStatus = ref<number>(1);
 const caseClasstify = ref<number>(0);
@@ -18,70 +21,19 @@ const columns = [
   },
   {
     title: "国别",
-    dataIndex: "contry",
+    dataIndex: "country",
   },
   {
     title: "所属机构",
-    dataIndex: "organization",
+    dataIndex: "subOrg",
   },
   {
     title: "项目时间",
-    dataIndex: "projectTime",
+    dataIndex: "createTime",
   },
 ];
 
-const dataSource = [
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 1,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 2,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 3,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 4,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 5,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 6,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 7,
-  },
-];
-
+const dataSource = ref<{ [key: string]: any }[]>([]);
 const pagination = reactive<PageinationType>({
   total: 0,
   current: 1,
@@ -92,8 +44,32 @@ const handleTableChange = async (newpager: any) => {
   pagination.total = newpager.total;
   pagination.current = newpager.current;
   pagination.pageSize = newpager.pageSize;
-//getdata there
+  getLibraryList();
 };
+const getLibraryList = async () => {
+  const { result } = await caseinfo.page(
+    `epositoryId=${route.params.id}&&pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
+  );
+  if (result) {
+    dataSource.value = [...result.records];
+    pagination.total = result.total;
+    pagination.current = result.current;
+    pagination.pageSize = result.size;
+  }
+};
+// const getCaseList = async () => {
+//   const { result } = await repository.page(
+//     `pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
+//   );
+//   if (result) {
+//     dataSource.value = [...result.records];
+//     pagination.total = result.total;
+//     pagination.current = result.current;
+//     pagination.pageSize = result.size;
+//   }
+// };
+getLibraryList();
+
 const rowSelection = ref({
   checkStrictly: false,
   onChange: (selectedRowKeys: (string | number)[], selectedRows: any[]) => {
@@ -169,7 +145,7 @@ const handleOk = (e: MouseEvent) => {
         @change="handleTableChange"
       >
         <template #bodyCell="{ column, text, index }">
-            <!-- class="c-#5b3df2 cursor-pointer"  -->
+          <!-- class="c-#5b3df2 cursor-pointer"  -->
           <div v-if="column.dataIndex === 'name'">
             {{ text }}
           </div>

@@ -33,6 +33,11 @@ export default [
     component: () => import("../views/caseLibrary/CaseDetail.vue"),
   },
   {
+    path: "/mycasedetail/:id",
+    name: "MyCaseDetail",
+    component: () => import("../views/caseLibrary/CaseDetail.vue"),
+  },
+  {
     path: "/casespectrum",
     name: "CaseSpectrum",
     component: () => import("../views/caseSpectrum/CaseSpectrum.vue"),
@@ -79,8 +84,9 @@ export default [
         component: () => import("../views/about/MyCaseList.vue")
       },
       {
-        path: "myCaseLibraryList",
+        path: "myCaseLibraryList/:id?",
         name: 'MyCaseLibraryList',
+        meta: {active: 'SubmissionManage'},
         component: () => import("../views/about/MyCaseLibraryList.vue")
       },
       {

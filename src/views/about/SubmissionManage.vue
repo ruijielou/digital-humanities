@@ -4,11 +4,19 @@ import Card from "../caseLibrary/Card.vue";
 import { cardData } from "../caseLibrary/mock";
 import Carousel from "../caseLibrary/Carousel.vue";
 import MyCaseList from "./MyCaseList.vue";
+import {repository} from "@/api"
 enum CaseType {
   MyCase, //我的案例
   CaseLibrary, //我的案例库
 }
 const currentType = ref<number>(CaseType.CaseLibrary);
+
+const cardData = ref<any>([])
+const getCaseData = async () => {
+  const {result } = await repository.myPage();
+  cardData.value = result;
+}
+getCaseData();
 
 </script>
 <template>
@@ -44,36 +52,18 @@ const currentType = ref<number>(CaseType.CaseLibrary);
     <MyCaseList/>
     </div>
     <template v-else>
-      <div class="case-container p-t-4">
+      <div class="case-container p-t-4" v-for="item in cardData">
         <span class="line-title text-4.5">
-          <span>数字GLAM</span>
+          <span>{{item.title}}</span>
         </span>
         <div class="case-group">
           <Carousel class="arrowTop">
             <template #cards>
-              <div class="h-100%" v-for="item in cardData">
+              <div class="h-100%" v-for="card in item.repositoryList">
                 <Card
-                  @click="$router.push({ name: 'MyCaseLibraryList' })"
+                  @click="$router.push({ name: 'MyCaseLibraryList', params: {id: card.id} })"
                   style="width: 22vw; height: 50vh"
-                  :card="item"
-                />
-              </div>
-            </template>
-          </Carousel>
-        </div>
-      </div>
-      <div class="case-container p-t-4">
-        <span class="line-title text-4.5">
-          <span>机构平台</span>
-        </span>
-        <div class="case-group">
-          <Carousel class="arrowTop">
-            <template #cards>
-              <div class="h-100%" v-for="item in [cardData[0], cardData[1]]">
-                <Card
-                  @click="$router.push({ name: 'MyCaseLibraryList' })"
-                  style="width: 22vw; height: 50vh"
-                  :card="item"
+                  :card="card"
                 />
               </div>
             </template>

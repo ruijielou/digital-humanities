@@ -1,5 +1,6 @@
 import { request } from "@/utils/request";
 import type { UserInfo } from "@/utils/type"
+import type { MessageType } from "@/views/about/type"
 
 /**
  * @description 通过用户名登录
@@ -62,11 +63,18 @@ export function commonUpload(formData: any) {
 }
 
 export const repository = {
-
-  page: () => {
+  myPage: () => {
     return request(
       {
-        url: `/app/user/repository/page`,
+        url: `/app/user/repository/myPage`,
+        method: "get",
+      },
+    );
+  },
+  page: (query: string) => {
+    return request(
+      {
+        url: `/app/user/repository/page?${query}`,
         method: "get",
       },
     );
@@ -124,10 +132,10 @@ export const dhuuser = {
 }
 // {{URL}}/app/user/announcement/myPage
 export const announcement = {
-  myPage: () => {
+  myPage: (type?: MessageType) => {
     return request(
       {
-        url: `/app/user/announcement/myPage`,
+        url: `/app/user/announcement/myPage?type=${type}`,
         method: "get",
       },
     );
@@ -147,7 +155,7 @@ export const comment = {
   myPage: (query?:string) => {
     return request(
       {
-        url: `/app/user/comment/myPage?${query}`,
+        url: `/app/user/comment/myPage?${query || ''}`,
         method: "get",
       },
     );
@@ -184,7 +192,15 @@ export const favorite = {
   myPage: (type: number) => {
     return request(
       {
-        url: `/app/user/favorite/myPage?type${type}`,
+        url: `/app/user/favorite/myPage?type=${type}`,
+        method: "get",
+      },
+    );
+  },
+  findFavoStatus: (id: string | number) => {
+    return request(
+      {
+        url: `/app/user/favorite/findFavoStatus?contentId=${id}`,
         method: "get",
       },
     );
@@ -193,6 +209,15 @@ export const favorite = {
     return request(
       {
         url: `/app/user/favorite/insert`,
+        method: "post",
+        data
+      },
+    );
+  },
+  del: (data: any) => {
+    return request(
+      {
+        url: `/app/user/favorite/del`,
         method: "post",
         data
       },
@@ -292,4 +317,14 @@ export const caseinfo = {
       },
     );
   },
+  myPage: (query?:string) => {
+    return request(
+      {
+        url: `/app/user/caseinfo/myPage?${query}`,
+        method: "get",
+      },
+    );
+  },
  }
+
+//  {{URL}}/app/user/favorite/findFavoStatus?contentId=80

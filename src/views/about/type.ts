@@ -1,13 +1,20 @@
+import type {BooleanStatus} from "@/utils/type";
+
+export enum MessageType {
+  Announ = 1,
+  Verify = 2,
+  All = ''
+}
 export interface MessageItemType {
     id: number;
-    type: string;
+    type: MessageType;
     createTime: string;
-    desc: string;
-    isRead? :boolean;
+    content: string;
+    isRead?: BooleanStatus;
   }
 export interface CommentItemType {
-    name: string;
-    photo: string;
-    casename: string;
-    content:string;
+    username: string;
+    remark: string;
+    caseName: string;
+    userAvatar:string;
 }

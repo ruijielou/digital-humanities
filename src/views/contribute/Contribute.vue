@@ -184,35 +184,8 @@ onMounted(() => {
 .group-container {
   padding: 20px 120px;
 
-  .group-tags {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 15px;
-  }
 
-  .tag-item {
-    text-align: center;
-    cursor: pointer;
-    display: inline-block;
-    line-height: 44px;
-    height: 44px;
-    background-color: #f5f5f5;
-    color: #333;
 
-    &:hover {
-      color: @primary-color;
-      background: #eeebff;
-    }
-
-    &.active {
-      background: @primary-color;
-      color: #fff;
-    }
-
-    &.selected {
-      background: #5b3df280;
-      color: #fff;
-    }
-  }
+  
 }
 </style>

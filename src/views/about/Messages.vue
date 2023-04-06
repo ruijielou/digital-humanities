@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch,reactive } from "vue";
 import { ArrowLeftOutlined } from "@ant-design/icons-vue";
 import LogoText from "../../components/LogoText.vue";
 import MessageItem from "./components/MessageItem.vue";
 import CommentItem from "./components/CommentItem.vue";
-import type { MessageItemType } from "./type";
-import {announcement, comment} from "@/api";
+import { MessageItemType, MessageType } from "./type";
+import { announcement, comment } from "@/api";
 const messageData = [
   {
     id: 1,
@@ -22,85 +22,50 @@ const messageData = [
   },
 ];
 
-const commentDataMock = [
-  {
-    name: "张三",
-    photo: "",
-    casename: "欧洲时光机",
-    content: "这是个值得深入研究的案例。",
-  },
-  {
-    name: "张三",
-    photo: "",
-    casename: "欧洲时光机",
-    content: "这是个值得深入研究的案例。",
-  },
-];
 
-const message = ref<MessageItemType[]>([...messageData]);
+const message = ref<MessageItemType[]>([]);
 const commentData = ref<any>([]);
+const messageType = ref<MessageType>(MessageType.All);
 const changeRead = async (id: number) => {
-  
-  const result = announcement.updateRead(id);
-  if(result?.success) {
+  const result = await announcement.updateRead(id);
+  if (result?.success) {
     getMessage();
-    // message.success('');
   }
-  // const updataList = message.value.map((item) => {
-  //   if (item.id === id) {
-  //     return {
-  //       ...item,
-  //       isRead: true,
-  //     };
-  //   }
-  //   return {
-  //     ...item,
-  //   };
-  // });
-  // message.value = updataList;
 };
 
-const messageType = ref<string>("all");
-const filterData = (type: string) => {
+const visibleView = ref<boolean>(false);
+const currentData = reactive<any>({data: {}});
+const filterData = (type: MessageType) => {
   messageType.value = type;
-  message.value =
-    type == "all" ? [...messageData] : [...messageData.filter((item:MessageItemType) => item.type === type)];
+  getMessage();
+  // message.value =
+  //   type == MessageType.All
+  //     ? [...messageData]
+  //     : [...messageData.filter((item: MessageItemType) => item.type === type)];
 };
-const menuType = ref<string>('message');
-const getMessage = async () => {
-  const {result} = await announcement.myPage();
-  console.log(result);
-  // TODO:暂未数据，没有对数据进行整理
-  
-  // "records": [],
-  //       "total": 0,
-  //       "size": 10,
-  //       "current": 1,
-  //       "orders": [],
-  //       "optimizeCountSql": true,
-  //       "searchCount": true,
-  //       "countId": null,
-  //       "maxLimit": null,
-  //       "pages": 0
-  // message.value = result?.records //调试数据的时候再放开代码
-}
+const menuType = ref<string>("message");
+const getMessage = async (type?: MessageType) => {
+  const { result } = await announcement.myPage(type || messageType.value);
+  message.value = result?.records; //调试数据的时候再放开代码
+};
 // comment/myPage
 const getComment = async () => {
-  const {result} = await comment.myPage();
-  console.log(result);
-  // TODO:暂未数据，没有对数据进行整理
-  
-  // commentData.value = commentDataMock;
-  commentData.value = result?.records //调试数据的时候再放开代码
+  const { result } = await comment.myPage();
+  commentData.value = result?.records; //调试数据的时候再放开代码
+};
+
+const openView = (data: any) => {
+  currentData.data = {...data};
+  visibleView.value = true;
 }
 
 watch(
   () => menuType.value,
-  (val:string) => {
-    if(val === 'message') {
+  (val: string) => {
+    if (val === "message") {
       getMessage();
     }
-    if(val === 'comment') {
+    if (val === "comment") {
       getComment();
     }
   }
@@ -127,10 +92,18 @@ onMounted(() => {
       <div class="message-container flex p-t-7">
         <div>
           <div class="my-menu message-menu">
-            <div class="menu-item flex" :class="{active: menuType === 'message'}" @click="menuType = 'message'">
+            <div
+              class="menu-item flex"
+              :class="{ active: menuType === 'message' }"
+              @click="menuType = 'message'"
+            >
               <span class="truncate flex-1">通知</span>
             </div>
-            <div class="menu-item flex" :class="{active: menuType === 'comment'}" @click="menuType = 'comment'">
+            <div
+              class="menu-item flex"
+              :class="{ active: menuType === 'comment' }"
+              @click="menuType = 'comment'"
+            >
               <span class="truncate flex-1">评论</span>
             </div>
           </div>
@@ -139,28 +112,29 @@ onMounted(() => {
           <div class="message-tab">
             <span
               class="text-4.5 cursor-pointer m-4 m-l-0"
-              :class="{ 'line-title': messageType === 'all' }"
-              @click="filterData('all')"
+              :class="{ 'line-title': messageType === MessageType.All }"
+              @click="filterData(MessageType.All)"
             >
               <span>全部</span>
             </span>
             <span
               class="text-4.5 cursor-pointer m-4 m-l-0"
-              :class="{ 'line-title': messageType === 'announ' }"
-              @click="filterData('announ')"
+              :class="{ 'line-title': messageType === MessageType.Announ }"
+              @click="filterData(MessageType.Announ)"
             >
               <span>公告</span>
             </span>
             <span
               class="text-4.5 cursor-pointer m-4 m-l-0"
-              :class="{ 'line-title': messageType === 'verify' }"
-              @click="filterData('verify')"
+              :class="{ 'line-title': messageType === MessageType.Verify }"
+              @click="filterData(MessageType.Verify)"
             >
               <span>审核</span>
             </span>
           </div>
           <div class="message-list">
             <MessageItem
+            @openView="openView"
               @changeRead="changeRead"
               v-for="item in message"
               :message="item"
@@ -168,10 +142,14 @@ onMounted(() => {
           </div>
         </div>
         <div class="comments flex-1 p-20 p-t-0" v-if="menuType === 'comment'">
-          <CommentItem v-for="item in commentData" :comment="item"/>
+          <CommentItem @openView="openView" v-for="item in commentData" :comment="item" />
         </div>
       </div>
     </a-layout-content>
+    <a-modal :footer="false" v-model:visible="visibleView" title="查看">
+      <p v-html="currentData.data.content || currentData.data.remark"></p>
+     
+    </a-modal>
   </div>
 </template>
 <style lang="less">

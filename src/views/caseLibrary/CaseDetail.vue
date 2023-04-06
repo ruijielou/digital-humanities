@@ -1,29 +1,39 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { Colors } from "../../utils/type";
+import { BooleanStatus, LikeStatus } from "@/utils/type";
 import CollectionModal from "@/components/CollectionGroup.vue";
 import {
   ArrowLeftOutlined,
   HeartOutlined,
   StarOutlined,
+  StarFilled,
+  HeartFilled,
   MinusSquareOutlined,
   PlusSquareOutlined,
   UserOutlined,
 } from "@ant-design/icons-vue";
 import { useRoute } from "vue-router";
-import { caseApi, comment, favorite } from "@/api";
+import { caseApi, comment, favorite, repositorygroup } from "@/api";
 import { message } from "ant-design-vue";
 import { useUserStore } from "@/store/user";
+import StepTwo from "../contribute/StepTwo.vue";
+import { formatterFormInput } from "../contribute/utils";
 
 const { userInfo } = useUserStore();
 
 const showDetailKey = ref<number[]>([0]);
 const caseComment = ref<string>("");
 const CollectionRef = ref<any>(null);
+const isEdit = ref<boolean>(false);
 const commentList = ref<any>([]);
 const route = useRoute();
+const stepTwoData = reactive<any>({
+  data: null,
+  formModal: null,
+});
 const formModel = reactive<any>({
-  data: {},
+  caseinfo: {},
   metaGroupList: [],
   labList: [],
   technologyList: [],
@@ -118,19 +128,19 @@ const changeCurrentKey = (key: number) => {
 const getDetail = async () => {
   const { id } = route.params;
   if (!id) return;
-  const caseInfo = await caseApi.findDetail(id as string);
-  if (caseInfo && caseInfo.result) {
-    formModel.data = { ...caseInfo.result };
-  }
-
   const { result } = await caseApi.findViewDetail(id as string);
   if (!result) return;
-  
-  formModel.metaGroupList = result.metaGroupList && [...result.metaGroupList];
+
+  formModel.metaGroupList = result.metaGroupList ? [...result.metaGroupList] : [];
   formModel.labList = result.labList && [...result.labList];
-  formModel.technologyList = result.technologyList && [...result.technologyList];
-  formModel.relateList = result.relateList && [...result.relateList];
-  changeCurrentKey(formModel.metaGroupList[0].id);
+  formModel.technologyList = result.technologyList ? [
+    ...result.technologyList,
+  ]: [];
+  formModel.relateList = result.relateList ? [...result.relateList]:[];
+  formModel.caseinfo = result.caseinfo ? { ...result.caseinfo } : {};
+  formModel.metaGroupList[0] && changeCurrentKey(formModel.metaGroupList[0].id);
+
+  getFavoriteStatus();
 };
 
 getDetail();
@@ -157,23 +167,54 @@ const getCommentList = async () => {
   }
 };
 
+const getFavoriteStatus = async () => {
+  const id = route.params.id;
+  const { result } = await favorite.findFavoStatus(id as string);
+
+  if (result) {
+    formModel.caseinfo = { ...formModel.caseinfo, ...result };
+  }
+};
+const getTwoFormInput = async () => {
+  const idList: string = formModel.caseinfo.repositoryIds;
+  if (!idList) return;
+  const { result } = await repositorygroup.findAllFormInput(idList);
+  const formResult = await caseApi.findDetail(route.params.id as string)
+  if (result && formResult) {
+    // const { formModal } = formatterFormInput({ result });
+    stepTwoData.formModal = { ...formResult.result };
+    stepTwoData.data = [...result];
+  }
+};
 getCommentList();
 
-const favorited = async (type: number) => {
+const changeEdit = () => {
+  isEdit.value = !isEdit.value;
+  isEdit.value && getTwoFormInput();
+}
+
+const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
   if (!route.params.id) return;
   const params = {
-    type: type || 2,
+    type: type || LikeStatus.Like, //点赞2 收藏1
     contentId: route.params.id,
   };
-  const res = await favorite.insert(params);
+  const isCancel = value == BooleanStatus.True;
+  const res =  isCancel ?await favorite.del(params) : await favorite.insert(params);
   if (res.success) {
     message.success(res.message);
+    getFavoriteStatus();
   }
 };
 </script>
 <template>
   <div class="h-screen overflow-auto">
-    <Header title="打开数字人文万花筒" bg-name="caselibrary-bg" />
+    <Header
+      :title="
+        $route.name === 'MyCaseDetail' ? '个人中心' : '打开数字人文万花筒'
+      "
+      :bg-name="$route.name === 'MyCaseDetail' ? 'about-bg' : 'caselibrary-bg'"
+    />
     <a-layout-content
       style="padding: 20px 0; margin: 0 auto; width: 80%"
       class="flex flex-col"
@@ -184,21 +225,64 @@ const favorited = async (type: number) => {
       </div>
       <div class="p-t-5 lines-purple flex justify-between">
         <div>
-          <h2>{{ formModel.data.name }}</h2>
+          <h2>{{ formModel.caseinfo.name }}</h2>
           <p class="c-#999 text-3 m-t-2">
-            发布人：{{ formModel.data.username }}
+            发布人：{{ formModel.caseinfo.username }}
           </p>
         </div>
-        <div class="tool-group">
-          <a-button @click="favorited(1)"><heart-outlined />喜欢</a-button>
-          <a-button class="m-l-4" @click="CollectionRef.modalVisibility = true"
-            ><star-outlined />收藏</a-button
+        <div class="tool-group" v-if="$route.name !== 'MyCaseDetail'">
+          <a-button @click="favorited(LikeStatus.Like,formModel.caseinfo.isLike)">
+            <heart-outlined
+              v-if="formModel.caseinfo.isLike == BooleanStatus.False"
+            />
+            <HeartFilled
+              style="color: #f243d9"
+              v-if="formModel.caseinfo.isLike == BooleanStatus.True"
+            />
+            喜欢
+          </a-button>
+          <a-button class="m-l-4"  @click="formModel.caseinfo.isFavorite === BooleanStatus.False ? CollectionRef.modalVisibility = true : favorited(LikeStatus.Favorite, formModel.caseinfo.isFavorite)">
+            <star-outlined
+              v-if="formModel.caseinfo.isFavorite === BooleanStatus.False"
+            />
+            <star-filled
+              style="color: #5b3df2"
+              v-if="formModel.caseinfo.isFavorite === BooleanStatus.True"
+            />
+            收藏
+          </a-button>
+        </div>
+        <div class="tool-group" v-else>
+          <a-button v-if="isEdit" class="m-l-4" @click="isEdit = false">
+            暂存
+          </a-button>
+          <a-button
+            class="m-l-2"
+            type="primary"
+            v-if="isEdit"
+            @click="isEdit = false"
           >
+            发布
+          </a-button>
+          <a-button v-if="!isEdit" @click="changeEdit"> 修改 </a-button>
         </div>
       </div>
-      <div class="detail-content">
+      <div v-if="isEdit">
+        {{ stepTwoData.data.repositoryList }}
+        <StepTwo
+          ref="stepTwoRef"
+          :selected-tag="stepTwoData.formModal.repositoryList"
+          :form-modal="stepTwoData.formModal"
+          :form-data="stepTwoData.data"
+        />
+      </div>
+      <div v-else class="detail-content">
         <div class="m-t-8">
-          <img style="width: 100%" src="../../assets/image/detail.png" alt="" />
+          <img
+            style="width: 100%; height: 350px; object-fit: cover"
+            :src="formModel.caseinfo.cover"
+            alt=""
+          />
         </div>
         <div class="flex">
           <div class="flex flex-col flex-1 m-r-18">
@@ -322,7 +406,11 @@ const favorited = async (type: number) => {
       </div>
     </a-layout-content>
     <Footer />
-    <CollectionModal @reload="getDetail" :content-id="$route.params.id" ref="CollectionRef" />
+    <CollectionModal
+      @reload="getDetail"
+      :content-id="$route.params.id"
+      ref="CollectionRef"
+    />
   </div>
 </template>
 <style lang="less">

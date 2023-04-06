@@ -123,12 +123,12 @@ defineExpose({ formState, formValidate });
 </script>
 <template>
   <div class="step-two group-container">
-    <div class="group-item">
+    <div class="group-item" v-if="selectedTag && selectedTag.length">
       <div class="group-item-title">
         <span class="line-title"><span> 所属案例库 </span> </span>
         <span class="lines"></span>
       </div>
-      <div class="group-tags">
+      <div class="group-tags" >
         <span v-for="(tag, i) in selectedTag" :key="i" class="tag-item selected">{{ tag.name }}</span>
       </div>
     </div>

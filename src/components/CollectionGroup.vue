@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 import { favoritegroup, favorite } from "@/api";
 import { Modal, message } from "ant-design-vue";
+import { LikeStatus } from "@/utils/type";
 
 const modalVisibility = ref<boolean>(false);
 const isOpen = ref<boolean>(false); //是否为公开
@@ -41,14 +42,13 @@ const createGroup = async () => {
 const submitCollection = async () => {
   if (!checkedFloder.value) return;
   const result = await favorite.insert({
-    type: 1,
+    type: LikeStatus.Favorite,
     contentId: props.contentId,
     groupId: checkedFloder.value,
   });
   if (result.success) {
     message.success(result.message);
     modalVisibility.value = false;
-
     emit("reload");
   }
 };
