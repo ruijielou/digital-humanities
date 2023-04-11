@@ -18,7 +18,8 @@ import { caseApi, comment, favorite, repositorygroup } from "@/api";
 import { message } from "ant-design-vue";
 import { useUserStore } from "@/store/user";
 import StepTwo from "../contribute/StepTwo.vue";
-import { formatterFormInput } from "../contribute/utils";
+// import { formatterFormInput } from "../contribute/utils";
+import {imgBaseUrl} from "@/utils/config"
 
 const { userInfo } = useUserStore();
 
@@ -280,7 +281,7 @@ const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
         <div class="m-t-8">
           <img
             style="width: 100%; height: 350px; object-fit: cover"
-            :src="formModel.caseinfo.cover"
+            :src="imgBaseUrl + formModel.caseinfo.cover"
             alt=""
           />
         </div>
@@ -354,7 +355,7 @@ const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
                       class="m-r-2 w-24px"
                       title="person"
                       v-if="userInfo.avatar"
-                      :src="userInfo.avatar"
+                      :src="imgBaseUrl + userInfo.avatar"
                     >
                     </a-avatar>
                     <a-avatar
@@ -387,7 +388,7 @@ const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
                     :size="24"
                     class="m-r-2"
                     title="person"
-                    :src="item.avatar"
+                    :src="imgBaseUrl + item.avatar"
                   >
                     <template #icon>
                       <UserOutlined />

@@ -6,6 +6,7 @@ import {
 } from "@ant-design/icons-vue";
 import { useUserStore } from "@/store/user";
 import { Modal } from "ant-design-vue";
+import { imgBaseUrl } from "@/utils/config";
 
 const { userInfo, logout } = useUserStore();
 const myMenus = [
@@ -44,7 +45,7 @@ const logoutCallback = () => {
     onOk: () => {
       logout();
       location.reload();
-    }
+    },
   });
 };
 </script>
@@ -54,7 +55,7 @@ const logoutCallback = () => {
       <a-avatar
         shape="circle"
         v-if="userInfo.avatar"
-        :src="userInfo.avatar"
+        :src="`${imgBaseUrl}${userInfo.avatar}`"
         :size="54"
         class="m-t-10"
         :title="userInfo.username"

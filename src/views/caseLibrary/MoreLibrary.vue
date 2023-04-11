@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import type { PageinationType } from "../../utils/type";
 import {
   ArrowLeftOutlined,
@@ -12,7 +12,7 @@ import { caseinfo, repositorygroup } from "@/api";
 const selectContry = ref<string>("中国");
 const selectFiled = ref<string>("项目时间");
 const loading = ref<boolean>(false);
-const sliderData = ref<any>([])
+const sliderData = ref<any>([]);
 const datas = [
   {
     key: "numberGlam",
@@ -65,25 +65,41 @@ const datas = [
     ],
   },
 ];
+const sortedInfo = ref();
+const columns = computed(() => {
+  const sorted = sortedInfo.value || {};
+  console.log(sorted.order);
 
-const columns = [
-  {
-    title: "名称",
-    dataIndex: "name",
-  },
-  {
-    title: "国别",
-    dataIndex: "country",
-  },
-  {
-    title: "所属机构",
-    dataIndex: "subOrg",
-  },
-  {
-    title: "项目时间",
-    dataIndex: "itemTime",
-  },
-];
+  return [
+    {
+      title: "名称",
+      dataIndex: "name",
+      sorter: (a: any, b: any) =>
+        a.name.localeCompare(b.name, "zh-Hans-CN", {
+          sensitivity: "accent",
+        }),
+      sortOrder: sorted.columnKey === "name" && sorted.order,
+    },
+    {
+      title: "国别",
+      dataIndex: "country",
+    },
+    {
+      title: "所属机构",
+      dataIndex: "subOrg",
+    },
+    {
+      title: "项目时间",
+      dataIndex: "itemTime",
+    },
+  ];
+});
+const setSort = (type: string) => {
+  sortedInfo.value = {
+    order: type,
+    columnKey: "name",
+  };
+};
 
 const dataSource = ref<any>([]);
 
@@ -123,7 +139,6 @@ const getSlider = async () => {
   }
 };
 getSlider();
-
 </script>
 <template>
   <div class="h-screen overflow-auto">
@@ -184,12 +199,16 @@ getSlider();
               </template>
             </a-dropdown>
             <div class="flex-1 flex justify-end">
-              <span class="cursor-pointer">
-                <sort-ascending-outlined />
+              <span class="cursor-pointer" @click="setSort('descend')">
+                <sort-ascending-outlined
+                  :class="{ 'c-#5b3df2': sortedInfo?.order === 'descend' }"
+                />
               </span>
               <a-divider type="vertical" />
-              <span class="cursor-pointer">
-                <sort-descending-outlined />
+              <span class="cursor-pointer" @click="setSort('ascend')">
+                <sort-descending-outlined
+                  :class="{ 'c-#5b3df2': sortedInfo?.order === 'ascend' }"
+                />
               </span>
             </div>
           </div>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CommentItemType } from "../type";
-
+import {imgBaseUrl} from "@/utils/config"
 defineProps<{
   comment: CommentItemType;
 }>();
@@ -10,7 +10,7 @@ defineProps<{
     <div class="left-icon">
       <a-avatar shape="circle" :size="40" class="m-r-2" :title="comment.username">
         <template #icon>
-          <img v-if="comment.userAvatar" :src="comment.userAvatar" alt="" />
+          <img v-if="comment.userAvatar" :src="imgBaseUrl + comment.userAvatar" alt="" />
           <UserOutlined v-else />
         </template>
       </a-avatar>

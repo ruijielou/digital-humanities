@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch } from "vue";
-import { FormInstance, message } from "ant-design-vue";
-import { getBase64 } from "@/utils/config";
+import { message } from "ant-design-vue";
+import { imgBaseUrl } from "@/utils/config";
 import {
   LoadingOutlined,
   PlusOutlined,
@@ -190,7 +190,7 @@ defineExpose({ formState, formValidate });
                       <span class="delete-img" @click='deleteItemImg(imgItem,col.filed)'>
                         <close-circle-outlined />
                       </span>
-                      <img width="100%" height="100%" :src="imgItem" alt="avatar" />
+                      <img width="100%" height="100%" :src="imgBaseUrl + imgItem" alt="avatar" />
                     </div>
                   </template>
                   <a-upload class="w-auto" :customRequest="customRequest" v-model:file-list="fileList"
@@ -271,7 +271,7 @@ defineExpose({ formState, formValidate });
                       <span class="delete-img" @click='deleteItemImg(imgItem,col.filed)'>
                         <close-circle-outlined />
                       </span>
-                      <img width="100%" height="100%" :src="imgItem" alt="avatar" />
+                      <img width="100%" height="100%" :src="imgBaseUrl + imgItem" alt="avatar" />
                     </div>
                   </template>
                   <a-upload class="w-auto" :customRequest="customRequest" v-model:file-list="fileList"

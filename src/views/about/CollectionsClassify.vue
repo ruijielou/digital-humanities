@@ -1,82 +1,52 @@
 <script lang="ts" setup>
-import { ref, reactive } from "vue";
-import {CaretDownOutlined, ArrowLeftOutlined} from "@ant-design/icons-vue"
+import { ref, reactive, computed } from "vue";
+import {
+  CaretDownOutlined,
+  ArrowLeftOutlined,
+  SortDescendingOutlined,
+  SortAscendingOutlined,
+} from "@ant-design/icons-vue";
 import type { PageinationType } from "../../utils/type";
-import {favorite} from "@/api";
+import { favorite } from "@/api";
 
 const selectContry = ref<string>("中国");
 const selectFiled = ref<string>("项目时间");
 const loading = ref<boolean>(false);
-const columns = [
-  {
-    title: "名称",
-    dataIndex: "name",
-  },
-  {
-    title: "国别",
-    dataIndex: "contry",
-  },
-  {
-    title: "所属机构",
-    dataIndex: "organization",
-  },
-  {
-    title: "项目时间",
-    dataIndex: "projectTime",
-  },
-];
+const sortedInfo = ref();
+const columns = computed(() => {
+  const sorted = sortedInfo.value || {};
 
-const dataSource1 = [
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 1,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 2,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 3,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 4,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 5,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 6,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 7,
-  },
-];
+  return [
+    {
+      title: "名称",
+      dataIndex: "name",
+      sorter: (a: any, b: any) =>
+        a.name.localeCompare(b.name, "zh-Hans-CN", {
+          sensitivity: "accent",
+        }),
+      sortOrder: sorted.columnKey === "name" && sorted.order,
+    },
+
+    {
+      title: "国别",
+      dataIndex: "contry",
+    },
+    {
+      title: "所属机构",
+      dataIndex: "organization",
+    },
+    {
+      title: "项目时间",
+      dataIndex: "projectTime",
+    },
+  ];
+});
+const setSort = (type: string) => {
+  sortedInfo.value = {
+    order: type,
+    columnKey: "name",
+  };
+};
 
 const pagination = reactive<PageinationType>({
   total: 0,
@@ -113,7 +83,6 @@ getMyFavorite();
         <h2 class="m-0">默认收藏夹</h2>
       </div>
     </div>
-    <LogoText text="检索结果" />
     <div class="result-container p-t-5">
       <div class="result-filter flex p-b-4">
         <a-dropdown type="primary">
@@ -143,11 +112,11 @@ getMyFavorite();
           </template>
         </a-dropdown>
         <div class="flex-1 flex justify-end">
-          <span class="cursor-pointer">
+          <span class="cursor-pointer" @click="setSort('descend')">
             <sort-ascending-outlined />
           </span>
           <a-divider type="vertical" />
-          <span class="cursor-pointer">
+          <span class="cursor-pointer" @click="setSort('ascend')">
             <sort-descending-outlined />
           </span>
         </div>

@@ -11,6 +11,7 @@ import LogoText from "../../components/LogoText.vue";
 import { useUserStore } from "@/store/user";
 import { Modal } from "ant-design-vue";
 import { dhuuser, commonUpload } from "@/api";
+import {imgBaseUrl} from "@/utils/config"
 
 const userStore = useUserStore();
 
@@ -125,7 +126,7 @@ const openModal = () => {
   >
     <div
       class="return-prev-page cursor-pointer absolute z-2"
-      @click="$router.push({name: 'About'})"
+      @click="$router.push({ name: 'About' })"
     >
       <arrow-left-outlined />
       <span class="p-l-2">个人中心</span>
@@ -154,7 +155,7 @@ const openModal = () => {
               <template #icon>
                 <img
                   v-if="formState.user.avatar"
-                  :src="formState.user.avatar"
+                  :src="imgBaseUrl + formState.user.avatar"
                   alt=""
                 />
                 <UserOutlined v-else />

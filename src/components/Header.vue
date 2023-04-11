@@ -8,7 +8,7 @@ import IconMessage from "./icons/IconMessage.vue";
 import LogoIcon from "./LogoIcon.vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 import Search from "./Search.vue";
-import { Storage, TOKEN_KEY } from "@/utils/config";
+import { Storage, TOKEN_KEY,imgBaseUrl } from "@/utils/config";
 import { LoginTypeMap } from "@/utils/type";
 import { useUserStore } from "@/store/user";
 // const token = Storage.get(TOKEN_KEY);
@@ -78,7 +78,7 @@ watch(
           shape="circle"
           :size="20"
           class="m-b-3"
-          :src="`${userStore.userInfo?.avatar}`"
+          :src="`${imgBaseUrl}${userStore.userInfo?.avatar}`"
           title="person"
         >
         </a-avatar>

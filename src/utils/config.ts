@@ -106,3 +106,6 @@ export const formatterFormData = (data: AnyObject) => {
   }
   return { ...newFormData };
 };
+// 【所有文件上传地址 回显 增加前缀  
+export const imgBaseUrl = '/app/common/static/'
+// https://www.tapd.cn/44529296/bugtrace/bugs/view/1144529296001000140'

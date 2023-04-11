@@ -25,14 +25,10 @@ const columns = computed(() => {
       title: "名称",
       dataIndex: "name",
       sorter: (a: any, b: any) =>
-        sorted.order == "descend"
-          ? a.name.localeCompare(b.name, "zh-Hans-CN", {
-              sensitivity: "accent",
-            })
-          : b.name.localeCompare(a.name, "zh-Hans-CN", {
-              sensitivity: "accent",
-            }),
-      sortOrder: true,
+        a.name.localeCompare(b.name, "zh-Hans-CN", {
+          sensitivity: "accent",
+        }),
+      sortOrder: sorted.columnKey === "name" && sorted.order,
     },
     {
       title: "国别",
