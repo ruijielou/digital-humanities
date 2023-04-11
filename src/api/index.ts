@@ -327,4 +327,16 @@ export const caseinfo = {
   },
  }
 
+ export const meta = {
+  findSearchCondition: () => {
+    return request(
+      {
+        url: `/app/user/meta/findSearchCondition`,
+        method: "get",
+      },
+    );
+  },
+ }
+
 //  {{URL}}/app/user/favorite/findFavoStatus?contentId=80
+// {{URL}}/app/user/meta/findSearchCondition

@@ -1,5 +1,8 @@
 const storage = localStorage; //存在本地
 
+type AnyObject<T = any> = {
+  [key: string]: T | any;
+};
 export const TOKEN_KEY = "TOKEN";
 
 export const Storage = {
@@ -75,3 +78,31 @@ export const getBase64 = (img: Blob, callback: (base64Url: string) => void) => {
   reader.addEventListener('load', () => callback(reader.result as string));
   reader.readAsDataURL(img);
 }
+
+export const formatterFormInput = (props: any) => {
+  if (!props.result) return { formModal: null }
+  const data: any = {};
+  for (const item of props.result) {
+      if (item.dataType === 9 || item.dataType === 13 || item.dataType === 14 || item.dataType === 6) {
+          data[item.filed] = [];
+      } else {
+          data[item.filed] = "";
+      }
+  }
+  //  1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接
+  return { formModal: data }
+}
+
+export const formatterFormData = (data: AnyObject) => {
+  const newFormData: AnyObject = {};
+  for (const key in data) {
+    if (data[key] && data[key] != "") {
+      if (data[key].constructor == Array) {
+        newFormData[key] = data[key].map((item: any) => item + "").join(",");
+      } else {
+        newFormData[key] = data[key];
+      }
+    }
+  }
+  return { ...newFormData };
+};

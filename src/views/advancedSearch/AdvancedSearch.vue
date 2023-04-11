@@ -8,75 +8,92 @@ import {
   SortDescendingOutlined,
   SortAscendingOutlined,
 } from "@ant-design/icons-vue";
+import { meta } from "@/api";
+import { formatterFormInput, formatterFormData } from "@/utils/config";
+import FormFiled from "@/components/FormFiled.vue";
 
 const selectContry = ref<string>("中国");
 const selectFiled = ref<string>("项目时间");
 const loading = ref<boolean>(false);
+const filedFromRef = ref<any>(null);
+const sortedInfo = ref();
+const columns = computed(() => {
+  const sorted = sortedInfo.value || {};
 
-const columns = [
-  {
-    title: "名称",
-    dataIndex: "name",
-  },
-  {
-    title: "国别",
-    dataIndex: "contry",
-  },
-  {
-    title: "所属机构",
-    dataIndex: "organization",
-  },
-  {
-    title: "项目时间",
-    dataIndex: "projectTime",
-  },
-];
+  return [
+    {
+      title: "名称",
+      dataIndex: "name",
+      sorter: (a: any, b: any) =>
+        sorted.order == "descend"
+          ? a.name.localeCompare(b.name, "zh-Hans-CN", {
+              sensitivity: "accent",
+            })
+          : b.name.localeCompare(a.name, "zh-Hans-CN", {
+              sensitivity: "accent",
+            }),
+      sortOrder: true,
+    },
+    {
+      title: "国别",
+      dataIndex: "contry",
+    },
+    {
+      title: "所属机构",
+      dataIndex: "organization",
+    },
+    {
+      title: "项目时间",
+      dataIndex: "projectTime",
+    },
+  ];
+});
 
 const dataSource = [
   {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
+    name: "a美国档案馆和博物馆门户（BAMP）",
     contry: "德国",
     organization: "巴登 ·符腾堡图书馆服务中心",
     projectTime: "2001-2015",
     id: 1,
   },
   {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
+    name: "c英国图书馆、档案馆和物馆门户（BAMP）",
     contry: "德国",
     organization: "巴登 ·符腾堡图书馆服务中心",
     projectTime: "2001-2015",
     id: 2,
   },
   {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
+    name: "d中国图书馆档案馆和博物馆门户（BAMP）",
     contry: "德国",
     organization: "巴登 ·符腾堡图书馆服务中心",
     projectTime: "2001-2015",
     id: 3,
   },
   {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
+    name: "r新加坡图书馆、",
     contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
+    organization: "巴登 ·符腾堡图书馆服务",
     projectTime: "2001-2015",
     id: 4,
   },
   {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
+    name: "h智利图书馆、档案馆和博物馆门户（BAMP）",
     contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
+    organization: "巴登 ·符腾堡图书馆中心",
     projectTime: "2001-2015",
     id: 5,
   },
   {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
+    name: "y印度图书馆、档案博物馆门户（BAMP）",
     contry: "德国",
     organization: "巴登 ·符腾堡图书馆服务中心",
     projectTime: "2001-2015",
     id: 6,
   },
   {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
+    name: "j巴西图书馆、档案博物馆门户（BAMP）",
     contry: "德国",
     organization: "巴登 ·符腾堡图书馆服务中心",
     projectTime: "2001-2015",
@@ -93,16 +110,42 @@ const handleTableChange = async (newpager: any) => {
   pagination.total = newpager.total;
   pagination.current = newpager.current;
   pagination.pageSize = newpager.pageSize;
-//  getdata
 };
 
 const showSearchRes = ref<boolean>(false);
-const searchFormState: UnwrapRef<any> = reactive({
-  name: '',
-  time: '',
-  contry: "",
-  city: "",
+
+const formFiled = reactive<any>({
+  data: null,
+  formModal: null,
 });
+const getInputMeta = async () => {
+  const { result } = await meta.findSearchCondition();
+
+  if (result) {
+    const { formModal } = formatterFormInput({ result });
+    formFiled.formModal = { ...formModal };
+    formFiled.data = [...result];
+  }
+};
+
+const enterSearch = async () => {
+  const formState: any = await filedFromRef.value?.formValidate();
+  if (!formState) return;
+  // 这是待提交的数据
+  const submitData = {
+    ...formatterFormData({ ...formState.formFiledData }),
+  };
+  console.log(submitData);
+
+  showSearchRes.value = true;
+};
+getInputMeta();
+const setSort = (type: string) => {
+  sortedInfo.value = {
+    order: type,
+    columnKey: "name",
+  };
+};
 </script>
 <template>
   <div class="h-screen overflow-auto advanced-search">
@@ -121,129 +164,19 @@ const searchFormState: UnwrapRef<any> = reactive({
         <span class="p-l-2">首页</span>
       </div>
       <LogoText text="高级检索" />
-      <div class="result-container p-t-5 p-l-15 p-r-15">
-        <a-form
-          :model="searchFormState"
-          v-bind="{
-            labelCol: { span: 6 },
-            wrapperCol: { span: 12 },
+      <div class="result-container p-t-5 p-l-35 p-r-35">
+        <FormFiled
+          ref="filedFromRef"
+          :form-modal="formFiled.formModal"
+          :form-data="formFiled.data"
+          :layout="{
+            labelCol: { span: 3, offset: 2 },
+            wrapperCol: { span: 15 },
           }"
-        >
-          <a-form-item label="项目名称" :colon="false">
-            <a-input
-              v-model:value="searchFormState.name"
-              placeholder="请输入"
-            />
-          </a-form-item>
-          <a-form-item label="项目时间" :colon="false">
-            <a-input
-              v-model:value="searchFormState.time"
-              placeholder="请输入"
-            />
-          </a-form-item>
-          <a-form-item label="所属国别" :colon="false">
-            <div class="flex">
-              <a-select
-              v-model:value="searchFormState.contry"
-              placeholder="国家"
-            >
-              <a-select-option value="optiona">option a</a-select-option>
-              <a-select-option value="optionb">option b</a-select-option>
-            </a-select>
-            <a-select
-            class="m-l-2"
-              v-model:value="searchFormState.city"
-              placeholder="城市"
-            >
-              <a-select-option value="optiona">option a</a-select-option>
-              <a-select-option value="optionb">option b</a-select-option>
-            </a-select>
-            </div>
-          </a-form-item>
-          <a-form-item label="项目机构" :colon="false">
-            <a-input
-              v-model:value="searchFormState.organization"
-              placeholder="请输入"
-            />
-          </a-form-item>
-          <a-form-item label="项目人员" :colon="false">
-            <a-input
-              v-model:value="searchFormState.person"
-              placeholder="请输入"
-            />
-          </a-form-item>
-          <a-form-item label="所属学科" :colon="false">
-            <a-select
-              v-model:value="searchFormState.class"
-              placeholder="请选择"
-            >
-              <a-select-option value="optiona">option a</a-select-option>
-              <a-select-option value="optionb">option b</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="服务对象" :colon="false">
-            <a-select
-              v-model:value="searchFormState.serviceObject"
-              placeholder="请选择"
-            >
-              <a-select-option value="optiona">option a</a-select-option>
-              <a-select-option value="optionb">option b</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="研究方向" :colon="false">
-            <a-select
-              v-model:value="searchFormState.researchDirection"
-              placeholder="请选择"
-            >
-              <a-select-option value="optiona">option a</a-select-option>
-              <a-select-option value="optionb">option b</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="运行情况" :colon="false">
-            <a-select
-              v-model:value="searchFormState.operation"
-              placeholder="请选择"
-            >
-              <a-select-option value="optiona">option a</a-select-option>
-              <a-select-option value="optionb">option b</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="成果形态" :colon="false">
-            <a-select
-              v-model:value="searchFormState.achievement"
-              placeholder="请选择"
-            >
-              <a-select-option value="optiona">option a</a-select-option>
-              <a-select-option value="optionb">option b</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="合作方式" :colon="false">
-            <a-select
-              v-model:value="searchFormState.cooperationMode"
-              placeholder="请选择"
-            >
-              <a-select-option value="optiona">option a</a-select-option>
-              <a-select-option value="optionb">option b</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="应用技术" :colon="false">
-            <a-select
-              v-model:value="searchFormState.technology"
-              placeholder="请选择"
-            >
-              <a-select-option value="optiona">option a</a-select-option>
-              <a-select-option value="optionb">option b</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item
-            class="text-center"
-            :wrapper-col="{ span: 12, offset: 6 }"
-          >
-            <a-button @click="showSearchRes = true" type="primary"
-              >搜索</a-button
-            >
-          </a-form-item>
-        </a-form>
+        />
+        <div class="text-center">
+          <a-button @click="enterSearch" type="primary">搜索</a-button>
+        </div>
       </div>
     </a-layout-content>
     <a-layout-content
@@ -288,11 +221,11 @@ const searchFormState: UnwrapRef<any> = reactive({
             </template>
           </a-dropdown>
           <div class="flex-1 flex justify-end">
-            <span class="cursor-pointer">
+            <span class="cursor-pointer" @click="setSort('descend')">
               <sort-ascending-outlined />
             </span>
             <a-divider type="vertical" />
-            <span class="cursor-pointer">
+            <span class="cursor-pointer" @click="setSort('ascend')">
               <sort-descending-outlined />
             </span>
           </div>

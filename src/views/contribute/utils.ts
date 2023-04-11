@@ -14,7 +14,7 @@ export const formatterFormInput = (props: any) => {
         //     data[item.filed] = { [uid]: '' };
         // } else 
 
-        if (item.dataType === 9 || item.dataType === 13 || item.dataType === 14 || item.dataType === 6) {
+        if (item.dataType === 9 || item.dataType === 13 || item.dataType === 16 || item.dataType === 6) {
             data[item.filed] = [];
         } else {
             data[item.filed] = "";

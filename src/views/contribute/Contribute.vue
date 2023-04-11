@@ -8,6 +8,7 @@ import CustomCase from "./CustomCase.vue";
 import { CaseType } from "./type";
 import { repository, repositorygroup, caseApi } from "@/api";
 import { formatterFormInput } from "./utils";
+import { formatterFormData } from "@/utils/config";
 type AnyObject<T = any> = {
   [key: string]: T | any;
 };
@@ -90,7 +91,7 @@ const gotoNext = async () => {
     if (!formState) return;
     const idList: number[] = selectedTag.value.map((item) => item.id);
     const submitData = {
-      ...formatterStepTwoData({ ...formState.caseData }),
+      ...formatterFormData({ ...formState.caseData }),
       authType: 1,
       repositoryIds: idList.join(","),
     };
@@ -98,20 +99,6 @@ const gotoNext = async () => {
     if (!response) return;
   }
   currentStep.value = currentStep.value + 1;
-};
-
-const formatterStepTwoData = (data: AnyObject) => {
-  const newFormData: AnyObject = {};
-  for (const key in data) {
-    if (data[key] && data[key] != "") {
-      if (data[key].constructor == Array) {
-        newFormData[key] = data[key].map((item: any) => item + "").join(",");
-      } else {
-        newFormData[key] = data[key];
-      }
-    }
-  }
-  return { ...newFormData };
 };
 
 const getTwoFormInput = async () => {
