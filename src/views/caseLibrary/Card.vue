@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CardFooter from "./CardFooter.vue";
 import type { CardType } from "./type";
-
+const emit = defineEmits(["cancelFavorited"]);
 const props = withDefaults(
   defineProps<{
     card: CardType;
@@ -15,6 +15,9 @@ const props = withDefaults(
   }
 );
 
+const favorited = (id: number) => {
+  emit('cancelFavorited', id)
+}
 </script>
 <template>
   <div
@@ -34,6 +37,7 @@ const props = withDefaults(
       :noShowNumber="props.noShowNumber"
       :noShowViews="props.noShowViews"
       :card="card"
+      @favorited="favorited"
     />
   </div>
 </template>

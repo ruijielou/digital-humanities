@@ -2,8 +2,9 @@
 <script lang="ts" setup>
 import { ref, reactive } from "vue";
 import { favorite } from "@/api";
-import { ArrowLeftOutlined, SearchOutlined } from "@ant-design/icons-vue";
+import { ArrowLeftOutlined, SearchOutlined,HeartFilled } from "@ant-design/icons-vue";
 import type { PageinationType } from "../../utils/type";
+import {message} from "ant-design-vue"
 
 const caseMoveModal = ref<boolean>(false);
 const openStatus = ref<number>(1);
@@ -29,6 +30,10 @@ const columns = [
   {
     title: "项目时间",
     dataIndex: "projectTime",
+  },
+  {
+    title: "",
+    dataIndex: "operation",
   },
 ];
 
@@ -106,6 +111,19 @@ const getMylike = async () => {
   }
 };
 getMylike();
+// 取消喜欢
+const cancelFavorited = async (id: string) => {
+  if (!id) return;
+  const params = {
+    type: 2, //点赞2 收藏1
+    contentId: id,
+  };
+  const res = await favorite.del(params);
+  if (res.success) {
+    message.success(res.message);
+    getMylike();
+  }
+}
 </script>
 <template>
   <a-layout-content
@@ -128,11 +146,22 @@ getMylike();
       >
         <template #bodyCell="{ column, text, record }">
           <div
-            @click="$router.push({ name: 'CaseDetail', params: {id: record.id} })"
+            @click="
+              $router.push({ name: 'CaseDetail', params: { id: record.id } })
+            "
             v-if="column.dataIndex === 'name'"
           >
             {{ text }}
           </div>
+          <template v-else-if="column.dataIndex === 'operation'">
+            <span
+            class="cursor-pointer"
+              @click="cancelFavorited(record.id)"
+            >
+              <HeartFilled style="color: #f243d9" />
+              喜欢
+          </span>
+          </template>
         </template>
       </a-table>
     </div>

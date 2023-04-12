@@ -11,7 +11,7 @@ import LogoText from "../../components/LogoText.vue";
 import { useUserStore } from "@/store/user";
 import { Modal } from "ant-design-vue";
 import { dhuuser, commonUpload } from "@/api";
-import {imgBaseUrl} from "@/utils/config"
+import { imgBaseUrl } from "@/utils/config";
 
 const userStore = useUserStore();
 
@@ -19,10 +19,15 @@ const layout = {
   labelCol: { span: 2, offset: 6 },
   wrapperCol: { span: 8 },
 };
-
+const optional = ["学生", "教师", "研究者"];
 const formState = reactive({
   user: {
     ...userStore.userInfo,
+    professionField:
+      userStore.userInfo.professionField &&
+      optional.includes(userStore.userInfo.professionField)
+        ? userStore.userInfo.professionField
+        : "其他",
     // photo: "",
     // name: "",
     // ID: "",
@@ -30,11 +35,20 @@ const formState = reactive({
     // workUnit: "",
     // specialism: "",
   },
+  // otherProfession:''
+  otherProfession:
+    userStore.userInfo.professionField &&
+    (optional.includes(userStore.userInfo.professionField) || userStore.userInfo.professionField === '其他' )
+      ? ""
+      : userStore.userInfo.professionField,
 });
 const onFinish = async (values: any) => {
-  console.log(values.user, "====user");
-
-  const result = await dhuuser.update({ ...values.user });
+  const params = { ...values };
+  
+  if (params.user.professionField === "其他") {
+    params.user.professionField = formState.otherProfession;
+  }
+  const result = await dhuuser.update({ ...params.user });
   if (result.success) {
     Modal.success({
       title: () => "提示",
@@ -181,15 +195,20 @@ const openModal = () => {
             :name="['user', 'professionField']"
             label="职业"
           >
-            <a-radio-group
-              v-model:value="formState.user.professionField"
-              name="radioGroup"
-            >
-              <a-radio value="学生">学生</a-radio>
-              <a-radio value="教师">教师</a-radio>
-              <a-radio value="研究者">研究者</a-radio>
-              <a-radio value="其他">其他</a-radio>
-            </a-radio-group>
+              <a-radio-group
+                v-model:value="formState.user.professionField"
+                name="radioGroup"
+              >
+                <a-radio v-for="key in optional" :value="key">{{
+                  key
+                }}</a-radio>
+                <a-radio value="其他">其他</a-radio>
+              </a-radio-group>
+              <a-input
+              class="m-t-2"
+                v-if="formState.user.professionField === '其他'"
+                v-model:value="formState.otherProfession"
+              />
           </a-form-item>
           <a-form-item :colon="false" :name="['user', 'company']" label="单位">
             <a-input v-model:value="formState.user.company" />

@@ -1,10 +1,16 @@
 <script lang="ts" setup>
-import { ref, reactive } from "vue";
-import { ArrowLeftOutlined, SearchOutlined } from "@ant-design/icons-vue";
+import { ref, reactive, createVNode } from "vue";
+import {
+  ArrowLeftOutlined,
+  SearchOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons-vue";
 import type { PageinationType } from "../../utils/type";
 import { caseinfo } from "@/api";
-import { useRoute } from "vue-router"
+import { useRoute } from "vue-router";
+import { message, Modal } from "ant-design-vue";
 
+type Key = string | number;
 const route = useRoute();
 const caseMoveModal = ref<boolean>(false);
 const openStatus = ref<number>(1);
@@ -14,6 +20,13 @@ const openCaseClasstify = ref<boolean>(false);
 const checkedMoves = ref<string[]>([]);
 const openCaseName = ref<boolean>(false);
 const caseName = ref<string>("");
+const selectedKeys = ref<Key[]>([]);
+
+const onSelectChange = (selectedRowKeys: Key[]) => {
+  // console.log("selectedRowKeys changed: ", selectedRowKeys);
+  selectedKeys.value = [...selectedRowKeys];
+};
+
 const columns = [
   {
     title: "名称",
@@ -40,7 +53,7 @@ const pagination = reactive<PageinationType>({
   pageSize: 10,
 });
 const handleTableChange = async (newpager: any) => {
-  console.log(newpager);
+  console.log(newpager, "handleTableChange");
   pagination.total = newpager.total;
   pagination.current = newpager.current;
   pagination.pageSize = newpager.pageSize;
@@ -57,6 +70,27 @@ const getLibraryList = async () => {
     pagination.pageSize = result.size;
   }
 };
+const removeMore = () => {
+  const params = [...selectedKeys.value];
+  if (!params.length) {
+    message.warning("选择不能为空");
+    return
+  }
+  Modal.confirm({
+    content: "确定要全部删除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    onOk() {
+      // 在这儿写接口请求 请求成功刷新列表
+      dataSource.value = [
+        ...dataSource.value.filter((item: any) => !params.includes(item.id)),
+      ];
+    },
+    cancelText: "再想想",
+    onCancel() {
+      Modal.destroyAll();
+    },
+  });
+};
 // const getCaseList = async () => {
 //   const { result } = await repository.page(
 //     `pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
@@ -69,23 +103,6 @@ const getLibraryList = async () => {
 //   }
 // };
 getLibraryList();
-
-const rowSelection = ref({
-  checkStrictly: false,
-  onChange: (selectedRowKeys: (string | number)[], selectedRows: any[]) => {
-    console.log(
-      `selectedRowKeys: ${selectedRowKeys}`,
-      "selectedRows: ",
-      selectedRows
-    );
-  },
-  onSelect: (record: any, selected: boolean, selectedRows: any[]) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected: boolean, selectedRows: any[], changeRows: any[]) => {
-    console.log(selected, selectedRows, changeRows);
-  },
-});
 
 const handleOk = (e: MouseEvent) => {
   caseMoveModal.value = false;
@@ -130,7 +147,7 @@ const handleOk = (e: MouseEvent) => {
     <div class="result-container">
       <div class="result-filter flex p-b-4">
         <div class="flex-1 flex justify-end">
-          <a-button type="danger">全部删除</a-button>
+          <a-button type="danger" @click="removeMore">全部删除</a-button>
           <a-button class="m-l-3" type="primary">全部迁移</a-button>
         </div>
       </div>
@@ -141,8 +158,11 @@ const handleOk = (e: MouseEvent) => {
         :data-source="dataSource"
         :pagination="pagination"
         :loading="loading"
-        :row-selection="rowSelection"
         @change="handleTableChange"
+        :row-selection="{
+          selectedRowKeys: selectedKeys,
+          onChange: onSelectChange,
+        }"
       >
         <template #bodyCell="{ column, text, index }">
           <!-- class="c-#5b3df2 cursor-pointer"  -->
