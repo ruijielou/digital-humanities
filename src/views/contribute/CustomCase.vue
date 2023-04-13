@@ -1,20 +1,40 @@
 <!-- CustomCase -->
 <script setup lang="ts">
-import { ref, reactive } from "vue";
-import { dhuuser } from "@/api";
+import { reactive, ref } from "vue";
+import { dhuuser, repositorygroup } from "@/api";
+import type { SelectProps } from "ant-design-vue";
 import { Modal } from "ant-design-vue";
 
 const layout = {
   labelCol: { span: 2, offset: 7 },
   wrapperCol: { span: 8 },
 };
+const repositorygroup_options = ref<SelectProps['options']>([
+]);
 
+repositorygroup.list().then((res) => {
+  if (res.success) {
+    let i;
+    let repositorygroup_list:SelectProps[] = [];
+    for(i in res.result){
+      let opt:any = res.result[i];
+      repositorygroup_list.push({value:opt.id, label: opt.title});
+    }
+    repositorygroup_options.value = repositorygroup_list;
+  }
+});
+// if(repositorygroup_ret && repositorygroup_ret.result){
+//   repositorygroup_list.value = repositorygroup_ret.result;
+//   console.log('repositorygroup_list:', repositorygroup_list)
+// }
+//TODO status 需要设置成 1:暂存 或者 2:待审核
 const formState = reactive<any>({
   case: {
+    groupId: null,
     name: "",
     description: "",
     authType: "1",
-    status: null,
+    status: 2,
   },
 });
 
@@ -38,6 +58,7 @@ const onFinish = async (values: any) => {
   }
 };
 const createFormRef = ref<any>(null);
+
 const formValidate = async () => {
   return await createFormRef.value.validate();
 };
@@ -57,7 +78,7 @@ defineExpose({ formState, formValidate });
         <!-- @finish="onFinish" -->
         <a-form-item
           :colon="false"
-          :name="['case', 'status']"
+          :name="['case', 'groupId']"
           label="案例库名称分类"
           :rules="[
             {
@@ -66,10 +87,7 @@ defineExpose({ formState, formValidate });
             },
           ]"
         >
-          <a-select v-model:value="formState.case.status">
-            <a-select-option :value="1">分类1</a-select-option>
-            <a-select-option :value="2">分类2</a-select-option>
-            <a-select-option :value="3">分类3</a-select-option>
+          <a-select v-model:value="formState.case.groupId" :options="repositorygroup_options">
           </a-select>
         </a-form-item>
         <a-form-item

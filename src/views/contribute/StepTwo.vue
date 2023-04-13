@@ -145,7 +145,7 @@ defineExpose({ formState, formValidate });
               <span class="lines"></span>
             </div>
             <template v-for="col in item.metaList">
-              <div class="w-33% inline-block" v-if="col.dataType === 16">
+              <div class="w-33% inline-block" v-if="col.dataType === 14">
                 <a-form-item :colon="false" :labelCol="{span: 0}" :wrapperCol="{span: 22}"
                   :name="['caseData', `${col.filed}`]" :rules="[
                 {
@@ -154,9 +154,9 @@ defineExpose({ formState, formValidate });
                   trigger: ['change', 'blur']
                 },
               ]">
-                  <a-select ref="select" class="w-100%" mode="multiple" :placeholder="col.name" :max-tag-count="1"
+                  <a-select ref="select" class="w-100%" mode="tags" :placeholder="col.name" :max-tag-count="1"
                     v-model:value="formState.caseData[`${col.filed}`]">
-                    <a-select-option v-for="o in col.optList" :value="o.value"
+                    <a-select-option v-for="o in col.optList" :value="o.value + ''"
                       :placeholder="col.name">{{ o.text }}</a-select-option>
                   </a-select>
                 </a-form-item>
@@ -205,7 +205,7 @@ defineExpose({ formState, formValidate });
                 <a-select placeholder="选择或输入" v-else-if="col.dataType === 13" :showSearch="true"
                   v-model:value="formState.caseData[`${col.filed}`]" mode="tags" style="width: 100%"
                   :token-separators="[',']" @change="selectMutipleChange">
-                  <a-select-option v-for="o in col.optList" :value="o.value">{{ o.text }}</a-select-option>
+                  <a-select-option v-for="o in col.optList" :value="o.text">{{ o.text }}</a-select-option>
                 </a-select>
                 <a-input v-else placeholder="请输入" v-model:value="formState.caseData[`${col.filed}`]" />
               </a-form-item>
@@ -225,7 +225,7 @@ defineExpose({ formState, formValidate });
               <span class="lines"></span>
             </div>
             <template v-for="col in item.metaList">
-              <div class="w-33% inline-block" v-if="col.dataType === 16">
+              <div class="w-33% inline-block" v-if="col.dataType === 14">
                 <a-form-item :colon="false" :labelCol="{span: 0}" :wrapperCol="{span: 22}"
                   :name="['caseData', `${col.filed}`]" :rules="[
                 {
@@ -234,9 +234,9 @@ defineExpose({ formState, formValidate });
                   trigger: ['change', 'blur']
                 },
               ]">
-                  <a-select ref="select" class="w-100%" mode="multiple" :placeholder="item.name" :max-tag-count="1"
+                  <a-select ref="select" class="w-100%" mode="tags" :placeholder="item.name" :max-tag-count="1"
                     v-model:value="formState.caseData[`${col.filed}`]">
-                    <a-select-option v-for="o in col.optList" :value="o.value"
+                    <a-select-option v-for="o in col.optList" :value="o.value + ''"
                       :placeholder="col.name">{{ o.text }}</a-select-option>
                   </a-select>
                 </a-form-item>
@@ -283,11 +283,20 @@ defineExpose({ formState, formValidate });
                     </div>
                   </a-upload>
                 </template>
-                <a-select placeholder="请选择" v-else-if="col.dataType === 13" :showSearch="true"
-                  v-model:value="formState.caseData[`${col.filed}`]" mode="tags" style="width: 100%"
-                  :token-separators="[',']" @change="selectMutipleChange">
-                  <a-select-option v-for="o in col.optList" :value="o.value">{{ o.text }}</a-select-option>
+
+                <a-select placeholder="请选择" v-else-if="col.dataType === 13"
+                  v-model:value="formState.caseData[`${col.filed}`]" mode="multiple" style="width: 100%"
+                          :token-separators="[',']" >
+                  <a-select-option v-for="o in col.optList" :value="o.text">{{ o.text }}</a-select-option>
                 </a-select>
+
+                <a-select placeholder="请选择" v-else-if="col.dataType === 16" :showSearch="true"
+                          :token-separators="[,]"
+                  v-model:value="formState.caseData[`${col.filed}`]" mode="multiple" style="width: 100%"   @change="selectMutipleChange">
+
+                  <a-select-option v-for="o in col.optList" :value="o.value + ''">{{ o.text }}</a-select-option>
+                </a-select>
+
                 <a-input v-else placeholder="请输入" v-model:value="formState.caseData[`${col.filed}`]" />
               </a-form-item>
             </template>

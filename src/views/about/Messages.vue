@@ -6,21 +6,15 @@ import MessageItem from "./components/MessageItem.vue";
 import CommentItem from "./components/CommentItem.vue";
 import { MessageItemType, MessageType } from "./type";
 import { announcement, comment } from "@/api";
-const messageData = [
-  {
-    id: 1,
-    type: "announ",
-    isRead: false,
-    createTime: "2023-01-22",
-    desc: "近期收到一些用户反馈，封面图片上传后变成了方块，在收到反馈后，我们第一时间进行了调研，问题已经解决。近期收到一些用户反馈，封面图片上传后变成了方块，在收到反馈后，我们第一时间进行了调研，问题已经解决。",
-  },
-  {
-    id: 2,
-    type: "verify",
-    createTime: "2023-01-12",
-    desc: "您上传的GLAM融合案例库审核通过~",
-  },
-];
+// const messageData = [
+//   {
+//     id: 1,
+//     type: "announ",
+//     isRead: false,
+//     createTime: "2023-01-22",
+//     desc: "近期收到一些用户反馈，封面图片上传后变成了方块，在收到反馈后，我们第一时间进行了调研，问题已经解决。近期收到一些用户反馈，封面图片上传后变成了方块，在收到反馈后，我们第一时间进行了调研，问题已经解决。",
+//   },
+// ];
 
 
 const message = ref<MessageItemType[]>([]);

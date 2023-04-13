@@ -87,6 +87,14 @@ export const repository = {
       },
     );
   },
+  queryById: (id: any) => {
+    return request(
+      {
+        url: `/app/user/repository/queryById?id=${id}`,
+        method: "get",
+      },
+    );
+  },
   insert: (data: any) => {
     return request(
       {
@@ -135,7 +143,7 @@ export const announcement = {
   myPage: (type?: MessageType) => {
     return request(
       {
-        url: `/app/user/announcement/myPage?type=${type}`,
+        url: `/app/user/announcement/myPage?type=${type}&column=createTime&order=desc`,
         method: "get",
       },
     );
@@ -155,7 +163,7 @@ export const comment = {
   myPage: (query?:string) => {
     return request(
       {
-        url: `/app/user/comment/myPage?${query || ''}`,
+        url: `/app/user/comment/myPage?${query || ''}&column=createTime&order=desc`,
         method: "get",
       },
     );
@@ -189,10 +197,17 @@ export const comment = {
 }
 
 export const favorite = {
-  myPage: (type: number) => {
+  myPage: (type: number, groupId:any) => {
+    let url = '';
+    if(groupId){
+      url = `/app/user/favorite/myPage?type=${type}&groupId=${groupId}`;
+    }else{
+      url = `/app/user/favorite/myPage?type=${type}`;
+    }
+
     return request(
       {
-        url: `/app/user/favorite/myPage?type=${type}`,
+        url: url,
         method: "get",
       },
     );
@@ -262,14 +277,6 @@ export const repositorygroup = {
       },
     );
   },
-  findAllFormInput: (ids: string) => {
-    return request(
-      {
-        url: `/app/user/repositorygroup/findFormListGroup?repositoryIds=${ids}`,
-        method: "get",
-      },
-    );
-  },
 }
 
 export const caseApi = {
@@ -327,7 +334,7 @@ export const caseinfo = {
   },
  }
 
- export const meta = {
+export const meta = {
   findSearchCondition: () => {
     return request(
       {
@@ -336,7 +343,14 @@ export const caseinfo = {
       },
     );
   },
+  findFormListGroup: (ids: string) => {
+    return request(
+      {
+        url: `/app/user/meta/findFormListGroup?repositoryIds=${ids}`,
+        method: "get",
+      },
+    );
+  },
  }
 
 //  {{URL}}/app/user/favorite/findFavoStatus?contentId=80
-// {{URL}}/app/user/meta/findSearchCondition

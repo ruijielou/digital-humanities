@@ -17,19 +17,19 @@ const caseName = ref<string>("");
 const columns = [
   {
     title: "名称",
-    dataIndex: "name",
+    dataIndex: "caseName",
   },
   {
     title: "国别",
-    dataIndex: "contry",
+    dataIndex: "caseCountry",
   },
   {
     title: "所属机构",
-    dataIndex: "organization",
+    dataIndex: "caseSubOrg",
   },
   {
     title: "项目时间",
-    dataIndex: "projectTime",
+    dataIndex: "caseItemTime",
   },
   {
     title: "",

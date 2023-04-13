@@ -6,7 +6,7 @@ import SetpOne from "./StepOne.vue";
 import StepTwo from "./StepTwo.vue";
 import CustomCase from "./CustomCase.vue";
 import { CaseType } from "./type";
-import { repository, repositorygroup, caseApi } from "@/api";
+import { repository, repositorygroup, caseApi, meta } from "@/api";
 import { formatterFormInput } from "./utils";
 import { formatterFormData } from "@/utils/config";
 type AnyObject<T = any> = {
@@ -90,11 +90,14 @@ const gotoNext = async () => {
 
     if (!formState) return;
     const idList: number[] = selectedTag.value.map((item) => item.id);
+    //TODO authType(1:公开 2:私有) 和 status(1:暂存, 2:待审核) 需要改成选项
     const submitData = {
       ...formatterFormData({ ...formState.caseData }),
       authType: 1,
+      status: 2,
       repositoryIds: idList.join(","),
     };
+
     const response = await caseApi.add(submitData);
     if (!response) return;
   }
@@ -110,7 +113,7 @@ const getTwoFormInput = async () => {
     });
     return;
   }
-  const { result } = await repositorygroup.findAllFormInput(idList.join(","));
+  const { result } = await meta.findFormListGroup(idList.join(","));
 
   if (result) {
     const { formModal } = formatterFormInput({ result });

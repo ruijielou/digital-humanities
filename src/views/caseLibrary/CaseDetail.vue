@@ -1,25 +1,30 @@
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { reactive, ref } from "vue";
 import { Colors } from "../../utils/type";
 import { BooleanStatus, LikeStatus } from "@/utils/type";
 import CollectionModal from "@/components/CollectionGroup.vue";
 import {
   ArrowLeftOutlined,
-  HeartOutlined,
-  StarOutlined,
-  StarFilled,
   HeartFilled,
+  HeartOutlined,
   MinusSquareOutlined,
   PlusSquareOutlined,
-  UserOutlined,
+  StarFilled,
+  StarOutlined,
+  UserOutlined
 } from "@ant-design/icons-vue";
 import { useRoute } from "vue-router";
-import { caseApi, comment, favorite, repositorygroup } from "@/api";
+import { caseApi, comment, favorite, meta } from "@/api";
 import { message } from "ant-design-vue";
 import { useUserStore } from "@/store/user";
 import StepTwo from "../contribute/StepTwo.vue";
 // import { formatterFormInput } from "../contribute/utils";
 import {imgBaseUrl} from "@/utils/config"
+import { convert_case_data } from "@/utils/case_meta_util";
+
+type AnyObject<T = any> = {
+  [key: string]: T | any;
+};
 
 const { userInfo } = useUserStore();
 
@@ -29,6 +34,8 @@ const CollectionRef = ref<any>(null);
 const isEdit = ref<boolean>(false);
 const commentList = ref<any>([]);
 const route = useRoute();
+const repositoryList = ref([]);
+const stepTwoRef = ref<any>(null);
 const stepTwoData = reactive<any>({
   data: null,
   formModal: null,
@@ -41,86 +48,6 @@ const formModel = reactive<any>({
   assPorject: [],
 });
 
-//   introduction: {
-//     key: "项目简介",
-//     projetcName: "欧洲时光机 （Time Machine",
-//     link: "https://www.timemach",
-//     themes: "迄今为止意义最深远、规模最宏大的一个使用",
-//     startTime: "2019年",
-//     country: "欧盟",
-//     summary:
-//       "迄今为止意义最深远、规模最宏大的欧洲时光机项目源于威尼斯时光机项目，2019 年,欧盟委员会选择“欧洲时光机”项目作为未来十年战略性大规模研究计划的六项提案之一。时光机项目已汇集了来自多个国家与地区的 600多家机构,其中包括欧洲顶级学术研究机构、美术馆、图书馆、档案馆、博物馆,以及文化领域领先的大型企业、中小企业、机构团体和有影响力的民间社会组织。项目拥有历史大数据资源基本架构、本地时光机架构。取得专题数据库、3D/4D历史城市重建、历史细节可视化、通用型数字平台与工具等成果的项目。",
-//     dataset:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset1:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset2:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset3:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset4:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset5:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset6:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset7:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//   },
-//   organization: {
-//     key: "项目机构",
-//     projetcName: "欧洲时光机 （Time Machine",
-//     link: "https://www.timemach",
-//     themes: "迄今为止意义最深远、规模最宏大的一个使用",
-//     startTime: "2019年",
-//     country: "欧盟",
-//     summary:
-//       "迄今为止意义最深远、规模最宏大的欧洲时光机项目源于威尼斯时光机项目，2019 年,欧盟委员会选择“欧洲时光机”项目作为未来十年战略性大规模研究计划的六项提案之一。时光机项目已汇集了来自多个国家与地区的 600多家机构,其中包括欧洲顶级学术研究机构、美术馆、图书馆、档案馆、博物馆,以及文化领域领先的大型企业、中小企业、机构团体和有影响力的民间社会组织。项目拥有历史大数据资源基本架构、本地时光机架构。取得专题数据库、3D/4D历史城市重建、历史细节可视化、通用型数字平台与工具等成果的项目。",
-//     dataset:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset1:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset2:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset3:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset4:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset5:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset6:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset7:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//   },
-//   personnel: {
-//     key: "项目人员",
-//     projetcName: "欧洲时光机 （Time Machine",
-//     link: "https://www.timemach",
-//     themes: "迄今为止意义最深远、规模最宏大的一个使用",
-//     startTime: "2019年",
-//     country: "欧盟",
-//     summary:
-//       "迄今为止意义最深远、规模最宏大的欧洲时光机项目源于威尼斯时光机项目，2019 年,欧盟委员会选择“欧洲时光机”项目作为未来十年战略性大规模研究计划的六项提案之一。时光机项目已汇集了来自多个国家与地区的 600多家机构,其中包括欧洲顶级学术研究机构、美术馆、图书馆、档案馆、博物馆,以及文化领域领先的大型企业、中小企业、机构团体和有影响力的民间社会组织。项目拥有历史大数据资源基本架构、本地时光机架构。取得专题数据库、3D/4D历史城市重建、历史细节可视化、通用型数字平台与工具等成果的项目。",
-//     dataset:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset1:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset2:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset3:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset4:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset5:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset6:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//     dataset7:
-//       "Alle Limburgers 家谱数据库 \n ALTES KÖLN 家谱与居民数据库 \n 莱比锡历史家族数据库\n罗马历史地图数据库\n巴黎地理历史资料库\n意大利建筑图纸数据库\n荷兰南部方言语料库",
-//   },
-// };
-// const metaGroupList =
 const changeCurrentKey = (key: number) => {
   showDetailKey.value = showDetailKey.value.includes(key)
     ? showDetailKey.value.filter((item) => item != key)
@@ -158,6 +85,7 @@ const publishComment = async () => {
   const res = await comment.insert(params);
   if (res.success) {
     message.success("评论成功");
+    caseComment.value = '';
     getCommentList();
   }
 };
@@ -179,20 +107,31 @@ const getFavoriteStatus = async () => {
 const getTwoFormInput = async () => {
   const idList: string = formModel.caseinfo.repositoryIds;
   if (!idList) return;
-  const { result } = await repositorygroup.findAllFormInput(idList);
+  const { result } = await meta.findFormListGroup(idList);
   const formResult = await caseApi.findDetail(route.params.id as string)
   if (result && formResult) {
     // const { formModal } = formatterFormInput({ result });
-    stepTwoData.formModal = { ...formResult.result };
+    let case_data_info = { ...formResult.result };
+
+    case_data_info = convert_case_data(case_data_info, result);
+
+    console.log('case_data_info:', case_data_info)
+
+
+    stepTwoData.formModal = case_data_info;
     stepTwoData.data = [...result];
+
+    repositoryList.value = formResult.result?.repositoryList;
   }
 };
+
 getCommentList();
 
 const changeEdit = () => {
   isEdit.value = !isEdit.value;
   isEdit.value && getTwoFormInput();
 }
+
 
 const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
   if (!route.params.id) return;
@@ -207,6 +146,38 @@ const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
     getFavoriteStatus();
   }
 };
+
+const formatterStepTwoData = (data: AnyObject) => {
+  const newFormData: AnyObject = {};
+  for (const key in data) {
+    if (data[key] && data[key] != "") {
+      if (data[key].constructor == Array) {
+        newFormData[key] = data[key].map((item: any) => item + "").join(",");
+      } else {
+        newFormData[key] = data[key];
+      }
+    }
+  }
+  return { ...newFormData };
+};
+
+const publish_case = async (status:number) => {
+  console.log('stepTwoData.formModal:', stepTwoData.formModal)
+
+  const formState: any = await stepTwoRef.value?.formValidate();
+
+  const submitData = {
+    ...formatterStepTwoData({ ...formState.caseData }),
+    id:route.params?.id,
+    status:status,
+    repositoryIds:formModel.caseinfo.repositoryIds,
+    authType:formModel.caseinfo.authType,
+  };
+  console.log('submitData:', submitData)
+  const response = await caseApi.add(submitData);
+  isEdit.value = false
+  getDetail();
+}
 </script>
 <template>
   <div class="h-screen overflow-auto">
@@ -254,14 +225,14 @@ const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
           </a-button>
         </div>
         <div class="tool-group" v-else>
-          <a-button v-if="isEdit" class="m-l-4" @click="isEdit = false">
+          <a-button v-if="isEdit" class="m-l-4" @click="publish_case(1)">
             暂存
           </a-button>
           <a-button
             class="m-l-2"
             type="primary"
             v-if="isEdit"
-            @click="isEdit = false"
+            @click="publish_case(2)"
           >
             发布
           </a-button>
@@ -269,10 +240,10 @@ const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
         </div>
       </div>
       <div v-if="isEdit">
-        {{ stepTwoData.data.repositoryList }}
+<!--        {{ stepTwoData.data.repositoryList }}-->
         <StepTwo
           ref="stepTwoRef"
-          :selected-tag="stepTwoData.formModal.repositoryList"
+          :selected-tag="repositoryList"
           :form-modal="stepTwoData.formModal"
           :form-data="stepTwoData.data"
         />
@@ -312,7 +283,8 @@ const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
                   v-for="(col, colkey) in item.metaList"
                 >
                   <span> {{ col.title }}: </span>
-                  <span>{{ col.text }}</span>
+                  <span v-if="col.dataType != 12" >{{ col.text }}</span>
+                  <a-button style="padding: 0px;" type="link"  v-if="col.dataType == 12">{{ col.text }}</a-button>
                 </div>
               </div>
             </div>
@@ -322,7 +294,7 @@ const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
               <div>标签：</div>
               <div>
                 <template v-for="(item, k) in formModel.labList">
-                  <a-tag :color="`#${item.ext}`">{{ item.text }}</a-tag>
+                  <a-tag :color="`#${item.extList[lab_i]}`" v-for="(lab_item, lab_i) in item.textList ">{{ lab_item }}</a-tag>
                 </template>
               </div>
             </div>
@@ -338,7 +310,7 @@ const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
             </div>
             <div class="m-b-10">
               <div>关联项目：</div>
-              <div v-if="formModel.relateList" class="p-4 bg-#f7f7f7">
+              <div v-if="formModel.relateList && formModel.relateList.length > 0" class="p-4 bg-#f7f7f7">
                 <template v-for="(item, k) in formModel.relateList">
                   <p>{{ k + 1 }}. {{ item.text }}</p>
                 </template>
@@ -388,7 +360,7 @@ const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
                     :size="24"
                     class="m-r-2"
                     title="person"
-                    :src="imgBaseUrl + item.avatar"
+                    :src="item.userAvatar"
                   >
                     <template #icon>
                       <UserOutlined />
@@ -397,7 +369,7 @@ const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
                   <div class="comment-detail">
                     <div>{{ item.username }}</div>
                     <div>{{ item.remark }}</div>
-                    <p class="c-#999">2022-12-24 12:00</p>
+                    <p class="c-#999">{{ item.createTime }}</p>
                   </div>
                 </div>
               </div>

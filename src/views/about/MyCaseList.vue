@@ -27,15 +27,15 @@ const columns = [
   },
   {
     title: "国别",
-    dataIndex: "contry",
+    dataIndex: "country",
   },
   {
     title: "所属机构",
-    dataIndex: "organization",
+    dataIndex: "subOrg",
   },
   {
     title: "项目时间",
-    dataIndex: "createTime",
+    dataIndex: "itemTime",
   },
 ];
 const pagination = reactive<PageinationType>({

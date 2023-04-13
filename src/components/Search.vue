@@ -34,7 +34,7 @@ const changeShowLabels = () => {
         </div>
       </template>
       <template #addonAfter>
-        <div class="cursor-pointer" style="width: 80px">
+        <div class="cursor-pointer" style="width: 80px" @click="$router.push({name: 'AdvancedSearch'})">
           <SearchOutlined />
           搜索
         </div>

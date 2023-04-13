@@ -32,7 +32,23 @@ const collectionDatamock = [
 const collectionData = ref<any[]>([]);
 const getCollectionData = async () => {
   const {result} = await favoritegroup.myPage();
-  collectionData.value = result?.records || [];
+  let datas:any[] = [];
+  let i
+  for(i in result?.records){
+    let record = result?.records[i];
+    datas.push(
+      {
+        id: record.id,
+        name: record.title,
+        caseQuantity: record.caseQuantity,
+        lastCaseName: record.caseName,
+        comments: [],
+        cover: record.caseCover,
+      }
+    )
+  }
+  collectionData.value = datas;
+  console.log('datas:', datas)
 }
 
 
@@ -62,10 +78,10 @@ const cancelFavorited:any = async (id: number) => {
     <div class="p-t-4">
       <div class="case-group flex flex-wrap">
         <Card
-          v-for="item in collectionDatamock"
+          v-for="item in collectionData"
           :no-show-views="true"
           @cancelFavorited="cancelFavorited"
-          @click.stop="$router.push({name: 'CollectionsClassify'})"
+          @click.stop="$router.push({name: 'CollectionsClassify', params: { id: item.id, name: item.name }})"
           style="width: 31%; height: 50vh; margin: 0 20px 20px 0"
           :card="item"
         />

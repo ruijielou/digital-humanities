@@ -8,7 +8,7 @@ import {
   SortDescendingOutlined,
   SortAscendingOutlined,
 } from "@ant-design/icons-vue";
-import { meta } from "@/api";
+import { caseinfo, meta } from "@/api";
 import { formatterFormInput, formatterFormData } from "@/utils/config";
 import FormFiled from "@/components/FormFiled.vue";
 
@@ -45,67 +45,31 @@ const columns = computed(() => {
   ];
 });
 
-const dataSource = [
-  {
-    name: "a美国档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 1,
-  },
-  {
-    name: "c英国图书馆、档案馆和物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 2,
-  },
-  {
-    name: "d中国图书馆档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 3,
-  },
-  {
-    name: "r新加坡图书馆、",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务",
-    projectTime: "2001-2015",
-    id: 4,
-  },
-  {
-    name: "h智利图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆中心",
-    projectTime: "2001-2015",
-    id: 5,
-  },
-  {
-    name: "y印度图书馆、档案博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 6,
-  },
-  {
-    name: "j巴西图书馆、档案博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 7,
-  },
-];
+const dataSource = ref<{ [key: string]: string }[]>([]);
 
 const pagination = reactive<PageinationType>({
   total: 0,
   current: 1,
   pageSize: 10,
 });
+
+const getCaseData = async () => {
+  const { result } = await caseinfo.page(
+    `pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
+  );
+
+  result && (dataSource.value = [...result.records]);
+  pagination.total = result.total;
+  console.log('pagination : ',pagination)
+};
+
+
 const handleTableChange = async (newpager: any) => {
   pagination.total = newpager.total;
   pagination.current = newpager.current;
   pagination.pageSize = newpager.pageSize;
+  getCaseData();
+//  getdata
 };
 
 const showSearchRes = ref<boolean>(false);
@@ -142,6 +106,22 @@ const setSort = (type: string) => {
     columnKey: "name",
   };
 };
+const do_search = function(){
+  showSearchRes.value = true
+
+  getCaseData();
+}
+
+/*加载过滤条件*/
+const  search_condition_meta_list = ref([]);
+const load_search_condition = async () => {
+  const { result } = await meta.findSearchCondition();
+  search_condition_meta_list.value = result;
+  console.log('search_condition_meta_list.value:', search_condition_meta_list.value);
+}
+load_search_condition();
+
+
 </script>
 <template>
   <div class="h-screen overflow-auto advanced-search">
@@ -235,9 +215,9 @@ const setSort = (type: string) => {
           :loading="loading"
           @change="handleTableChange"
         >
-          <template #bodyCell="{ column, text, index }">
-            <template v-if="column.dataIndex === 'name'"
-              >{{ index }} {{ text }}</template
+          <template #bodyCell="{ column, text, index, record }">
+            <div class="c-#5b3df2 cursor-pointer" @click="$router.push({ name: 'CaseDetail', params: { id: record.id } })" v-if="column.dataIndex === 'name'"
+              >{{ index }} {{ text }}</div
             >
           </template>
         </a-table>

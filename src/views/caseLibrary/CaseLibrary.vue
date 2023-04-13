@@ -59,7 +59,7 @@ onMounted(() => {
             v-if="item.repositoryList[0]"
             @click="
               $router.push({
-                name: 'CaseDetail',
+                name: 'MoreLibrary',
                 params: { id: item.repositoryList[0].id },
               })
             "
@@ -73,7 +73,7 @@ onMounted(() => {
                 v-if="cardIndex != 0"
                 @click="
                   $router.push({
-                    name: 'CaseDetail',
+                    name: 'MoreLibrary',
                     params: { id: card.id },
                   })
                 "
@@ -94,7 +94,7 @@ onMounted(() => {
                 <Card
                   @click="
                     $router.push({
-                      name: 'CaseDetail',
+                      name: 'MoreLibrary',
                       params: { id: card.id },
                     })
                   "
@@ -107,7 +107,7 @@ onMounted(() => {
         </div>
       </div>
       <div class="more-container">
-        <span class="border-btn" @click="$router.push({ name: 'MoreLibrary' })"
+        <span class="border-btn" @click="$router.push({ name: 'MoreLibrary', params: { id: cardData[0].repositoryList[0].id} })"
           >更多</span
         >
       </div>

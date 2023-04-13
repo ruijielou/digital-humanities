@@ -7,7 +7,14 @@ import {
   SortAscendingOutlined,
 } from "@ant-design/icons-vue";
 import type { PageinationType } from "../../utils/type";
-import { favorite } from "@/api";
+import {favorite} from "@/api";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+
+console.log('route.params.id:', )
+const groupId = route.params.id;
+const groupName = route.params.name;
 
 const selectContry = ref<string>("中国");
 const selectFiled = ref<string>("项目时间");
@@ -48,6 +55,16 @@ const setSort = (type: string) => {
   };
 };
 
+const dataSource1 = [
+  {
+    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
+    contry: "德国",
+    organization: "巴登 ·符腾堡图书馆服务中心",
+    projectTime: "2001-2015",
+    id: 1,
+  },
+];
+
 const pagination = reactive<PageinationType>({
   total: 0,
   current: 1,
@@ -62,7 +79,7 @@ const handleTableChange = async (newpager: any) => {
 };
 const dataSource = ref<any[]>([]);
 const getMyFavorite = async () => {
-  const { result } = await favorite.myPage(1);
+  const { result } = await favorite.myPage(1, groupId);
   if (result) {
     dataSource.value = [...result.records];
   }
@@ -80,7 +97,7 @@ getMyFavorite();
     </div>
     <div class="lines-purple flex justify-between">
       <div class="flex items-center m-b-2">
-        <h2 class="m-0">默认收藏夹</h2>
+        <h2 class="m-0">{{ groupName }}</h2>
       </div>
     </div>
     <div class="result-container p-t-5">

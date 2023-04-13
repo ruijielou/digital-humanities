@@ -61,7 +61,7 @@ const handleTableChange = async (newpager: any) => {
 };
 const getLibraryList = async () => {
   const { result } = await caseinfo.page(
-    `epositoryId=${route.params.id}&&pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
+    `repositoryId=${route.params.id}&&pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
   );
   if (result) {
     dataSource.value = [...result.records];
@@ -91,6 +91,16 @@ const removeMore = () => {
     },
   });
 };
+
+const repository_info = ref({});
+const getRepositoryDetail = async ()=>{
+  const {result} = await repository.queryById(route.params.id);
+  if (result) {
+    repository_info.value = result;
+  }
+}
+getRepositoryDetail();
+
 // const getCaseList = async () => {
 //   const { result } = await repository.page(
 //     `pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
@@ -120,7 +130,7 @@ const handleOk = (e: MouseEvent) => {
     <div class="lines-purple flex justify-between">
       <div class="flex items-center m-b-2">
         <h2 class="m-0">
-          2022最佳案例数字人文案例
+          {{ repository_info.name }}
           <a-popover placement="bottom">
             <template #content>
               <p>开放权限</p>
@@ -135,13 +145,13 @@ const handleOk = (e: MouseEvent) => {
                 >迁移</a-button
               >
             </template>
-            <span class="cursor-pointer">...</span>
+<!--            <span class="cursor-pointer">...</span>-->
           </a-popover>
         </h2>
       </div>
     </div>
     <p class="c-#999 text-3 m-t-3 m-b-0">
-      简介：简介内容简介内容简介内容简介内容简
+      {{ repository_info.description }}
     </p>
     <LogoText text="检索结果" />
     <div class="result-container">
@@ -164,9 +174,9 @@ const handleOk = (e: MouseEvent) => {
           onChange: onSelectChange,
         }"
       >
-        <template #bodyCell="{ column, text, index }">
+        <template #bodyCell="{ column, text, index, record}">
           <!-- class="c-#5b3df2 cursor-pointer"  -->
-          <div v-if="column.dataIndex === 'name'">
+          <div class="c-#5b3df2 cursor-pointer" @click="$router.push({ name: 'MyCaseDetail', params: { id: record.id } })" v-if="column.dataIndex === 'name'">
             {{ text }}
           </div>
         </template>

@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from "vue";
 import type { PageinationType } from "../../utils/type";
-import {
-  ArrowLeftOutlined,
-  CaretDownOutlined,
-  SortDescendingOutlined,
-  SortAscendingOutlined,
-} from "@ant-design/icons-vue";
-import { caseinfo, repositorygroup } from "@/api";
+import { CaretDownOutlined, SortAscendingOutlined, SortDescendingOutlined } from "@ant-design/icons-vue";
+import { caseinfo, repository, repositorygroup } from "@/api";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const selectContry = ref<string>("中国");
 const selectFiled = ref<string>("项目时间");
 const loading = ref<boolean>(false);
@@ -23,45 +20,6 @@ const datas = [
       "数字博物馆案例库",
       "数字档案馆案例库",
       "数字艺术案例库",
-    ],
-  },
-  {
-    key: "fieldResearch",
-    name: "领域研究",
-    options: [
-      "女性文学案例库",
-      "中国古典文献案例库",
-      "文字、语言案例库",
-      "地图、GIS案例库",
-      "数字文化遗产案例库",
-      "海外研究中国案例库",
-      "数字记忆案例库",
-    ],
-  },
-  {
-    key: "platform",
-    name: "机构平台",
-    options: [
-      "女性文学案例库",
-      "中国古典文献案例库",
-      "文字、语言案例库",
-      "地图、GIS案例库",
-      "数字文化遗产案例库",
-      "海外研究中国案例库",
-      "数字记忆案例库",
-    ],
-  },
-  {
-    key: "infrastructure",
-    name: "基础设施",
-    options: [
-      "女性文学案例库",
-      "中国古典文献案例库",
-      "文字、语言案例库",
-      "地图、GIS案例库",
-      "数字文化遗产案例库",
-      "海外研究中国案例库",
-      "数字记忆案例库",
     ],
   },
 ];
@@ -100,6 +58,20 @@ const setSort = (type: string) => {
     columnKey: "name",
   };
 };
+const repository_id = ref();
+repository_id.value = route.params.id;
+const repository_info = ref();
+
+
+
+
+const getRepositoryDetail = async ()=>{
+  const {result} = await repository.queryById(repository_id.value);
+  if (result) {
+    repository_info.value = result;
+  }
+}
+getRepositoryDetail();
 
 const dataSource = ref<any>([]);
 
@@ -110,7 +82,7 @@ const pagination = reactive<PageinationType>({
 });
 const getLibraryList = async () => {
   const { result } = await caseinfo.page(
-    `pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
+    `repositoryId=${repository_id.value}&&pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
   );
   if (result) {
     dataSource.value = [...result.records];
@@ -132,13 +104,20 @@ const handleTableChange = async (newpager: any) => {
   getLibraryList();
 };
 const getSlider = async () => {
-  const { result } = await repositorygroup.list();
+  const { result } = await repositorygroup.findList();
   if (result) {
-    console.log(result);
     sliderData.value = [...result];
   }
 };
 getSlider();
+
+const reset_repository = (id:number) => {
+  console.log('id', id)
+  repository_id.value = id;
+  getLibraryList();
+  getRepositoryDetail();
+}
+
 </script>
 <template>
   <div class="h-screen overflow-auto">
@@ -157,18 +136,18 @@ getSlider();
           </div>
           <div
             class="p-l-10 p-t-3 text-3.5 truncate cursor-pointer"
-            v-for="text in item.repositoryList"
+            v-for="repository_item in item.repositoryList"
           >
-            {{ text }}
+            <span @click="reset_repository(repository_item.id)">{{ repository_item.name }}</span>
           </div>
         </div>
       </div>
       <div class="flex-1 h-100% p-l-20 p-r-20">
         <div class="p-t-5 lines-purple">
-          <h2>GLAM融合案例库</h2>
+          <h2>{{repository_info.name}}</h2>
         </div>
         <p class="c-#999 text-3 m-t-2">
-          简介：简介内容简介内容简介内容简介内容简
+          {{repository_info.description}}
         </p>
         <div class="result-container p-t-5">
           <div class="result-filter flex p-b-4">

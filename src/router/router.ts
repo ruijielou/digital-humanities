@@ -23,7 +23,7 @@ export default [
     component: () => import("../views/caseLibrary/CaseLibrary.vue"),
   },
   {
-    path: "/morelibrary",
+    path: "/morelibrary/:id",
     name: "MoreLibrary",
     component: () => import("../views/caseLibrary/MoreLibrary.vue"),
   },
@@ -74,7 +74,7 @@ export default [
         component: () => import("../views/about/MyCollection.vue")
       },
       {
-        path: "collectionsclassify",
+        path: "collectionsclassify/:id/:name",
         name: 'CollectionsClassify',
         component: () => import("../views/about/CollectionsClassify.vue")
       },
