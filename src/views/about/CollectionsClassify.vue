@@ -11,8 +11,6 @@ import {favorite} from "@/api";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
-
-console.log('route.params.id:', )
 const groupId = route.params.id;
 const groupName = route.params.name;
 
@@ -71,7 +69,6 @@ const pagination = reactive<PageinationType>({
   pageSize: 10,
 });
 const handleTableChange = async (newpager: any) => {
-  console.log(newpager);
   pagination.total = newpager.total;
   pagination.current = newpager.current;
   pagination.pageSize = newpager.pageSize;

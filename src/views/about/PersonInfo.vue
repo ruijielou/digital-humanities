@@ -118,7 +118,6 @@ const handleOk = () => {
     formData.append("file", file);
 
     const res = await commonUpload(formData);
-    console.log(res);
     if (res.success) {
       formState.user.avatar = res?.message;
       visibleUploadImg.value = false;

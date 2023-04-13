@@ -23,7 +23,6 @@ const caseName = ref<string>("");
 const selectedKeys = ref<Key[]>([]);
 
 const onSelectChange = (selectedRowKeys: Key[]) => {
-  // console.log("selectedRowKeys changed: ", selectedRowKeys);
   selectedKeys.value = [...selectedRowKeys];
 };
 
@@ -53,7 +52,6 @@ const pagination = reactive<PageinationType>({
   pageSize: 10,
 });
 const handleTableChange = async (newpager: any) => {
-  console.log(newpager, "handleTableChange");
   pagination.total = newpager.total;
   pagination.current = newpager.current;
   pagination.pageSize = newpager.pageSize;

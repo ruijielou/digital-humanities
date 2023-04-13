@@ -60,7 +60,6 @@ const getCaseData = async () => {
 
   result && (dataSource.value = [...result.records]);
   pagination.total = result.total;
-  console.log('pagination : ',pagination)
 };
 
 
@@ -95,7 +94,6 @@ const enterSearch = async () => {
   const submitData = {
     ...formatterFormData({ ...formState.formFiledData }),
   };
-  console.log(submitData);
 
   showSearchRes.value = true;
 };
@@ -117,7 +115,6 @@ const  search_condition_meta_list = ref([]);
 const load_search_condition = async () => {
   const { result } = await meta.findSearchCondition();
   search_condition_meta_list.value = result;
-  console.log('search_condition_meta_list.value:', search_condition_meta_list.value);
 }
 load_search_condition();
 

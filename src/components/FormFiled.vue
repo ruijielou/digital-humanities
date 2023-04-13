@@ -34,7 +34,7 @@ defineExpose({ formState, formValidate });
     :model="formState"
   >
     <template v-for="col in formData">
-      <div class="w-33% inline-block" v-if="col.dataType === 14">
+      <div class="w-33% inline-block" v-if="col.dataType === 16">
         <a-form-item
           :colon="false"
           :labelCol="{ span: 0 }"

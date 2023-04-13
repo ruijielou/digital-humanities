@@ -49,7 +49,6 @@ const getCollectionData = async () => {
     )
   }
   collectionData.value = datas;
-  console.log('datas:', datas)
 }
 
 

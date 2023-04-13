@@ -112,11 +112,7 @@ const getTwoFormInput = async () => {
   if (result && formResult) {
     // const { formModal } = formatterFormInput({ result });
     let case_data_info = { ...formResult.result };
-
     case_data_info = convert_case_data(case_data_info, result);
-
-    console.log('case_data_info:', case_data_info)
-
 
     stepTwoData.formModal = case_data_info;
     stepTwoData.data = [...result];
@@ -173,7 +169,6 @@ const publish_case = async (status:number) => {
     repositoryIds:formModel.caseinfo.repositoryIds,
     authType:formModel.caseinfo.authType,
   };
-  console.log('submitData:', submitData)
   const response = await caseApi.add(submitData);
   isEdit.value = false
   getDetail();

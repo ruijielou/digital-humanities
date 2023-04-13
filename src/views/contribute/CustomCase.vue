@@ -48,7 +48,7 @@ const onFinish = async (values: any) => {
   }
 
   const result = await dhuuser.updateAuth({ ...values.user });
-  console.log(result);
+
   if (result.success) {
     Modal.success({
       title: () => "提示",

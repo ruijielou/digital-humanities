@@ -26,7 +26,6 @@ const datas = [
 const sortedInfo = ref();
 const columns = computed(() => {
   const sorted = sortedInfo.value || {};
-  console.log(sorted.order);
 
   return [
     {
@@ -97,7 +96,6 @@ getLibraryList();
  * @description 分页改变
  */
 const handleTableChange = async (newpager: any) => {
-  console.log(newpager);
   pagination.total = newpager.total;
   pagination.current = newpager.current;
   pagination.pageSize = newpager.pageSize;
@@ -112,7 +110,6 @@ const getSlider = async () => {
 getSlider();
 
 const reset_repository = (id:number) => {
-  console.log('id', id)
   repository_id.value = id;
   getLibraryList();
   getRepositoryDetail();
