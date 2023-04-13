@@ -44,6 +44,7 @@ const getCollectionData = async () => {
         lastCaseName: record.caseName,
         comments: [],
         cover: record.caseCover,
+        favoriteId: record.favoriteId
       }
     )
   }
@@ -59,7 +60,7 @@ const cancelFavorited:any = async (id: number) => {
   if (!id) return;
   const params = {
     type: 1, //点赞2 收藏1
-    contentId: id,
+    contentId: id.toString(),
   };
   const res = await favorite.del(params);
   if (res.success) {

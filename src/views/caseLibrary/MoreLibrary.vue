@@ -144,10 +144,10 @@ const reset_repository = (id:number) => {
       </div>
       <div class="flex-1 h-100% p-l-20 p-r-20">
         <div class="p-t-5 lines-purple">
-          <h2>{{repository_info.name}}</h2>
+          <h2>{{repository_info?.name}}</h2>
         </div>
         <p class="c-#999 text-3 m-t-2">
-          {{repository_info.description}}
+          {{repository_info?.description}}
         </p>
         <div class="result-container p-t-5">
           <div class="result-filter flex p-b-4">

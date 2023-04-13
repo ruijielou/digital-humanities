@@ -1,23 +1,13 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch,reactive } from "vue";
+import { ref, onMounted, watch, reactive } from "vue";
 import { ArrowLeftOutlined } from "@ant-design/icons-vue";
 import LogoText from "../../components/LogoText.vue";
 import MessageItem from "./components/MessageItem.vue";
 import CommentItem from "./components/CommentItem.vue";
 import { MessageItemType, MessageType } from "./type";
 import { announcement, comment } from "@/api";
-// const messageData = [
-//   {
-//     id: 1,
-//     type: "announ",
-//     isRead: false,
-//     createTime: "2023-01-22",
-//     desc: "近期收到一些用户反馈，封面图片上传后变成了方块，在收到反馈后，我们第一时间进行了调研，问题已经解决。近期收到一些用户反馈，封面图片上传后变成了方块，在收到反馈后，我们第一时间进行了调研，问题已经解决。",
-//   },
-// ];
+import type { PageinationType } from "@/utils/type";
 
-
-const message = ref<MessageItemType[]>([]);
 const commentData = ref<any>([]);
 const messageType = ref<MessageType>(MessageType.All);
 const changeRead = async (id: number) => {
@@ -28,30 +18,62 @@ const changeRead = async (id: number) => {
 };
 
 const visibleView = ref<boolean>(false);
-const currentData = reactive<any>({data: {}});
+const currentData = reactive<any>({ data: {} });
 const filterData = (type: MessageType) => {
   messageType.value = type;
   getMessage();
-  // message.value =
-  //   type == MessageType.All
-  //     ? [...messageData]
-  //     : [...messageData.filter((item: MessageItemType) => item.type === type)];
 };
+const pagination = reactive<PageinationType>({
+  total: 0,
+  current: 1,
+  pageSize: 10,
+});
+
 const menuType = ref<string>("message");
-const getMessage = async (type?: MessageType) => {
-  const { result } = await announcement.myPage(type || messageType.value);
-  message.value = result?.records; //调试数据的时候再放开代码
+const getMessage = async (type?: MessageType, isGetMore?: boolean) => {
+  let paramsurl = `&type=${type || messageType.value}`;
+  if (isGetMore) {
+    pagination.current = pagination.current + 1;
+    paramsurl += `&pageNo=${pagination.current}&pageSize=${pagination.pageSize}`;
+  } else {
+    pagination.current = 1;
+  }
+  const { result } = await announcement.myPage(paramsurl);
+  if (isGetMore) {
+    commentData.value = [...commentData.value, ...result?.records]; //调试数据的时候再放开代码
+  } else {
+    commentData.value = result?.records; //调试数据的时候再放开代码
+  }
+  pagination.total = result.total;
+  pagination.current = result.current;
+  pagination.pageSize = result.size;
 };
-// comment/myPage
-const getComment = async () => {
-  const { result } = await comment.myPage();
-  commentData.value = result?.records; //调试数据的时候再放开代码
+
+const getComment = async (isGetMore?: boolean) => {
+  let paramsurl = "";
+
+  if (isGetMore) {
+    pagination.current = pagination.current + 1;
+    paramsurl += `&pageNo=${pagination.current}&pageSize=${pagination.pageSize}`;
+  } else {
+    pagination.current = 1;
+  }
+
+  const { result } = await comment.myPage(paramsurl);
+  if (isGetMore) {
+    commentData.value = [...commentData.value, ...result?.records]; //调试数据的时候再放开代码
+  } else {
+    commentData.value = result?.records; //调试数据的时候再放开代码
+  }
+  pagination.total = result.total;
+  pagination.current = result.current;
+  pagination.pageSize = result.size;
 };
 
 const openView = (data: any) => {
-  currentData.data = {...data};
+  currentData.data = { ...data };
   visibleView.value = true;
-}
+};
 
 watch(
   () => menuType.value,
@@ -77,7 +99,7 @@ onMounted(() => {
     >
       <div
         class="return-prev-page cursor-pointer absolute z-2"
-        @click="$router.push({name: 'About'})"
+        @click="$router.push({ name: 'About' })"
       >
         <arrow-left-outlined />
         <span class="p-l-2">个人中心</span>
@@ -128,21 +150,40 @@ onMounted(() => {
           </div>
           <div class="message-list">
             <MessageItem
-            @openView="openView"
+              @openView="openView"
               @changeRead="changeRead"
-              v-for="item in message"
+              v-for="item in commentData"
               :message="item"
             />
+            <p
+            class="text-center cursor-pointer"
+              v-if="commentData.length && commentData.length < pagination.total"
+              @click="getMessage(messageType, true)"
+            >
+              加载更多
+            </p>
+            <p class="text-center cursor-pointer" v-else>没有更多了</p>
           </div>
         </div>
         <div class="comments flex-1 p-20 p-t-0" v-if="menuType === 'comment'">
-          <CommentItem @openView="openView" v-for="item in commentData" :comment="item" />
+          <CommentItem
+            @openView="openView"
+            v-for="item in commentData"
+            :comment="item"
+          />
+          <p
+          class="text-center cursor-pointer"
+            v-if="commentData.length < pagination.total"
+            @click="getComment(true)"
+          >
+            加载更多
+          </p>
+          <p class="text-center cursor-pointer" v-else>没有更多了</p>
         </div>
       </div>
     </a-layout-content>
     <a-modal :footer="false" v-model:visible="visibleView" title="查看">
       <p v-html="currentData.data.content || currentData.data.remark"></p>
-     
     </a-modal>
   </div>
 </template>

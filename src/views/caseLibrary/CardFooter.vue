@@ -47,7 +47,6 @@ const props = withDefaults(
         <eye-outlined />
         {{ card.visitQuantity }}
       </div>
-     
     </div>
     <span
         class="absolute right-0 bottom-0 p-5"

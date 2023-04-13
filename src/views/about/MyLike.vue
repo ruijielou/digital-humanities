@@ -116,7 +116,7 @@ const cancelFavorited = async (id: string) => {
   if (!id) return;
   const params = {
     type: 2, //点赞2 收藏1
-    contentId: id,
+    contentId: id.toString(),
   };
   const res = await favorite.del(params);
   if (res.success) {
@@ -156,10 +156,10 @@ const cancelFavorited = async (id: string) => {
           <template v-else-if="column.dataIndex === 'operation'">
             <span
             class="cursor-pointer"
-              @click="cancelFavorited(record.id)"
+              @click="cancelFavorited(record.contentId)"
             >
               <HeartFilled style="color: #f243d9" />
-              喜欢
+              <!-- 喜欢 -->
           </span>
           </template>
         </template>

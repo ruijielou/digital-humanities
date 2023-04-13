@@ -140,10 +140,10 @@ export const dhuuser = {
 }
 // {{URL}}/app/user/announcement/myPage
 export const announcement = {
-  myPage: (type?: MessageType) => {
+  myPage: (query?: string) => {
     return request(
       {
-        url: `/app/user/announcement/myPage?type=${type}&column=createTime&order=desc`,
+        url: `/app/user/announcement/myPage?column=createTime&order=desc&${query}`,
         method: "get",
       },
     );
@@ -197,7 +197,7 @@ export const comment = {
 }
 
 export const favorite = {
-  myPage: (type: number, groupId:any) => {
+  myPage: (type: number, groupId?:any) => {
     let url = '';
     if(groupId){
       url = `/app/user/favorite/myPage?type=${type}&groupId=${groupId}`;
