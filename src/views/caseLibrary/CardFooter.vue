@@ -51,7 +51,7 @@ const props = withDefaults(
     <span
         class="absolute right-0 bottom-0 p-5"
         v-if="$route.name === 'MyCollection'"
-        @click.stop="$emit('favorited',card.id)"
+        @click.stop="$emit('favorited',card.favoriteId)"
       >
         <star-filled style="color: #5b3df2" />
       </span>
