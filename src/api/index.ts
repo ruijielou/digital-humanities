@@ -372,4 +372,15 @@ export const meta = {
   },
  }
 
+export const labgroup = {
+  loadList: () => {
+    return request(
+      {
+        url: `/app/common/labgroup/loadList`,
+        method: "get",
+      },
+    );
+  },
+ }
+
 //  {{URL}}/app/user/favorite/findFavoStatus?contentId=80

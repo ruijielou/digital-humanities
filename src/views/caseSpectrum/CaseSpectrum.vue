@@ -2,7 +2,18 @@
 import { ref } from "vue";
 import { ReloadOutlined } from "@ant-design/icons-vue";
 import { Colors } from "../../utils/type";
+import { labgroup, meta } from "@/api";
 const checkedList = ref<number[]>([]);
+
+/*加载过滤条件*/
+const  lab_group_list = ref([]);
+const load_lab_group = async () => {
+  const { result } = await labgroup.loadList();
+  lab_group_list.value = result;
+  console.log('lab_group_list.value:', lab_group_list.value);
+}
+load_lab_group();
+
 </script>
 <template>
   <div class="h-screen overflow-auto casespectrum-container">
@@ -25,13 +36,16 @@ const checkedList = ref<number[]>([]);
           </div>
           <div class="p-t-3">
             <a-checkbox-group v-model:value="checkedList">
-              <a-tag
-                class="m-r-2 m-t-2"
-                v-for="k in 20"
-                :color="Colors[k % 10]"
-              >
-                <a-checkbox class="c-#fff" :value="k"> 标签{{ k }}</a-checkbox>
-              </a-tag>
+              <div v-for="lab_group in lab_group_list">
+                <a-tag
+                  class="m-r-2 m-t-2"
+                  v-for="k in lab_group.opts"
+                  :color="'#' + k.colorValue"
+                >
+                  <a-checkbox class="c-#fff" :value="k"> {{ k.title }}</a-checkbox>
+                </a-tag>
+
+              </div>
             </a-checkbox-group>
           </div>
         </div>
