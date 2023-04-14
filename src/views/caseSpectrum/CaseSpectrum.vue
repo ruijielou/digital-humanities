@@ -5,7 +5,7 @@ import { Colors } from "../../utils/type";
 import { labgroup, meta } from "@/api";
 const checkedList = ref<number[]>([]);
 
-/*加载过滤条件*/
+/* 加载标签  */
 const  lab_group_list = ref([]);
 const load_lab_group = async () => {
   const { result } = await labgroup.loadList();

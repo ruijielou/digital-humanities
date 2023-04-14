@@ -383,4 +383,16 @@ export const labgroup = {
   },
  }
 
+export const caseLocation = {
+  list: () => {
+    return request(
+      {
+        url: `/app/common/caselocation/list`,
+        method: "get",
+        params:{}
+      },
+    );
+  },
+ }
+
 //  {{URL}}/app/user/favorite/findFavoStatus?contentId=80

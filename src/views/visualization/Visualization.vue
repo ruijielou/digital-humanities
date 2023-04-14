@@ -11,6 +11,7 @@ import * as echarts from "echarts";
 import { getOption } from "./options";
 import { componentMap } from "./type";
 import { seriesData } from "./mock";
+import { caseLocation, labgroup } from "@/api";
 
 interface ChartTypeMap {
   key: componentMap;
@@ -101,18 +102,20 @@ const initChart = (type: componentMap) => {
   });
 };
 
-const changeView = (id: number) => {
+const changeView = (id: number, case_info:any) => {
   // 请求数据
   // 刷新页面资源
   // 暂时用loading状态，后期切换数据即可
   if (activeRightId.value === id) return;
   activeRightId.value = id;
   spinning.value = true;
-
+//TODO 增加显示的逻辑
+  console.log('cityLocation:', case_info.cityLocation)
   setTimeout(() => {
     initChart(currentType.value);
     spinning.value = false;
   }, 3000);
+
 };
 
 onMounted(() => {
@@ -121,6 +124,17 @@ onMounted(() => {
 onUnmounted(() => {
   chartInit.value && chartInit.value.dispose();
 });
+
+/* 案例列表 */
+const  case_location_list = ref([]);
+const load_case_location = async () => {
+  const { result } = await caseLocation.list();
+  case_location_list.value = result;
+  console.log('lab_group_list.value:', case_location_list.value);
+}
+load_case_location();
+
+
 </script>
 <template>
   <div class="h-screen overflow-auto">
@@ -153,8 +167,8 @@ onUnmounted(() => {
           <div
             class="library-item flex flex-col"
             :class="{ active: activeRightId === i }"
-            v-for="i in 6"
-            @click="changeView(i)"
+            v-for="(case_location, i) in case_location_list"
+            @click="changeView(i, case_location)"
           >
             <div
               class="h-120px w-100% item-bg"
@@ -162,11 +176,11 @@ onUnmounted(() => {
             ></div>
             <div class="p-4 library-bottom-desc flex-1">
               <div class="line-clamp-2">
-                德国图书馆、档案馆和博物馆门户（BAMP）
+                {{case_location.name}}
               </div>
               <div class="flex justify-between p-t-2 text-1.5">
-                <span>德国</span>
-                <span>2001-2023</span>
+                <span>{{case_location.country}}</span>
+                <span>{{case_location.itemTime}}</span>
               </div>
             </div>
           </div>

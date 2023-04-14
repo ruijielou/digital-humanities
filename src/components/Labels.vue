@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ref } from "vue";
+import { labgroup } from "@/api";
+
 const labelsData: { label: string, id: number }[] = [
   {
     label: '分类1',
@@ -41,6 +44,16 @@ const labelsData: { label: string, id: number }[] = [
     id: 10
   }
 ]
+
+/* 加载标签  */
+const  lab_group_list = ref([]);
+const load_lab_group = async () => {
+  const { result } = await labgroup.loadList();
+  lab_group_list.value = result;
+  console.log('lab_group_list.value:', lab_group_list.value);
+}
+load_lab_group();
+
 </script>
 
 <template>
