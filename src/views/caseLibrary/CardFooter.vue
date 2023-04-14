@@ -47,11 +47,12 @@ const props = withDefaults(
         <eye-outlined />
         {{ card.visitQuantity }}
       </div>
+     
     </div>
     <span
         class="absolute right-0 bottom-0 p-5"
         v-if="$route.name === 'MyCollection'"
-        @click.stop="$emit('favorited',card.favoriteId)"
+        @click.stop="$emit('favorited',card.id)"
       >
         <star-filled style="color: #5b3df2" />
       </span>

@@ -74,7 +74,7 @@ export const repository = {
   page: (query: string) => {
     return request(
       {
-        url: `/app/user/repository/page?${query}`,
+        url: `/app/common/repository/page?${query}`,
         method: "get",
       },
     );
@@ -82,7 +82,15 @@ export const repository = {
   findRepositoryGroupIndex: () => {
     return request(
       {
-        url: `/app/user/repository/findRepositoryGroupIndex`,
+        url: `/app/common/repository/findRepositoryGroupIndex`,
+        method: "get",
+      },
+    );
+  },
+  suggest: () => {
+    return request(
+      {
+        url: `/app/common/repository/suggest`,
         method: "get",
       },
     );
@@ -90,7 +98,7 @@ export const repository = {
   queryById: (id: any) => {
     return request(
       {
-        url: `/app/user/repository/queryById?id=${id}`,
+        url: `/app/common/repository/queryById?id=${id}`,
         method: "get",
       },
     );
@@ -140,10 +148,10 @@ export const dhuuser = {
 }
 // {{URL}}/app/user/announcement/myPage
 export const announcement = {
-  myPage: (query?: string) => {
+  myPage: (type?: MessageType) => {
     return request(
       {
-        url: `/app/user/announcement/myPage?column=createTime&order=desc&${query}`,
+        url: `/app/user/announcement/myPage?type=${type}&column=createTime&order=desc`,
         method: "get",
       },
     );
@@ -180,7 +188,7 @@ export const comment = {
   page: (id: string) => {
     return request(
       {
-        url: `/app/user/comment/page?contentId=${id}`,
+        url: `/app/common/comment/page?contentId=${id}`,
         method: "get",
       },
     );
@@ -197,7 +205,7 @@ export const comment = {
 }
 
 export const favorite = {
-  myPage: (type: number, groupId?:any) => {
+  myPage: (type: number, groupId:any) => {
     let url = '';
     if(groupId){
       url = `/app/user/favorite/myPage?type=${type}&groupId=${groupId}`;
@@ -215,7 +223,7 @@ export const favorite = {
   findFavoStatus: (id: string | number) => {
     return request(
       {
-        url: `/app/user/favorite/findFavoStatus?contentId=${id}`,
+        url: `/app/common/favorite/findFavoStatus?contentId=${id}`,
         method: "get",
       },
     );
@@ -249,6 +257,14 @@ export const favoritegroup = {
       },
     );
   },
+  page: () => {
+    return request(
+      {
+        url: `/app/common/favoritegroup/page`,
+        method: "get",
+      },
+    );
+  },
   insert: (data: {authType: number,title: string}) => {
     return request(
       {
@@ -264,7 +280,7 @@ export const repositorygroup = {
   list: () => {
     return request(
       {
-        url: `/app/user/repositorygroup/list`,
+        url: `/app/common/repositorygroup/list`,
         method: "get",
       },
     );
@@ -272,7 +288,7 @@ export const repositorygroup = {
   findList: () => {
     return request(
       {
-        url: `/app/user/repositorygroup/findList`,
+        url: `/app/common/repositorygroup/findList`,
         method: "get",
       },
     );
@@ -300,7 +316,7 @@ export const caseApi = {
   findViewDetail: (id: string) => {
     return request(
       {
-        url: `/app/user/case/findViewDetail?id=${id}`,
+        url: `/app/common/case/findViewDetail?id=${id}`,
         method: "get",
       },
     );
@@ -308,19 +324,22 @@ export const caseApi = {
   findDetail: (id: string) => {
     return request(
       {
-        url: `/app/user/case/findDetail?id=${id}`,
+        url: `/app/common/case/findDetail?id=${id}`,
         method: "get",
       },
     );
   },
 }
 
+// @ts-ignore
 export const caseinfo = {
-  page: (query?:string) => {
+  page: (data?:any) => {
+    console.log('data:', data);
     return request(
       {
-        url: `/app/user/caseinfo/page?${query}`,
+        url: `/app/common/caseinfo/page`,
         method: "get",
+        params: data
       },
     );
   },
@@ -338,7 +357,7 @@ export const meta = {
   findSearchCondition: () => {
     return request(
       {
-        url: `/app/user/meta/findSearchCondition`,
+        url: `/app/common/meta/findSearchCondition`,
         method: "get",
       },
     );
@@ -346,7 +365,7 @@ export const meta = {
   findFormListGroup: (ids: string) => {
     return request(
       {
-        url: `/app/user/meta/findFormListGroup?repositoryIds=${ids}`,
+        url: `/app/common/meta/findFormListGroup?repositoryIds=${ids}`,
         method: "get",
       },
     );

@@ -1,19 +1,38 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import {
-  SearchOutlined,
-  DoubleRightOutlined,
-  RightOutlined,
-} from "@ant-design/icons-vue";
+import { DoubleRightOutlined, RightOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import Labels from "./Labels.vue";
+import { useRouter } from "vue-router";
+import { message } from "ant-design-vue";
+import { repository } from "@/api";
 
 const searchFields = ref<string>("");
 const showLabels = ref<boolean>(false);
 const searchType = ref<number>(0);
+const repository_suggest_list = ref<any[]>([]);
 
 const changeShowLabels = () => {
   showLabels.value = !showLabels.value;
 };
+const router = useRouter();
+const do_search = () => {
+  console.log('searchType:', searchType)
+  console.log('searchFields:', searchFields)
+  let keywords = searchFields.value;
+  if(keywords){
+    console.log('router:', router)
+    router.push({ name: "AdvancedSearch",query:{keywords:keywords} });
+  }else {
+    message.warning("请输入关键字");
+  }
+}
+
+const load_repository_suggest = async () => {
+  const {result } = await repository.suggest();
+  repository_suggest_list.value = result;
+  console.log('repository_suggest_list:', repository_suggest_list.value)
+}
+load_repository_suggest();
 </script>
 <template>
   <div class="flex items-center justify-center">
@@ -34,7 +53,7 @@ const changeShowLabels = () => {
         </div>
       </template>
       <template #addonAfter>
-        <div class="cursor-pointer" style="width: 80px" @click="$router.push({name: 'AdvancedSearch'})">
+        <div class="cursor-pointer" style="width: 80px" @click="do_search()">
           <SearchOutlined />
           搜索
         </div>
@@ -46,14 +65,8 @@ const changeShowLabels = () => {
     </span>
   </div>
   <div class="content-text-wrapper flex justify-center p-4">
-    <div class="text-wrapper flex-col">
-      <span class="text">GLAM数据库</span>
-    </div>
-    <div class="text-wrapper flex-col">
-      <span class="text">数字人文会议获奖项目数据库</span>
-    </div>
-    <div class="text-wrapper flex-col">
-      <span class="text">高校数字人文研究项目分库</span>
+    <div class="text-wrapper flex-col" v-for="suggest_item in repository_suggest_list">
+      <span class="text" @click=" $router.push({ name: 'MoreLibrary', params: { id: suggest_item.id }, })">{{suggest_item.name}}</span>
     </div>
     <div class="text-wrapper flex-col">
       <span class="text">

@@ -90,7 +90,7 @@ getComment();
               cancel-text="取消"
               @confirm="moreOperation(record.id)"
             >
-              <a-button type="text">...</a-button>
+              <a-button type="text">删除</a-button>
             </a-popconfirm>
           </div>
         </template>

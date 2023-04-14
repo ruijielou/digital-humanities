@@ -37,58 +37,6 @@ const columns = [
   },
 ];
 
-const dataSourcemock = [
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 1,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 2,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 3,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 4,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 5,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 6,
-  },
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 7,
-  },
-];
-
 const dataSource = ref<any[]>([]);
 
 const pagination = reactive<PageinationType>({
@@ -105,7 +53,7 @@ const handleTableChange = async (newpager: any) => {
 };
 
 const getMylike = async () => {
-  const { result } = await favorite.myPage(2);
+  const { result } = await favorite.myPage(2, null);
   if (result) {
     dataSource.value = [...result.records];
   }
@@ -116,7 +64,7 @@ const cancelFavorited = async (id: string) => {
   if (!id) return;
   const params = {
     type: 2, //点赞2 收藏1
-    contentId: id.toString(),
+    contentId: id,
   };
   const res = await favorite.del(params);
   if (res.success) {
@@ -154,13 +102,21 @@ const cancelFavorited = async (id: string) => {
             {{ text }}
           </div>
           <template v-else-if="column.dataIndex === 'operation'">
-            <span
-            class="cursor-pointer"
-              @click="cancelFavorited(record.contentId)"
+            <a-popconfirm
+              title="确定要取消吗?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="cancelFavorited(record.contentId)"
             >
+              <span
+                class="cursor-pointer"
+              >
               <HeartFilled style="color: #f243d9" />
-              <!-- 喜欢 -->
+              取消
           </span>
+            </a-popconfirm>
+
+
           </template>
         </template>
       </a-table>

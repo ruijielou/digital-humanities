@@ -30,6 +30,8 @@ const formState = reactive<LoginState>({
 });
 // 登录
 const onFinish = async (values: LoginState) => {
+  console.log(values);
+
   if (!values.phone) {
     Modal.error({
       title: () => "提示",

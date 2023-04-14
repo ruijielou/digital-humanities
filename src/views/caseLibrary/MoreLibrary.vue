@@ -26,6 +26,7 @@ const datas = [
 const sortedInfo = ref();
 const columns = computed(() => {
   const sorted = sortedInfo.value || {};
+  console.log(sorted.order);
 
   return [
     {
@@ -59,7 +60,10 @@ const setSort = (type: string) => {
 };
 const repository_id = ref();
 repository_id.value = route.params.id;
-const repository_info = ref();
+const repository_info = ref({
+  name:'',
+  description:'',
+});
 
 
 
@@ -69,6 +73,7 @@ const getRepositoryDetail = async ()=>{
   if (result) {
     repository_info.value = result;
   }
+  console.log('repository_info.value:', repository_info.value)
 }
 getRepositoryDetail();
 
@@ -81,7 +86,11 @@ const pagination = reactive<PageinationType>({
 });
 const getLibraryList = async () => {
   const { result } = await caseinfo.page(
-    `repositoryId=${repository_id.value}&&pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
+    {
+      repositoryId: repository_id.value,
+      pageNo: pagination.current,
+      pageSize: pagination.pageSize
+    }
   );
   if (result) {
     dataSource.value = [...result.records];
@@ -96,6 +105,7 @@ getLibraryList();
  * @description 分页改变
  */
 const handleTableChange = async (newpager: any) => {
+  console.log(newpager);
   pagination.total = newpager.total;
   pagination.current = newpager.current;
   pagination.pageSize = newpager.pageSize;
@@ -110,6 +120,7 @@ const getSlider = async () => {
 getSlider();
 
 const reset_repository = (id:number) => {
+  console.log('id', id)
   repository_id.value = id;
   getLibraryList();
   getRepositoryDetail();
@@ -141,10 +152,10 @@ const reset_repository = (id:number) => {
       </div>
       <div class="flex-1 h-100% p-l-20 p-r-20">
         <div class="p-t-5 lines-purple">
-          <h2>{{repository_info?.name}}</h2>
+          <h2>{{repository_info.name}}</h2>
         </div>
         <p class="c-#999 text-3 m-t-2">
-          {{repository_info?.description}}
+          {{repository_info.description}}
         </p>
         <div class="result-container p-t-5">
           <div class="result-filter flex p-b-4">

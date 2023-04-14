@@ -49,6 +49,7 @@ const codeTimerStart = () => {
 };
 
 const onFinish = async (values: any) => {
+  // console.log("Success:", values);
   if(!values.user.realName) {
     Modal.error({
       title: () => "提示",
@@ -71,6 +72,7 @@ const onFinish = async (values: any) => {
     return
   }
   const result = await dhuuser.updateAuth({...values.user});
+  console.log(result);
   if (result.success) {
     Modal.success({
       title: () => "提示",

@@ -83,7 +83,7 @@ export const formatterFormInput = (props: any) => {
   if (!props.result) return { formModal: null }
   const data: any = {};
   for (const item of props.result) {
-      if (item.dataType === 9 || item.dataType === 13 || item.dataType === 16 || item.dataType === 6) {
+      if (item.dataType === 9 || item.dataType === 13 || item.dataType === 14 || item.dataType === 6) {
           data[item.filed] = [];
       } else {
           data[item.filed] = "";

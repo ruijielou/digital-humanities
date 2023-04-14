@@ -49,6 +49,8 @@ export interface PageinationType {
   total: number;
   current: number;
   pageSize: number;
+  column?: string;
+  order?: string;
 }
 export const categoryList: CategoryItem[] = [
   {

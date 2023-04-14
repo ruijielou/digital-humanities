@@ -1,6 +1,20 @@
 <script lang="ts" setup>
 import { categoryList } from "../utils/type";
 import { SearchOutlined } from "@ant-design/icons-vue";
+import { useRouter } from "vue-router";
+import { message } from "ant-design-vue";
+import { ref } from "vue";
+
+const searchFields = ref<string>("");
+
+const router = useRouter();
+const do_search = () => {
+  let keywords = searchFields.value;
+  if(keywords){
+    console.log('router:', router)
+    router.push({ name: "AdvancedSearch",query:{keywords:keywords} });
+  }
+}
 
 </script>
 <template>
@@ -22,8 +36,8 @@ import { SearchOutlined } from "@ant-design/icons-vue";
         </span>
       </div>
     </div>
-    <div class="flex-2 footer-search p-t-20">
-      <a-input>
+    <div class="flex-2 footer-search p-t-20" @click="do_search()">
+      <a-input v-model:value="searchFields" >
         <template #suffix>
           <SearchOutlined />
         </template>

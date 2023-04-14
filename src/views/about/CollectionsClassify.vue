@@ -9,8 +9,11 @@ import {
 import type { PageinationType } from "../../utils/type";
 import {favorite} from "@/api";
 import { useRoute } from "vue-router";
+import { message } from "ant-design-vue";
 
 const route = useRoute();
+
+console.log('route.params.id:', )
 const groupId = route.params.id;
 const groupName = route.params.name;
 
@@ -24,25 +27,28 @@ const columns = computed(() => {
   return [
     {
       title: "名称",
-      dataIndex: "name",
+      dataIndex: "caseName",
       sorter: (a: any, b: any) =>
         a.name.localeCompare(b.name, "zh-Hans-CN", {
           sensitivity: "accent",
         }),
       sortOrder: sorted.columnKey === "name" && sorted.order,
     },
-
     {
       title: "国别",
-      dataIndex: "contry",
+      dataIndex: "caseCountry",
     },
     {
       title: "所属机构",
-      dataIndex: "organization",
+      dataIndex: "caseSubOrg",
     },
     {
       title: "项目时间",
-      dataIndex: "projectTime",
+      dataIndex: "caseItemTime",
+    },
+    {
+      title: "",
+      dataIndex: "operation",
     },
   ];
 });
@@ -69,6 +75,7 @@ const pagination = reactive<PageinationType>({
   pageSize: 10,
 });
 const handleTableChange = async (newpager: any) => {
+  console.log(newpager);
   pagination.total = newpager.total;
   pagination.current = newpager.current;
   pagination.pageSize = newpager.pageSize;
@@ -82,6 +89,21 @@ const getMyFavorite = async () => {
   }
 };
 getMyFavorite();
+
+// 取消喜欢
+const cancelFavorited = async (id: string) => {
+  if (!id) return;
+  const params = {
+    type: 1, //点赞2 收藏1
+    contentId: id,
+  };
+  const res = await favorite.del(params);
+  if (res.success) {
+    message.success(res.message);
+    getMyFavorite();
+  }
+}
+
 </script>
 <template>
   <a-layout-content
@@ -144,11 +166,22 @@ getMyFavorite();
         :loading="loading"
         @change="handleTableChange"
       >
-        <template #bodyCell="{ column, text, index }">
+        <template #bodyCell="{ column, text, index, record }">
           <template v-if="column.dataIndex === 'name'"
             >{{ index }} {{ text }}</template
           >
+          <div v-if="column.dataIndex === 'operation'">
+            <a-popconfirm
+              title="确定要删除吗?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="cancelFavorited(record.caseId)"
+            >
+              <a-button type="text">删除</a-button>
+            </a-popconfirm>
+          </div>
         </template>
+
       </a-table>
     </div>
   </a-layout-content>

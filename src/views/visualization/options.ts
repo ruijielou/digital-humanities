@@ -404,6 +404,7 @@ const getDistribution = (chartData: any) => {
         itemStyle: {
           normal: {
             color: (data) => {
+              console.log(data.color);
               return data.color
             }
           }
