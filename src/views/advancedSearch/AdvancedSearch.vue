@@ -130,7 +130,7 @@ load_search_condition();
     <a-layout-content
       style="padding: 20px 0; margin: 0 auto; width: 80%"
       class="flex flex-col"
-      v-if="!showSearchRes"
+      v-show="!showSearchRes"
     >
       <div class="return-prev-page cursor-pointer" @click="$router.go(-1)">
         <arrow-left-outlined />
@@ -155,7 +155,7 @@ load_search_condition();
     <a-layout-content
       style="padding: 20px 0; margin: 0 auto; width: 80%"
       class="flex flex-col"
-      v-else
+      v-if="showSearchRes"
     >
       <div
         class="return-prev-page cursor-pointer"

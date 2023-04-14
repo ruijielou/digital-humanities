@@ -34,7 +34,7 @@ defineExpose({ formState, formValidate });
     :model="formState"
   >
     <template v-for="col in formData">
-      <div class="w-33% inline-block" v-if="col.dataType === 16">
+      <!-- <div class="w-33% inline-block" v-if="col.dataType === 16">
         <a-form-item
           :colon="false"
           :labelCol="{ span: 0 }"
@@ -64,9 +64,8 @@ defineExpose({ formState, formValidate });
             >
           </a-select>
         </a-form-item>
-      </div>
+      </div> -->
       <a-form-item
-        v-else
         :colon="false"
         :name="['formFiledData', `${col.filed}`]"
         :label="col.name"
@@ -121,7 +120,7 @@ defineExpose({ formState, formValidate });
         </a-select>
         <a-select
           placeholder="选择或输入"
-          v-else-if="col.dataType === 13"
+          v-else-if="col.dataType === 13  || col.dataType === 16"
           :showSearch="true"
           v-model:value="formState.formFiledData[`${col.filed}`]"
           mode="tags"
