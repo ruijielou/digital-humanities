@@ -93,7 +93,7 @@ watch(
       :footer="null"
       :closable="true"
     >
-      <Search />
+      <Search @closeSearch="() => visibleSearch = !visibleSearch" />
     </a-modal>
     <LoginModal ref="loginModalRef" />
   </a-layout-header>
