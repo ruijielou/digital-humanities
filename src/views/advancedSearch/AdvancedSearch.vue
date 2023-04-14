@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive, UnwrapRef } from "vue";
+import { ref, computed, reactive, onMounted } from "vue";
 import LogoText from "../../components/LogoText.vue";
 import type { PageinationType } from "../../utils/type";
 import {
@@ -11,12 +11,15 @@ import {
 import { caseinfo, meta } from "@/api";
 import { formatterFormInput, formatterFormData } from "@/utils/config";
 import FormFiled from "@/components/FormFiled.vue";
+import { useRouter,useRoute } from "vue-router"
 
 const selectContry = ref<string>("中国");
 const selectFiled = ref<string>("项目时间");
 const loading = ref<boolean>(false);
 const filedFromRef = ref<any>(null);
 const sortedInfo = ref();
+const router = useRouter();
+const route = useRoute();
 const columns = computed(() => {
   const sorted = sortedInfo.value || {};
 
@@ -90,7 +93,7 @@ const getInputMeta = async () => {
 const enterSearch = async () => {
   const formState: any = await filedFromRef.value?.formValidate();
   if (!formState) return;
-  // 这是待提交的数据
+  //TODO: 这是待提交的数据,添加提交接口
   const submitData = {
     ...formatterFormData({ ...formState.formFiledData }),
   };
@@ -106,7 +109,6 @@ const setSort = (type: string) => {
 };
 const do_search = function(){
   showSearchRes.value = true
-
   getCaseData();
 }
 
@@ -118,6 +120,23 @@ const load_search_condition = async () => {
 }
 load_search_condition();
 
+const gotoBack = () => {
+  if(route.name === 'Search') {
+    router.push({name: 'AdvancedSearch'})
+  }else {
+    showSearchRes.value = false
+  }
+}
+
+onMounted(() => {
+ if(route.name === 'Search') {
+  const {query} = route;
+  if(query && query.keywords) {
+    //TODO: 在这儿加载点击搜索后的搜索列表
+    //query.keywords 为传过来的查询值
+  }
+ }
+});
 
 </script>
 <template>
@@ -130,9 +149,9 @@ load_search_condition();
     <a-layout-content
       style="padding: 20px 0; margin: 0 auto; width: 80%"
       class="flex flex-col"
-      v-show="!showSearchRes"
+      v-show="!showSearchRes && $route.name !== 'Search'"
     >
-      <div class="return-prev-page cursor-pointer" @click="$router.go(-1)">
+      <div class="return-prev-page cursor-pointer" @click="$router.push({name: 'home'})">
         <arrow-left-outlined />
         <span class="p-l-2">首页</span>
       </div>
@@ -155,11 +174,12 @@ load_search_condition();
     <a-layout-content
       style="padding: 20px 0; margin: 0 auto; width: 80%"
       class="flex flex-col"
-      v-if="showSearchRes"
+      v-if="showSearchRes || $route.name == 'Search'"
     >
+    <!-- @click="showSearchRes = false" -->
       <div
         class="return-prev-page cursor-pointer"
-        @click="showSearchRes = false"
+        @click="gotoBack"
       >
         <arrow-left-outlined />
         <span class="p-l-2">高级检索</span>
