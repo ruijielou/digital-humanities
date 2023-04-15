@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { DoubleRightOutlined, RightOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import Labels from "./Labels.vue";
-import { useRouter,useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import { message } from "ant-design-vue";
 import { repository } from "@/api";
 
-const emit = defineEmits(['closeSearch'])
-const route = useRoute();
 const searchFields = ref<string>("");
 const showLabels = ref<boolean>(false);
 const searchType = ref<number>(0);
@@ -23,28 +21,21 @@ const do_search = () => {
   let keywords = searchFields.value;
   if(keywords){
     console.log('router:', router)
-    emit('closeSearch');
-    router.push({ name: "Search",query:{keywords:keywords} });
+    router.push({ name: "AdvancedSearch",query:{keywords:keywords} });
   }else {
     message.warning("请输入关键字");
   }
 }
 
 const load_repository_suggest = async () => {
-  // const {result } = await repository.suggest();
-  // repository_suggest_list.value = result;
-  // console.log('repository_suggest_list:', repository_suggest_list.value)
+  const {result } = await repository.suggest();
+  repository_suggest_list.value = result;
+  console.log('repository_suggest_list:', repository_suggest_list.value)
 }
 load_repository_suggest();
-onMounted(() => {
-  const {query} = route;
-  if(query && query.keywords) {
-    searchFields.value = query.keywords as string;
-  }
-})
 </script>
 <template>
-  <div class="flex items-center justify-center m-b-2">
+  <div class="flex items-center justify-center">
     <a-input
       class="transparent-input"
       size="large"
@@ -73,7 +64,7 @@ onMounted(() => {
       <double-right-outlined />
     </span>
   </div>
-  <div class="content-text-wrapper flex justify-center p-4" v-if='repository_suggest_list.length'>
+  <div class="content-text-wrapper flex justify-center p-4">
     <div class="text-wrapper flex-col" v-for="suggest_item in repository_suggest_list">
       <span class="text" @click=" $router.push({ name: 'MoreLibrary', params: { id: suggest_item.id }, })">{{suggest_item.name}}</span>
     </div>
