@@ -2,95 +2,103 @@
 import { ref } from "vue";
 import { labgroup } from "@/api";
 
-const labelsData: { label: string, id: number }[] = [
-  {
-    label: '分类1',
-    id: 1
-  },
-  {
-    label: '分类2',
-    id: 2
-  },
-  {
-    label: '分类3',
-    id: 3
-  },
-  {
-    label: '分类4',
-    id: 4
-  },
-  {
-    label: '分类5',
-    id: 5
-  },
-  {
-    label: '分类6',
-    id: 6
-  },
-  {
-    label: '分类7',
-    id: 7
-  },
-  {
-    label: '分类8',
-    id: 8
-  },
-  {
-    label: '分类9',
-    id: 9
-  },
-  {
-    label: '分类10',
-    id: 10
-  }
-]
+// const labelsData: { label: string, id: number }[] = [
+//   {
+//     label: '分类1',
+//     id: 1
+//   },
+//   {
+//     label: '分类2',
+//     id: 2
+//   },
+//   {
+//     label: '分类3',
+//     id: 3
+//   },
+//   {
+//     label: '分类4',
+//     id: 4
+//   },
+//   {
+//     label: '分类5',
+//     id: 5
+//   },
+//   {
+//     label: '分类6',
+//     id: 6
+//   },
+//   {
+//     label: '分类7',
+//     id: 7
+//   },
+//   {
+//     label: '分类8',
+//     id: 8
+//   },
+//   {
+//     label: '分类9',
+//     id: 9
+//   },
+//   {
+//     label: '分类10',
+//     id: 10
+//   }
+// ]
 
 /* 加载标签  */
-const  lab_group_list = ref([]);
+const lab_group_list = ref<any>([]);
 const load_lab_group = async () => {
   const { result } = await labgroup.loadList();
   lab_group_list.value = result;
-  console.log('lab_group_list.value:', lab_group_list.value);
-}
+  console.log("lab_group_list.value:", lab_group_list.value);
+  //   {
+  //     "id": 16,
+  //     "title": "学科",
+  //     "colorValue": null,
+  //     "opts": [
+  //         {
+  //             "id": 37,
+  //             "title": "物理",
+  //             "colorValue": "1890ff",
+  //             "opts": null
+  //         },
+  //         {
+  //             "id": 38,
+  //             "title": "化学",
+  //             "colorValue": "009688",
+  //             "opts": null
+  //         },
+  //         {
+  //             "id": 39,
+  //             "title": "生物",
+  //             "colorValue": "ff5c93",
+  //             "opts": null
+  //         },
+  //         {
+  //             "id": 40,
+  //             "title": "地理",
+  //             "colorValue": "9c27b0",
+  //             "opts": null
+  //         }
+  //     ]
+  // }
+};
 load_lab_group();
-
 </script>
 
 <template>
-  <div class="labels">
-    <div class="label-category">
-      <span @click="$emit('setSearch', item.label)" class="label-category-item text-center" v-for="item in labelsData"
-        :key="item.id">
-        {{ item.label }} </span>
-    </div>
-    <div class="label-category">
-      <span @click="$emit('setSearch', item.label)" class="label-category-item no-bg text-left" v-for="item in labelsData"
-        :key="item.id"> {{ item.label }}
+  <div class="labels flex">
+    <div class="label-category flex flex-col p-l-3 p-r-3" v-for="group in lab_group_list">
+      <span class="label-category-item text-center">
+        {{ group.title }}
       </span>
-    </div>
-    <div class="label-category">
-      <span @click="$emit('setSearch', item.label)" class="label-category-item no-bg text-left" v-for="item in labelsData"
-        :key="item.id"> {{ item.label }}
-      </span>
-    </div>
-    <div class="label-category">
-      <span @click="$emit('setSearch', item.label)" class="label-category-item no-bg text-left" v-for="item in labelsData"
-        :key="item.id"> {{ item.label }}
-      </span>
-    </div>
-    <div class="label-category">
-      <span @click="$emit('setSearch', item.label)" class="label-category-item no-bg text-left" v-for="item in labelsData"
-        :key="item.id"> {{ item.label }}
-      </span>
-    </div>
-    <div class="label-category">
-      <span @click="$emit('setSearch', item.label)" class="label-category-item no-bg text-left" v-for="item in labelsData"
-        :key="item.id"> {{ item.label }}
-      </span>
-    </div>
-    <div class="label-category">
-      <span @click="$emit('setSearch', item.label)" class="label-category-item no-bg text-left" v-for="item in labelsData"
-        :key="item.id"> {{ item.label }}
+      <span
+        @click="$emit('setSearch', item.title)"
+        class="label-category-item text-center no-bg"
+        v-for="item in group.opts"
+        :key="item.id"
+      >
+        {{ item.title }}
       </span>
     </div>
   </div>
@@ -105,7 +113,6 @@ load_lab_group();
   margin: 0 auto;
   padding: 15px;
   text-align: left;
-  ;
 
   .label-category-item {
     width: 84px;
@@ -116,10 +123,16 @@ load_lab_group();
     display: inline-block;
     color: #fff;
     margin: 5px;
-    cursor: pointer;
-
+    
     &.no-bg {
+      cursor: pointer;
       background-color: transparent;
+      transition: all .2s linear;
+      &:hover {
+        // background-color: rgba(255, 255, 255, 0.1);
+        // text-shadow: 2px 2px 2px #fff;
+        transform: scale(1.2);
+      }
     }
   }
 }

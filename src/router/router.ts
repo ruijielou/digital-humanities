@@ -53,6 +53,11 @@ export default [
     component: () => import("../views/advancedSearch/AdvancedSearch.vue"),
   },
   {
+    path: "/search",
+    name: "Search",
+    component: () => import("../views/advancedSearch/AdvancedSearch.vue"),
+  },
+  {
     path: "/about",
     name: "About",
     redirect: {name: 'SubmissionManage'},

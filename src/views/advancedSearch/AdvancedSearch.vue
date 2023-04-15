@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive, UnwrapRef } from "vue";
+import { ref, computed, reactive, onMounted } from "vue";
 import LogoText from "../../components/LogoText.vue";
 import type { PageinationType } from "../../utils/type";
 import {
@@ -11,7 +11,7 @@ import {
 import { caseinfo, meta } from "@/api";
 import { formatterFormInput, formatterFormData } from "@/utils/config";
 import FormFiled from "@/components/FormFiled.vue";
-import { useRoute } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 const selectContry = ref<string>("中国");
 const selectFiled = ref<string>("项目时间");
@@ -19,7 +19,10 @@ const loading = ref<boolean>(false);
 const filedFromRef = ref<any>(null);
 const sortedInfo = ref();
 
-const search_condition_params =ref({});
+const search_condition_params = ref({});
+
+const router = useRouter();
+const route = useRoute();
 
 const columns = computed(() => {
   const sorted = sortedInfo.value || {};
@@ -28,21 +31,23 @@ const columns = computed(() => {
     {
       title: "名称",
       dataIndex: "name",
-      // sorter: function(a: any, b: any){
-      //   console.log(a, b)
-      // },
+      // sorter: (a: any, b: any) =>
+      //   a.name.localeCompare(b.name, "zh-Hans-CN", {
+      //     sensitivity: "accent",
+      //   }),
+      // sortOrder: sorted.columnKey === "name" && sorted.order,
     },
     {
       title: "国别",
-      dataIndex: "country",
+      dataIndex: "contry",
     },
     {
       title: "所属机构",
-      dataIndex: "subOrg",
+      dataIndex: "organization",
     },
     {
       title: "项目时间",
-      dataIndex: "itemTime",
+      dataIndex: "projectTime",
     },
   ];
 });
@@ -53,12 +58,12 @@ const pagination = reactive<PageinationType>({
   total: 0,
   current: 1,
   pageSize: 10,
-  column : 'name',
-  order : 'asc',
+  column: "name",
+  order: "asc",
 });
 
 const getCaseData = async () => {
-  let submitData:any = {...search_condition_params.value};
+  let submitData: any = { ...search_condition_params.value };
   submitData.pageNo = pagination.current;
   submitData.pageSize = pagination.pageSize;
   submitData.column = pagination.column;
@@ -67,21 +72,18 @@ const getCaseData = async () => {
 
   result && (dataSource.value = [...result.records]);
   pagination.total = result.total;
-  console.log('pagination : ',pagination)
+  console.log("pagination : ", pagination);
 };
-
 
 const handleTableChange = async (newpager: any) => {
   pagination.total = newpager.total;
   pagination.current = newpager.current;
   pagination.pageSize = newpager.pageSize;
   getCaseData();
-//  getdata
+  //  getdata
 };
 
 const showSearchRes = ref<boolean>(false);
-
-const route = useRoute();
 
 const formFiled = reactive<any>({
   data: null,
@@ -91,8 +93,8 @@ const getInputMeta = async () => {
   const { result } = await meta.findSearchCondition();
 
   if (result) {
-    let i ;
-    for(i in result){
+    let i;
+    for (i in result) {
       result[i].isRequired = 2;
     }
     const { formModal } = formatterFormInput({ result });
@@ -101,21 +103,19 @@ const getInputMeta = async () => {
   }
 };
 
-const enterSearch = async (param:any) => {
-  console.log('enterSearch', param)
+const enterSearch = async (param: any) => {
+  console.log("enterSearch", param);
   const formState: any = await filedFromRef.value?.formValidate();
-  if(formState){
+  if (formState) {
     search_condition_params.value = {
       ...formatterFormData({ ...formState.formFiledData }),
-      ...param
+      ...param,
     };
-  }else {
+  } else {
     search_condition_params.value = {
-      ...param
+      ...param,
     };
   }
-  // if (!formState) return;
-  // 这是待提交的数据
 
   showSearchRes.value = true;
   getCaseData();
@@ -130,31 +130,47 @@ const setSort = (type: string) => {
   getCaseData();
 };
 
-const back_condition = () => {
-  console.log('back_condition', search_condition_params.value)
-  showSearchRes.value = false
+// const back_condition = () => {
+//   console.log('back_condition', search_condition_params.value)
+//   showSearchRes.value = false
 
-  filedFromRef.value?.setFormPamras();
-  console.log('filedFromRef.value?.formState():', filedFromRef.value?.formState());
-  console.log('filedFromRef.value:', filedFromRef.value);
-  console.log('filedFromRef:', filedFromRef);
+//   filedFromRef.value?.setFormPamras();
+//   console.log('filedFromRef.value?.formState():', filedFromRef.value?.formState());
+//   console.log('filedFromRef.value:', filedFromRef.value);
+//   console.log('filedFromRef:', filedFromRef);
 
-}
+// }
 /*加载过滤条件*/
-const  search_condition_meta_list = ref([]);
+const search_condition_meta_list = ref([]);
 const load_search_condition = async () => {
   const { result } = await meta.findSearchCondition();
   search_condition_meta_list.value = result;
   // console.log('search_condition_meta_list.value:', search_condition_meta_list.value);
-}
+};
 load_search_condition();
 
 const keywords = route.query?.keywords;
-if(keywords){
-  console.log('keywords:', keywords);
-  enterSearch({keywords:keywords})
+if (keywords) {
+  enterSearch({ keywords: keywords });
 }
 
+const gotoBack = () => {
+  // if (route.name === "Search") {
+    router.push({ name: "AdvancedSearch" });
+  // } else {
+    showSearchRes.value = false;
+  // }
+};
+
+onMounted(() => {
+  if (route.name === "Search") {
+    const { query } = route;
+    if (query && query.keywords) {
+      //TODO: 在这儿加载点击搜索后的搜索列表
+      //query.keywords 为传过来的查询值
+    }
+  }
+});
 </script>
 <template>
   <div class="h-screen overflow-auto advanced-search">
@@ -166,9 +182,12 @@ if(keywords){
     <a-layout-content
       style="padding: 20px 0; margin: 0 auto; width: 80%"
       class="flex flex-col"
-      v-if="!showSearchRes"
+      v-show="!showSearchRes && $route.name !== 'Search'"
     >
-      <div class="return-prev-page cursor-pointer" @click="$router.go(-1)">
+      <div
+        class="return-prev-page cursor-pointer"
+        @click="$router.push({ name: 'home' })"
+      >
         <arrow-left-outlined />
         <span class="p-l-2">首页</span>
       </div>
@@ -191,12 +210,9 @@ if(keywords){
     <a-layout-content
       style="padding: 20px 0; margin: 0 auto; width: 80%"
       class="flex flex-col"
-      v-else
+      v-if="showSearchRes || $route.name == 'Search'"
     >
-      <div
-        class="return-prev-page cursor-pointer"
-        @click="back_condition()"
-      >
+      <div class="return-prev-page cursor-pointer" @click="gotoBack">
         <arrow-left-outlined />
         <span class="p-l-2">高级检索</span>
       </div>
@@ -231,11 +247,15 @@ if(keywords){
           </a-dropdown>
           <div class="flex-1 flex justify-end">
             <span class="cursor-pointer" @click="setSort('asc')">
-              <sort-ascending-outlined />
+              <sort-ascending-outlined
+                :class="{ 'c-#5b3df2': pagination.order === 'asc' }"
+              />
             </span>
             <a-divider type="vertical" />
             <span class="cursor-pointer" @click="setSort('desc')">
-              <sort-descending-outlined />
+              <sort-descending-outlined
+                :class="{ 'c-#5b3df2': pagination.order === 'desc' }"
+              />
             </span>
           </div>
         </div>
@@ -249,9 +269,15 @@ if(keywords){
           @change="handleTableChange"
         >
           <template #bodyCell="{ column, text, index, record }">
-            <div class="c-#5b3df2 cursor-pointer" @click="$router.push({ name: 'CaseDetail', params: { id: record.id } })" v-if="column.dataIndex === 'name'"
-            >{{ index }} {{ text }}</div
+            <div
+              class="c-#5b3df2 cursor-pointer"
+              @click="
+                $router.push({ name: 'CaseDetail', params: { id: record.id } })
+              "
+              v-if="column.dataIndex === 'name'"
             >
+              {{ index }} {{ text }}
+            </div>
           </template>
         </a-table>
       </div>
