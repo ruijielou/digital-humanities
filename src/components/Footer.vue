@@ -11,7 +11,6 @@ const router = useRouter();
 const do_search = () => {
   let keywords = searchFields.value;
   if(keywords){
-    console.log('router:', router)
     router.push({ name: "Search",query:{keywords:keywords} });
   }else {
     message.warning("请输入关键字");

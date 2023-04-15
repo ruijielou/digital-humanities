@@ -334,7 +334,6 @@ export const caseApi = {
 // @ts-ignore
 export const caseinfo = {
   page: (data?:any) => {
-    console.log('data:', data);
     return request(
       {
         url: `/app/common/caseinfo/page`,

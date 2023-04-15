@@ -292,18 +292,24 @@ const getKnowledge_old = (chartData: any) => {
   }
 }
 
-const convertData = function (data: any, geoCoordMap: any) {
-  const res = [];
-  for (let i = 0; i < data.length; i++) {
-    const geoCoord = geoCoordMap[data[i].name];
-    if (geoCoord) {
-      res.push({
-        name: data[i].name,
-        value: geoCoord.concat(data[i].value)
-      });
+const convertData = function (data: any) {
+  const res: any = {};
+  for (const item of data) {
+    try {
+      const location = item.cityLocation && JSON.parse(item.cityLocation);
+      if (res[item.city]) {
+        res[item.city].value[2] += 1;
+      } else {
+        res[item.city] = {
+          name: item.city,
+          value: [location[item.city][1], location[item.city][0], 1]
+        }
+      }
+    } catch (error) {
+      console.log(item, '解析失败' + error);
     }
   }
-  return res;
+  return Object.values(res);
 };
 
 const getDistribution = (chartData: any) => {
@@ -312,49 +318,59 @@ const getDistribution = (chartData: any) => {
       trigger: 'item'
     },
     // color: ['#2246E8', '#7643DF', '#F243D9'],
-
+    visualMaps: {
+      type: 'continuous', // 连续型visualMap
+      min: 0, // 最小值
+      max: 1000, // 最大值
+      text: ['High', 'Low'], // 文本标签，分别对应最大值和最小值
+      realtime: false, // 是否实时更新地图
+      calculable: true, // 是否显示拖拽用的手柄
+      inRange: {
+        color: ['#f5e1a4', '#e94d3d'] // 颜色范围，分别对应最小值和最大值
+      }
+    },
     visualMap: [
       {
         type: 'piecewise',
-
         inverse: true,
         left: 'right',
         bottom: 46,
-        // right: 0,
         pieces: [
-          { min: 1, max: 1, },
-          { min: 20, max: 20 },
-          { min: 40, max: 40 },
-          { min: 60, max: 60 },
-          { min: 80, max: 80 },
-          { min: 116, max: 116 }
+          { max: 1, },
+          { max: 20 },
+          { max: 40 },
+          { max: 60 },
+          { max: 80 },
+          { max: 116 }
         ],
         inRange: {
           color: '#6A6FFA',
         },
         itemWidth: 90,
         align: 'left',
-        dimension: 10,//哪个维度映射
+        dimension: 2,//哪个维度映射
         textStyle: { color: '#fff' },
-        controller: {
-          inRange: {
-            symbolSize: [300, 100]
-          }
-        },
+        // controller: {
+        //   inRange: {
+        //     symbolSize: [300, 100]
+        //   }
+        // },
       },
       {
         min: -6,
-        max: 6,
+        max: 116,
         bottom: 10,
         seriesIndex: 0,
         itemHeight: 90,
-        right: 25,
+        right: 55,
+        dimension: 2,//哪个维度映射
         inRange: {
           color: ['#2246E899', '#7643DF99', '#F243D999'],
         },
         "orient": "horizontal",
         textStyle: { color: '#fff' },
-      }],
+      }
+    ],
 
     geo: { // 这个是重点配置区
       map: 'world',
@@ -366,6 +382,12 @@ const getDistribution = (chartData: any) => {
           textStyle: {
             color: 'rgba(0,0,0,0.4)'
           }
+        }
+      },
+      emphasis: {
+        label: {
+          show: true, // 显示国家名称
+          color: '#fff' // 设置hover状态下的国家文本颜色
         }
       },
       itemStyle: {
@@ -392,7 +414,7 @@ const getDistribution = (chartData: any) => {
         name: '',
         type: 'scatter',
         coordinateSystem: 'geo',
-        data: convertData(chartData.data, chartData.geoCoordMap),
+        data: convertData(chartData),
         symbolSize: (val: any) => {
           return val[2] * 2;
         },
@@ -403,8 +425,7 @@ const getDistribution = (chartData: any) => {
         },
         itemStyle: {
           normal: {
-            color: (data) => {
-              console.log(data.color);
+            color: (data:any) => {
               return data.color
             }
           }
@@ -444,7 +465,7 @@ const KnowledgeColor = [
 const legendColor = colors.map((item) => item[1]);
 
 //计算list
-function getLists(arr, idx, color, category) {
+function getLists(arr:any, idx:string | number, color: string, category:any) {
   arr.forEach((item, index) => {
     if (item.name === null) {
       return false;
@@ -603,7 +624,7 @@ function getLists(arr, idx, color, category) {
   });
 }
 // 计算links
-function getLinks(arr, index, color?) {
+function getLinks(arr:any, index:string | number, color?: string) {
   arr.forEach((item) => {
     if (item.list) {
       item.list.forEach((item2, eq) => {
@@ -746,11 +767,11 @@ const getTheme = (chartData: any) => {
       {
         type: "scatter",
         symbol: "circle",
-      label: {
+        label: {
           normal: {
             show: true,
-            formatter: (data:any) => {
-              return  `${data.name}\n${data.value[1]}`
+            formatter: (data: any) => {
+              return `${data.name}\n${data.value[1]}`
             },
             color: "#fff",
           },

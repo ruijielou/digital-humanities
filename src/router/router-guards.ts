@@ -12,7 +12,10 @@ export function createRouterGuards(router: any, whiteNameList: string[]) {
     NProgress.start();
 
     const token = Storage.get(TOKEN_KEY, undefined);
-    if (!token && to.path.includes('/about')) {
+    /**
+     * 如果包含了关于我的页面或者不在白名单内的页面，未登录就打开login
+     */
+    if (!token && (to.path.includes('/about') || !whiteNameList.includes(to.name))) {
       userStore.openLogin();
       next('/');
     } else {

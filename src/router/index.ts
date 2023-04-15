@@ -4,7 +4,7 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import { createRouterGuards } from './router-guards';
 
 import routes from './router';
-const whiteNameList = ['About'];
+const whiteNameList = ['home', 'CaseDetail']; //添加不用登录的页面name
 
 export const router = createRouter({
   // process.env.BASE_URL

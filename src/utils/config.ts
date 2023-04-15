@@ -83,10 +83,11 @@ export const formatterFormInput = (props: any) => {
   if (!props.result) return { formModal: null }
   const data: any = {};
   for (const item of props.result) {
+    
       if (item.dataType === 9 || item.dataType === 13 || item.dataType === 14 || item.dataType === 16) {
-          data[item.filed] = [];
+          data[item.filed] = []; //初始化多选值
       } else {
-          data[item.filed] = "";
+          data[item.filed] = ""; 
       }
   }
   //  1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接

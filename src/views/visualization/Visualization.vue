@@ -83,16 +83,25 @@ const spinning = ref<boolean>(false); //加载中的样式
 const myChart = ref<any>(null);
 const chartInit = shallowRef<any>(null);
 
-const initChart = (type: componentMap) => {
-  const options: any = getOption(type, seriesData[type]);
+const initChart = async (type: componentMap) => {
+  let resultData:any = null;
+  if(type === componentMap.Distribution) {
+    const { result } = await caseLocation.list();
+    resultData = [...result];
+  }
+  //其他图形在这儿添加else if
+  else {
+    resultData = seriesData[type]
+  }
+  const options: any = getOption(type, resultData);
   if (!options) return;
   if (chartInit.value) {
     chartInit.value.clear();
     chartInit.value.dispose();
   }
-  
+
   if (type === componentMap.Distribution) {
-    echarts.registerMap("world", { geoJSON: worldGeo });
+    echarts.registerMap("world", { geoJSON: worldGeo } as any);
   }
   chartInit.value = echarts.init(myChart.value);
   chartInit.value.setOption(options);
@@ -102,39 +111,35 @@ const initChart = (type: componentMap) => {
   });
 };
 
-const changeView = (id: number, case_info:any) => {
+const changeView = (id: number, case_info: any) => {
   // 请求数据
   // 刷新页面资源
   // 暂时用loading状态，后期切换数据即可
   if (activeRightId.value === id) return;
   activeRightId.value = id;
   spinning.value = true;
-//TODO 增加显示的逻辑
-  console.log('cityLocation:', case_info.cityLocation)
+  //TODO 增加显示的逻辑
   setTimeout(() => {
     initChart(currentType.value);
     spinning.value = false;
   }, 3000);
-
 };
 
 onMounted(() => {
-  initChart(currentType.value)
+  initChart(currentType.value);
 });
 onUnmounted(() => {
   chartInit.value && chartInit.value.dispose();
 });
 
 /* 案例列表 */
-const  case_location_list = ref([]);
+const case_location_list = ref([]);
 const load_case_location = async () => {
   const { result } = await caseLocation.list();
   case_location_list.value = result;
-  console.log('lab_group_list.value:', case_location_list.value);
-}
-load_case_location();
-
-
+  console.log("lab_group_list.value:", case_location_list.value);
+};
+// load_case_location();
 </script>
 <template>
   <div class="h-screen overflow-auto">
@@ -176,11 +181,11 @@ load_case_location();
             ></div>
             <div class="p-4 library-bottom-desc flex-1">
               <div class="line-clamp-2">
-                {{case_location.name}}
+                {{ case_location.name }}
               </div>
               <div class="flex justify-between p-t-2 text-1.5">
-                <span>{{case_location.country}}</span>
-                <span>{{case_location.itemTime}}</span>
+                <span>{{ case_location.country }}</span>
+                <span>{{ case_location.itemTime }}</span>
               </div>
             </div>
           </div>

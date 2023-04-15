@@ -34,38 +34,7 @@ defineExpose({ formState, formValidate });
     :model="formState"
   >
     <template v-for="col in formData">
-      <!-- <div class="w-33% inline-block" v-if="col.dataType === 16">
-        <a-form-item
-          :colon="false"
-          :labelCol="{ span: 0 }"
-          :wrapperCol="{ span: 22 }"
-          :name="['formFiledData', `${col.filed}`]"
-          :rules="[
-            {
-              required: col.isRequired == 1 ? true : false,
-              message: col.name + '不能为空',
-              trigger: ['change', 'blur'],
-            },
-          ]"
-        >
-          <a-select
-            ref="select"
-            class="w-100%"
-            mode="multiple"
-            :placeholder="col.name"
-            :max-tag-count="1"
-            v-model:value="formState.formFiledData[`${col.filed}`]"
-          >
-            <a-select-option
-              v-for="o in col.optList"
-              :value="o.value"
-              :placeholder="col.name"
-              >{{ o.text }}</a-select-option
-            >
-          </a-select>
-        </a-form-item>
-      </div> -->
-      <a-form-item
+     <a-form-item
         :colon="false"
         :name="['formFiledData', `${col.filed}`]"
         :label="col.name"
