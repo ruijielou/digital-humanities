@@ -37,10 +37,10 @@ const do_search = () => {
         </span>
       </div>
     </div>
-    <div class="flex-2 footer-search p-t-20" >
+    <div class="flex-2 footer-search p-t-20" @click="do_search()">
       <a-input v-model:value="searchFields" >
         <template #suffix>
-          <SearchOutlined @click="do_search()" class="cursor-pointer" />
+          <SearchOutlined />
         </template>
       </a-input>
     </div>
