@@ -1,19 +1,64 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { ReloadOutlined } from "@ant-design/icons-vue";
-import { Colors } from "../../utils/type";
-import { labgroup, meta } from "@/api";
-const checkedList = ref<number[]>([]);
+import { labgroup, meta, caseinfo } from "@/api";
+import type { PageinationType } from "@/utils/type";
 
+const checkedList = ref<number[]>([]);
+const nameLetter = ref<string>("A");
 /* 加载标签  */
-const  lab_group_list = ref([]);
+const lab_group_list = ref<any>([]);
 const load_lab_group = async () => {
   const { result } = await labgroup.loadList();
   lab_group_list.value = result;
-  console.log('lab_group_list.value:', lab_group_list.value);
-}
+  console.log("lab_group_list.value:", lab_group_list.value);
+};
 load_lab_group();
+const dataSource = ref<{ [key: string]: string }[]>([]);
+const pagination = reactive<PageinationType>({
+  total: 0,
+  current: 1,
+  pageSize: 10,
+  column: "name",
+  order: "asc",
+});
+const getCaseData = async (isMore?: boolean) => {
+  const submitData = getCheckListId();
+  if (isMore == true) {
+    pagination.current += 1;
+  } else {
+    pagination.current = 1;
+  }
+  submitData.pageNo = pagination.current;
+  submitData.pageSize = pagination.pageSize;
+  submitData.nameLetter = nameLetter.value;
 
+  const { result } = await caseinfo.page(submitData);
+  if (result) {
+    isMore == true
+      ? (dataSource.value = [...dataSource.value, ...result.records])
+      : (dataSource.value = [...result.records]);
+  }
+  pagination.total = result.total;
+};
+const getCheckListId = () => {
+  const tagFields: any = {};
+  for (const item in checkedList.value) {
+    const sliceTag = item.split("_");
+    if (tagFields[sliceTag[0]]) {
+      tagFields[`tag_${sliceTag[0]}`] += `,${sliceTag[1]}`;
+    } else {
+      tagFields[`tag_${sliceTag[0]}`] = `${sliceTag[1]}`;
+    }
+  }
+  return tagFields;
+};
+
+const checkLetter = (letter: string) => {
+  nameLetter.value = letter;
+  getCaseData();
+};
+getCaseData();
 </script>
 <template>
   <div class="h-screen overflow-auto casespectrum-container">
@@ -22,9 +67,7 @@ load_lab_group();
       bg-name="casespectrum-bg"
       title="案例谱"
     />
-    <a-layout-content
-      class="flex"
-    >
+    <a-layout-content class="flex">
       <div class="w-360px bg-#f7f7f7 p-t-10 p-b-10">
         <div class="labels-container m-b-10 p-l-20">
           <!-- <div>标签：</div> -->
@@ -32,7 +75,9 @@ load_lab_group();
             <span class="line-title text-4.5 truncate">
               <span>标签：</span>
             </span>
-            <reload-outlined />
+            <span class="cursor-pointer" @click="load_lab_group">
+              <reload-outlined />
+            </span>
           </div>
           <div class="p-t-3">
             <a-checkbox-group v-model:value="checkedList">
@@ -42,9 +87,10 @@ load_lab_group();
                   v-for="k in lab_group.opts"
                   :color="'#' + k.colorValue"
                 >
-                  <a-checkbox class="c-#fff" :value="k"> {{ k.title }}</a-checkbox>
+                  <a-checkbox class="c-#fff" :value="`${lab_group.id}_${k.id}`">
+                    {{ k.title }}</a-checkbox
+                  >
                 </a-tag>
-
               </div>
             </a-checkbox-group>
           </div>
@@ -52,20 +98,27 @@ load_lab_group();
       </div>
       <div class="flex-1 p-r-20 p-l-10">
         <div class="letters lines-purple">
-          <span v-for="i in 26" class="transition-all">
+          <span
+            :class="{ active: nameLetter == String.fromCharCode(64 + i) }"
+            v-for="i in 26"
+            class="transition-all"
+            @click="checkLetter(String.fromCharCode(64 + i))"
+          >
             {{ String.fromCharCode(64 + i) }}
           </span>
         </div>
         <div class="spectrum-list p-t-5">
-          <div class="spectrun-items">
-            德国图书馆、档案馆和博物馆门户（BAMP）
+          <div class="spectrun-items" v-for="item in dataSource">
+            {{ `${item.name}${item.code ? "(" + item.code + ")" : ""}` }}
           </div>
-          <div class="spectrun-items">
-            德意志数字图书馆（DDB）
-          </div>
-          <div class="spectrun-items purple">
-            丹麦文化搜索
-          </div>
+          <p
+            class="text-center cursor-pointer"
+            v-if="dataSource.length < pagination.total"
+            @click="getCaseData(true)"
+          >
+            加载更多
+          </p>
+          <p class="text-center" v-else>没有更多了</p>
         </div>
       </div>
     </a-layout-content>
@@ -95,7 +148,8 @@ load_lab_group();
       font-weight: bold;
       cursor: pointer;
       color: #222;
-      &:hover {
+      &:hover,
+      &.active {
         background: #f243d9;
         color: #fff;
       }
@@ -106,7 +160,7 @@ load_lab_group();
     padding-left: 1em;
     padding: 15px;
     &::before {
-      content: '';
+      content: "";
       width: 6px;
       height: 6px;
       border-radius: 50%;
@@ -114,11 +168,11 @@ load_lab_group();
       left: 0;
       top: 50%;
       transform: translateY(-50%);
-      background-color: #F5A95D;
+      background-color: #f5a95d;
     }
-    &.purple {
+    &:nth-child(2n) {
       &::before {
-        background-color: #C987FA;
+        background-color: #c987fa;
       }
     }
   }

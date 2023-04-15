@@ -17,6 +17,7 @@ export interface CardType {
   visitQuantity?: number;
   cover: string;
   lastCover: string;
+  favoriteId?:string | number
 
   // name: "交通运输",
   // caseQuantity: 11,

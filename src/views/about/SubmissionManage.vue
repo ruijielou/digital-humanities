@@ -84,7 +84,7 @@ getCaseData();
     }
   }
   .case-container {
-    height: 60vh;
+    height: 450px;
     overflow: hidden;
     .case-group {
       width: 100%;

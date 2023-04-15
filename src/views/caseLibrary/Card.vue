@@ -21,7 +21,7 @@ const favorited = (id: number) => {
 </script>
 <template>
   <div
-    class="m-5 w-100 flex flex-col card-item"
+    class="w-100% flex flex-col card-item"
     :class="{ hoverCard: hoverCard }"
     :style="{ backgroundImage: hoverCard ? `url(${card?.lastCover})` : '' }"
   >

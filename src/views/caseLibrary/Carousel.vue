@@ -69,7 +69,7 @@ const props = withDefaults(defineProps<{
   right: -6vw;
 }
 .arrowTop .custom-slick-arrow.left-arrow{
-  right: 50px;
+  right: 60px;
   top: -20px;
   left: inherit;
   height: 30px;
@@ -78,7 +78,7 @@ const props = withDefaults(defineProps<{
   }
 }
 .arrowTop .custom-slick-arrow.right-arrow{
-  right: 0;
+  right: 20px;
   top: -20px;
   height: 30px;
   &:hover {

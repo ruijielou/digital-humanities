@@ -50,38 +50,7 @@ const lab_group_list = ref<any>([]);
 const load_lab_group = async () => {
   const { result } = await labgroup.loadList();
   lab_group_list.value = result;
-  console.log("lab_group_list.value:", lab_group_list.value);
-  //   {
-  //     "id": 16,
-  //     "title": "学科",
-  //     "colorValue": null,
-  //     "opts": [
-  //         {
-  //             "id": 37,
-  //             "title": "物理",
-  //             "colorValue": "1890ff",
-  //             "opts": null
-  //         },
-  //         {
-  //             "id": 38,
-  //             "title": "化学",
-  //             "colorValue": "009688",
-  //             "opts": null
-  //         },
-  //         {
-  //             "id": 39,
-  //             "title": "生物",
-  //             "colorValue": "ff5c93",
-  //             "opts": null
-  //         },
-  //         {
-  //             "id": 40,
-  //             "title": "地理",
-  //             "colorValue": "9c27b0",
-  //             "opts": null
-  //         }
-  //     ]
-  // }
+
 };
 load_lab_group();
 </script>

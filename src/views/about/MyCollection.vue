@@ -44,11 +44,11 @@ const getCollectionData = async () => {
         lastCaseName: record.caseName,
         comments: [],
         cover: record.caseCover,
+        favoriteId: record.favoriteId
       }
     )
   }
   collectionData.value = datas;
-  console.log('datas:', datas)
 }
 
 
