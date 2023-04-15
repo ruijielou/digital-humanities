@@ -39,15 +39,15 @@ const columns = computed(() => {
     },
     {
       title: "国别",
-      dataIndex: "contry",
+      dataIndex: "country",
     },
     {
       title: "所属机构",
-      dataIndex: "organization",
+      dataIndex: "subOrg",
     },
     {
       title: "项目时间",
-      dataIndex: "projectTime",
+      dataIndex: "itemTime",
     },
   ];
 });
@@ -80,7 +80,6 @@ const handleTableChange = async (newpager: any) => {
   pagination.current = newpager.current;
   pagination.pageSize = newpager.pageSize;
   getCaseData();
-  //  getdata
 };
 
 const showSearchRes = ref<boolean>(false);
@@ -104,8 +103,9 @@ const getInputMeta = async () => {
 };
 
 const enterSearch = async (param: any) => {
-  console.log("enterSearch", param);
+
   const formState: any = await filedFromRef.value?.formValidate();
+
   if (formState) {
     search_condition_params.value = {
       ...formatterFormData({ ...formState.formFiledData }),
@@ -121,23 +121,11 @@ const enterSearch = async (param: any) => {
   getCaseData();
 };
 getInputMeta();
+
 const setSort = (type: string) => {
-  // sortedInfo.value = {
-  //   order: type,
-  //   columnKey: "name",
-  // };
   pagination.order = type;
   getCaseData();
 };
-
-// const back_condition = () => {
-//   console.log('back_condition', search_condition_params.value)
-//   showSearchRes.value = false
-
-//   filedFromRef.value?.setFormPamras();
-//   console.log('filedFromRef.value?.formState():', filedFromRef.value?.formState());
-//   console.log('filedFromRef.value:', filedFromRef.value);
-//   console.log('filedFromRef:', filedFromRef);
 
 // }
 /*加载过滤条件*/
@@ -145,31 +133,22 @@ const search_condition_meta_list = ref([]);
 const load_search_condition = async () => {
   const { result } = await meta.findSearchCondition();
   search_condition_meta_list.value = result;
-  // console.log('search_condition_meta_list.value:', search_condition_meta_list.value);
 };
-load_search_condition();
-
-const keywords = route.query?.keywords;
-if (keywords) {
-  enterSearch({ keywords: keywords });
-}
 
 const gotoBack = () => {
-  // if (route.name === "Search") {
+  if (route.name === "Search") {
     router.push({ name: "AdvancedSearch" });
-  // } else {
-    showSearchRes.value = false;
-  // }
+  }
+
+  showSearchRes.value = false;
 };
 
 onMounted(() => {
-  if (route.name === "Search") {
-    const { query } = route;
-    if (query && query.keywords) {
-      //TODO: 在这儿加载点击搜索后的搜索列表
-      //query.keywords 为传过来的查询值
-    }
+  const { query } = route;
+  if (query && query.keywords) {
+    enterSearch({ keywords: query.keywords });
   }
+  load_search_condition();
 });
 </script>
 <template>
@@ -285,9 +264,6 @@ onMounted(() => {
   </div>
 </template>
 <style lang="less">
-// .visualization-header {
-//   background-image: url("../../assets/image/visualization-bg.png");
-// }
 .advanced-search {
   position: relative;
   .return-prev-page {

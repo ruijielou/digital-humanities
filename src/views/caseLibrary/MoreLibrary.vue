@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from "vue";
 import type { PageinationType } from "../../utils/type";
-import { CaretDownOutlined, SortAscendingOutlined, SortDescendingOutlined } from "@ant-design/icons-vue";
+import {
+  CaretDownOutlined,
+  SortAscendingOutlined,
+  SortDescendingOutlined,
+} from "@ant-design/icons-vue";
 import { caseinfo, repository, repositorygroup } from "@/api";
 import { useRoute } from "vue-router";
 
@@ -32,11 +36,11 @@ const columns = computed(() => {
     {
       title: "名称",
       dataIndex: "name",
-      sorter: (a: any, b: any) =>
-        a.name.localeCompare(b.name, "zh-Hans-CN", {
-          sensitivity: "accent",
-        }),
-      sortOrder: sorted.columnKey === "name" && sorted.order,
+      // sorter: (a: any, b: any) =>
+      //   a.name.localeCompare(b.name, "zh-Hans-CN", {
+      //     sensitivity: "accent",
+      //   }),
+      // sortOrder: sorted.columnKey === "name" && sorted.order,
     },
     {
       title: "国别",
@@ -53,28 +57,21 @@ const columns = computed(() => {
   ];
 });
 const setSort = (type: string) => {
-  sortedInfo.value = {
-    order: type,
-    columnKey: "name",
-  };
+  pagination.order = type;
 };
 const repository_id = ref();
 repository_id.value = route.params.id;
 const repository_info = ref({
-  name:'',
-  description:'',
+  name: "",
+  description: "",
 });
 
-
-
-
-const getRepositoryDetail = async ()=>{
-  const {result} = await repository.queryById(repository_id.value);
+const getRepositoryDetail = async () => {
+  const { result } = await repository.queryById(repository_id.value);
   if (result) {
     repository_info.value = result;
   }
-  console.log('repository_info.value:', repository_info.value)
-}
+};
 getRepositoryDetail();
 
 const dataSource = ref<any>([]);
@@ -83,15 +80,17 @@ const pagination = reactive<PageinationType>({
   total: 0,
   current: 1,
   pageSize: 10,
+  column: "name",
+  order: "asc",
 });
 const getLibraryList = async () => {
-  const { result } = await caseinfo.page(
-    {
-      repositoryId: repository_id.value,
-      pageNo: pagination.current,
-      pageSize: pagination.pageSize
-    }
-  );
+  const { result } = await caseinfo.page({
+    repositoryId: repository_id.value,
+    pageNo: pagination.current,
+    pageSize: pagination.pageSize,
+    column: pagination.column,
+    order: pagination.order,
+  });
   if (result) {
     dataSource.value = [...result.records];
     pagination.total = result.total;
@@ -119,13 +118,12 @@ const getSlider = async () => {
 };
 getSlider();
 
-const reset_repository = (id:number) => {
-  console.log('id', id)
+const reset_repository = (id: number) => {
+  console.log("id", id);
   repository_id.value = id;
   getLibraryList();
   getRepositoryDetail();
-}
-
+};
 </script>
 <template>
   <div class="h-screen overflow-auto">
@@ -146,16 +144,18 @@ const reset_repository = (id:number) => {
             class="p-l-10 p-t-3 text-3.5 truncate cursor-pointer"
             v-for="repository_item in item.repositoryList"
           >
-            <span @click="reset_repository(repository_item.id)">{{ repository_item.name }}</span>
+            <span @click="reset_repository(repository_item.id)">{{
+              repository_item.name
+            }}</span>
           </div>
         </div>
       </div>
       <div class="flex-1 h-100% p-l-20 p-r-20">
         <div class="p-t-5 lines-purple">
-          <h2>{{repository_info.name}}</h2>
+          <h2>{{ repository_info.name }}</h2>
         </div>
         <p class="c-#999 text-3 m-t-2">
-          {{repository_info.description}}
+          {{ repository_info.description }}
         </p>
         <div class="result-container p-t-5">
           <div class="result-filter flex p-b-4">
@@ -186,15 +186,15 @@ const reset_repository = (id:number) => {
               </template>
             </a-dropdown>
             <div class="flex-1 flex justify-end">
-              <span class="cursor-pointer" @click="setSort('descend')">
+              <span class="cursor-pointer" @click="setSort('asc')">
                 <sort-ascending-outlined
-                  :class="{ 'c-#5b3df2': sortedInfo?.order === 'descend' }"
+                  :class="{ 'c-#5b3df2': pagination.order === 'asc' }"
                 />
               </span>
               <a-divider type="vertical" />
-              <span class="cursor-pointer" @click="setSort('ascend')">
+              <span class="cursor-pointer" @click="setSort('desc')">
                 <sort-descending-outlined
-                  :class="{ 'c-#5b3df2': sortedInfo?.order === 'ascend' }"
+                  :class="{ 'c-#5b3df2': pagination.order === 'desc' }"
                 />
               </span>
             </div>

@@ -7,13 +7,13 @@ import {
   SortAscendingOutlined,
 } from "@ant-design/icons-vue";
 import type { PageinationType } from "../../utils/type";
-import {favorite} from "@/api";
+import { favorite } from "@/api";
 import { useRoute } from "vue-router";
 import { message } from "ant-design-vue";
 
 const route = useRoute();
 
-console.log('route.params.id:', )
+console.log("route.params.id:");
 const groupId = route.params.id;
 const groupName = route.params.name;
 
@@ -53,26 +53,16 @@ const columns = computed(() => {
   ];
 });
 const setSort = (type: string) => {
-  sortedInfo.value = {
-    order: type,
-    columnKey: "name",
-  };
+  pagination.order = type;
+  getMyFavorite();
 };
-
-const dataSource1 = [
-  {
-    name: "德国图书馆、档案馆和博物馆门户（BAMP）",
-    contry: "德国",
-    organization: "巴登 ·符腾堡图书馆服务中心",
-    projectTime: "2001-2015",
-    id: 1,
-  },
-];
 
 const pagination = reactive<PageinationType>({
   total: 0,
   current: 1,
   pageSize: 10,
+  column: "name",
+  order: "asc",
 });
 const handleTableChange = async (newpager: any) => {
   console.log(newpager);
@@ -83,7 +73,15 @@ const handleTableChange = async (newpager: any) => {
 };
 const dataSource = ref<any[]>([]);
 const getMyFavorite = async () => {
-  const { result } = await favorite.myPage(1, groupId);
+  let paramsQuery:any = 'type=1';
+  for(let key in ['pageNo', 'pageSize','column',  'order']) {
+    const currentKey = key === 'pageNo' ? 'current' : key;
+    paramsQuery += `&${key}: ${(pagination as any)[currentKey] || ''}`
+  }
+  if(groupId) {
+    paramsQuery += '&groupId='+groupId
+  }
+  const { result } = await favorite.myPage(paramsQuery);
   if (result) {
     dataSource.value = [...result.records];
   }
@@ -102,8 +100,7 @@ const cancelFavorited = async (id: string) => {
     message.success(res.message);
     getMyFavorite();
   }
-}
-
+};
 </script>
 <template>
   <a-layout-content
@@ -148,12 +145,16 @@ const cancelFavorited = async (id: string) => {
           </template>
         </a-dropdown>
         <div class="flex-1 flex justify-end">
-          <span class="cursor-pointer" @click="setSort('descend')">
-            <sort-ascending-outlined />
+          <span class="cursor-pointer" @click="setSort('asc')">
+            <sort-ascending-outlined
+              :class="{ 'c-#5b3df2': pagination.order === 'asc' }"
+            />
           </span>
           <a-divider type="vertical" />
-          <span class="cursor-pointer" @click="setSort('ascend')">
-            <sort-descending-outlined />
+          <span class="cursor-pointer" @click="setSort('desc')">
+            <sort-descending-outlined
+              :class="{ 'c-#5b3df2': pagination.order === 'desc' }"
+            />
           </span>
         </div>
       </div>
@@ -181,7 +182,6 @@ const cancelFavorited = async (id: string) => {
             </a-popconfirm>
           </div>
         </template>
-
       </a-table>
     </div>
   </a-layout-content>

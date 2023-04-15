@@ -53,7 +53,13 @@ const handleTableChange = async (newpager: any) => {
 };
 
 const getMylike = async () => {
-  const { result } = await favorite.myPage(2, null);
+  let paramsQuery:any = 'type=2';
+  for(let key in ['pageNo', 'pageSize']) {
+    const currentKey = key === 'pageNo' ? 'current' : key;
+    paramsQuery += `&${key}: ${(pagination as any)[currentKey] || ''}`
+  }
+ 
+  const { result } = await favorite.myPage(paramsQuery);
   if (result) {
     dataSource.value = [...result.records];
   }

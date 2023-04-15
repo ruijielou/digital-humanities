@@ -133,7 +133,7 @@ onUnmounted(() => {
 });
 
 /* 案例列表 */
-const case_location_list = ref([]);
+const case_location_list = ref<any>([]);
 const load_case_location = async () => {
   const { result } = await caseLocation.list();
   case_location_list.value = result;

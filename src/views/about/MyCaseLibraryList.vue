@@ -6,7 +6,7 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons-vue";
 import type { PageinationType } from "../../utils/type";
-import { caseinfo } from "@/api";
+import { caseinfo,repository } from "@/api";
 import { useRoute } from "vue-router";
 import { message, Modal } from "ant-design-vue";
 
@@ -92,7 +92,7 @@ const removeMore = () => {
   });
 };
 
-const repository_info = ref({});
+const repository_info = ref<any>({});
 const getRepositoryDetail = async ()=>{
   const {result} = await repository.queryById(route.params.id);
   if (result) {
@@ -130,7 +130,7 @@ const handleOk = (e: MouseEvent) => {
     <div class="lines-purple flex justify-between">
       <div class="flex items-center m-b-2">
         <h2 class="m-0">
-          {{ repository_info.name }}
+          {{ repository_info?.name }}
           <a-popover placement="bottom">
             <template #content>
               <p>开放权限</p>
@@ -145,7 +145,6 @@ const handleOk = (e: MouseEvent) => {
                 >迁移</a-button
               >
             </template>
-<!--            <span class="cursor-pointer">...</span>-->
           </a-popover>
         </h2>
       </div>
@@ -175,7 +174,6 @@ const handleOk = (e: MouseEvent) => {
         }"
       >
         <template #bodyCell="{ column, text, index, record}">
-          <!-- class="c-#5b3df2 cursor-pointer"  -->
           <div class="c-#5b3df2 cursor-pointer" @click="$router.push({ name: 'MyCaseDetail', params: { id: record.id } })" v-if="column.dataIndex === 'name'">
             {{ text }}
           </div>

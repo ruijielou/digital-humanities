@@ -205,17 +205,11 @@ export const comment = {
 }
 
 export const favorite = {
-  myPage: (type: number, groupId:any) => {
-    let url = '';
-    if(groupId){
-      url = `/app/user/favorite/myPage?type=${type}&groupId=${groupId}`;
-    }else{
-      url = `/app/user/favorite/myPage?type=${type}`;
-    }
+  myPage: (paramsQuery: string) => {
 
     return request(
       {
-        url: url,
+        url: `/app/user/favorite/myPage?${paramsQuery}`,
         method: "get",
       },
     );
