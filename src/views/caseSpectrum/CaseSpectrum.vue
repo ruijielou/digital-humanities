@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, watch } from "vue";
 import { ReloadOutlined } from "@ant-design/icons-vue";
 import { labgroup, meta, caseinfo } from "@/api";
 import type { PageinationType } from "@/utils/type";
 
-const checkedList = ref<number[]>([]);
+const checkedList = ref<string[]>([]);
 const nameLetter = ref<string>("A");
 /* 加载标签  */
 const lab_group_list = ref<any>([]);
@@ -43,21 +43,28 @@ const getCaseData = async (isMore?: boolean) => {
 };
 const getCheckListId = () => {
   const tagFields: any = {};
-  for (const item in checkedList.value) {
+  for (const item of checkedList.value) {
     const sliceTag = item.split("_");
-    if (tagFields[sliceTag[0]]) {
-      tagFields[`tag_${sliceTag[0]}`] += `,${sliceTag[1]}`;
+    const key = `tag_${sliceTag[0]}`
+    if (tagFields[key]) {
+      tagFields[key] += `,${sliceTag[1]}`;
     } else {
-      tagFields[`tag_${sliceTag[0]}`] = `${sliceTag[1]}`;
+      tagFields[key] = `${sliceTag[1]}`;
     }
   }
   return tagFields;
 };
 
 const checkLetter = (letter: string) => {
-  nameLetter.value = letter;
+  nameLetter.value = nameLetter.value === letter ?'': letter;
   getCaseData();
 };
+watch(
+  () => checkedList.value,
+  (val:any) => {
+    getCaseData();
+  }
+);
 getCaseData();
 </script>
 <template>

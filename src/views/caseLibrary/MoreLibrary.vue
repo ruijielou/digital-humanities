@@ -14,24 +14,8 @@ const selectContry = ref<string>("中国");
 const selectFiled = ref<string>("项目时间");
 const loading = ref<boolean>(false);
 const sliderData = ref<any>([]);
-const datas = [
-  {
-    key: "numberGlam",
-    name: "数字GLAM",
-    options: [
-      "GLAM融合案例库",
-      "数字图书馆案例库",
-      "数字博物馆案例库",
-      "数字档案馆案例库",
-      "数字艺术案例库",
-    ],
-  },
-];
-const sortedInfo = ref();
-const columns = computed(() => {
-  const sorted = sortedInfo.value || {};
-  console.log(sorted.order);
 
+const columns = computed(() => {
   return [
     {
       title: "名称",
@@ -58,6 +42,7 @@ const columns = computed(() => {
 });
 const setSort = (type: string) => {
   pagination.order = type;
+  getLibraryList();
 };
 const repository_id = ref();
 repository_id.value = route.params.id;
@@ -67,12 +52,12 @@ const repository_info = ref({
 });
 
 const getRepositoryDetail = async () => {
+  if(!repository_id.value) return
   const { result } = await repository.queryById(repository_id.value);
   if (result) {
     repository_info.value = result;
   }
 };
-getRepositoryDetail();
 
 const dataSource = ref<any>([]);
 
@@ -98,7 +83,6 @@ const getLibraryList = async () => {
     pagination.pageSize = result.size;
   }
 };
-getLibraryList();
 
 /**
  * @description 分页改变
@@ -114,16 +98,26 @@ const getSlider = async () => {
   const { result } = await repositorygroup.findList();
   if (result) {
     sliderData.value = [...result];
+    const firstData = sliderData.value.find(
+      (item: any) => item.repositoryList.length > 0
+    );
+    if(firstData) {
+      repository_id.value = firstData.repositoryList[0].id;
+    }
   }
 };
-getSlider();
 
 const reset_repository = (id: number) => {
-  console.log("id", id);
   repository_id.value = id;
-  getLibraryList();
   getRepositoryDetail();
+  getLibraryList();
 };
+const initPage = async () => {
+  await getSlider();
+  await getRepositoryDetail();
+  getLibraryList();
+};
+initPage();
 </script>
 <template>
   <div class="h-screen overflow-auto">
@@ -142,6 +136,7 @@ const reset_repository = (id: number) => {
           </div>
           <div
             class="p-l-10 p-t-3 text-3.5 truncate cursor-pointer"
+            :class="{active: repository_item.id === repository_id}"
             v-for="repository_item in item.repositoryList"
           >
             <span @click="reset_repository(repository_item.id)">{{
@@ -239,7 +234,7 @@ const reset_repository = (id: number) => {
     overflow: auto;
     background: #f4f1ff;
     .slider-items {
-      & > div:hover {
+      & > div:hover,&>.active {
         color: @primary-color;
       }
     }

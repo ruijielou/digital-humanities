@@ -61,7 +61,7 @@ const pagination = reactive<PageinationType>({
   total: 0,
   current: 1,
   pageSize: 10,
-  column: "name",
+  column: "case_name",
   order: "asc",
 });
 const handleTableChange = async (newpager: any) => {
@@ -73,15 +73,18 @@ const handleTableChange = async (newpager: any) => {
 };
 const dataSource = ref<any[]>([]);
 const getMyFavorite = async () => {
-  let paramsQuery:any = 'type=1';
-  for(let key in ['pageNo', 'pageSize','column',  'order']) {
-    const currentKey = key === 'pageNo' ? 'current' : key;
-    paramsQuery += `&${key}: ${(pagination as any)[currentKey] || ''}`
+  const paramsQuery: any = {
+    type: 1,
+    pageNo: pagination.current,
+    pageSize: pagination.pageSize,
+    column: pagination.column,
+    order: pagination.order,
+  };
+
+  if (groupId) {
+    paramsQuery.groupId = groupId;
   }
-  if(groupId) {
-    paramsQuery += '&groupId='+groupId
-  }
-  const { result } = await favorite.myPage(paramsQuery);
+  const { result } = await favorite.myPage({ ...paramsQuery });
   if (result) {
     dataSource.value = [...result.records];
   }

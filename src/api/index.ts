@@ -205,12 +205,13 @@ export const comment = {
 }
 
 export const favorite = {
-  myPage: (paramsQuery: string) => {
+  myPage: (data: any) => {
 
     return request(
       {
-        url: `/app/user/favorite/myPage?${paramsQuery}`,
+        url: `/app/user/favorite/myPage`,
         method: "get",
+        params: data
       },
     );
   },
@@ -256,6 +257,15 @@ export const favoritegroup = {
       {
         url: `/app/common/favoritegroup/page`,
         method: "get",
+      },
+    );
+  },
+  del: (data:any) => {
+    return request(
+      {
+        url: `/app/user/favoritegroup/del`,
+        method: "post",
+        data
       },
     );
   },

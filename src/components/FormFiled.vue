@@ -79,7 +79,7 @@ defineExpose({ formState, formValidate });
         <a-select
           ref="select"
           placeholder="请选择"
-          v-else-if="col.dataType === 7"
+          v-else-if="col.dataType === 7 || col.dataType === 14"
           class="w-100%"
           v-model:value="formState.formFiledData[`${col.filed}`]"
         >
@@ -89,10 +89,23 @@ defineExpose({ formState, formValidate });
         </a-select>
         <a-select
           placeholder="选择或输入"
-          v-else-if="col.dataType === 13  || col.dataType === 16"
+          v-else-if="col.dataType === 13"
           :showSearch="true"
           v-model:value="formState.formFiledData[`${col.filed}`]"
           mode="tags"
+          style="width: 100%"
+          :token-separators="[',']"
+        >
+          <a-select-option v-for="o in col.optList" :value="o.value">{{
+            o.text
+          }}</a-select-option>
+        </a-select>
+        <a-select
+          placeholder="选择或输入"
+          v-else-if="col.dataType === 15  || col.dataType === 16"
+          :showSearch="true"
+          v-model:value="formState.formFiledData[`${col.filed}`]"
+          mode="multiple"
           style="width: 100%"
           :token-separators="[',']"
         >

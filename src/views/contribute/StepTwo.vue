@@ -115,10 +115,6 @@ watch(
   }
 );
 
-const selectMutipleChange = (value: []) => {
-  console.log(`selected ${value}`);
-};
-
 defineExpose({ formState, formValidate });
 </script>
 <template>
@@ -128,12 +124,27 @@ defineExpose({ formState, formValidate });
         <span class="line-title"><span> 所属案例库 </span> </span>
         <span class="lines"></span>
       </div>
-      <div class="group-tags" >
-        <span v-for="(tag, i) in selectedTag" :key="i" class="tag-item selected">{{ tag.name }}</span>
+      <div class="group-tags">
+        <span
+          v-for="(tag, i) in selectedTag"
+          :key="i"
+          class="tag-item selected"
+          >{{ tag.name }}</span
+        >
       </div>
     </div>
-    <a-form class="flex" labelAlign="left" v-bind="layout" ref="formRef" :model="formState">
-      <div class="form-container flex-1" style="padding-right: 3em;" v-if="formData">
+    <a-form
+      class="flex"
+      labelAlign="left"
+      v-bind="layout"
+      ref="formRef"
+      :model="formState"
+    >
+      <div
+        class="form-container flex-1"
+        style="padding-right: 3em"
+        v-if="formData"
+      >
         <template v-for="(item, key) in formData">
           <div class="group-item" v-if="key == 0">
             <div class="group-item-title">
@@ -145,56 +156,119 @@ defineExpose({ formState, formValidate });
               <span class="lines"></span>
             </div>
             <template v-for="col in item.metaList">
-              <div class="w-33% inline-block" v-if="col.dataType === 14">
-                <a-form-item :colon="false" :labelCol="{span: 0}" :wrapperCol="{span: 22}"
-                  :name="['caseData', `${col.filed}`]" :rules="[
-                {
-                  required: col.isRequired == 1 ? true : false,
-                  message: col.name + '不能为空',
-                  trigger: ['change', 'blur']
-                },
-              ]">
-                  <a-select ref="select" class="w-100%" mode="tags" :placeholder="col.name" :max-tag-count="1"
-                    v-model:value="formState.caseData[`${col.filed}`]">
-                    <a-select-option v-for="o in col.optList" :value="o.value + ''"
-                      :placeholder="col.name">{{ o.text }}</a-select-option>
+              <div class="w-33% inline-block" v-if="col.dataType === 16">
+                <a-form-item
+                  :colon="false"
+                  :labelCol="{ span: 0 }"
+                  :wrapperCol="{ span: 22 }"
+                  :name="['caseData', `${col.filed}`]"
+                  :rules="[
+                    {
+                      required: col.isRequired == 1 ? true : false,
+                      message: col.name + '不能为空',
+                      trigger: ['change', 'blur'],
+                    },
+                  ]"
+                >
+                  <a-select
+                    ref="select"
+                    class="w-100%"
+                    mode="tags"
+                    :placeholder="col.name"
+                    :max-tag-count="1"
+                    v-model:value="formState.caseData[`${col.filed}`]"
+                  >
+                    <a-select-option
+                      v-for="o in col.optList"
+                      :value="o.value + ''"
+                      :placeholder="col.name"
+                      >{{ o.text }}</a-select-option
+                    >
                   </a-select>
                 </a-form-item>
               </div>
-              <a-form-item v-else :colon="false" :name="['caseData', `${col.filed}`]" :label="col.name" :rules="[
-                {
-                  required: col.isRequired == 1 ? true : false,
-                  message: col.name + '不能为空',
-                  trigger: ['change', 'blur']
-                },
-              ]">
-                <a-textarea v-if="col.dataType === 2" placeholder="请输入"
-                  v-model:value="formState.caseData[`form_${col.id}`]" :rows="4" />
-                <a-date-picker placeholder="请选择" class="w-100%" v-else-if="col.dataType === 3"
-                  v-model:value="formState.caseData[`${col.filed}`]" value-format="YYYY-MM-DD" />
-                <a-input-number placeholder="请输入" v-else-if="col.dataType === 4"
-                  v-model:value="formState.caseData[`${col.filed}`]" />
-                <a-radio-group v-else-if="col.dataType === 5" v-model:value="formState.caseData[`${col.filed}`]"
-                  :options="col.optList" />
+              <a-form-item
+                v-else
+                :colon="false"
+                :name="['caseData', `${col.filed}`]"
+                :label="col.name"
+                :rules="[
+                  {
+                    required: col.isRequired == 1 ? true : false,
+                    message: col.name + '不能为空',
+                    trigger: ['change', 'blur'],
+                  },
+                ]"
+              >
+                <a-textarea
+                  v-if="col.dataType === 2"
+                  placeholder="请输入"
+                  v-model:value="formState.caseData[`form_${col.id}`]"
+                  :rows="4"
+                />
+                <a-date-picker
+                  placeholder="请选择"
+                  class="w-100%"
+                  v-else-if="col.dataType === 3"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                  value-format="YYYY-MM-DD"
+                />
+                <a-input-number
+                  placeholder="请输入"
+                  v-else-if="col.dataType === 4"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                />
+                <a-radio-group
+                  v-else-if="col.dataType === 5"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                  :options="col.optList"
+                />
                 <!-- // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 -->
-                <a-checkbox-group v-else-if="col.dataType === 6" v-model:value="formState.caseData[`${col.filed}`]"
-                  :options="col.optList">
+                <a-checkbox-group
+                  v-else-if="col.dataType === 6"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                  :options="col.optList"
+                >
                 </a-checkbox-group>
-                <a-select ref="select" placeholder="请选择" v-else-if="col.dataType === 7" class="w-100%"
-                  v-model:value="formState.caseData[`${col.filed}`]">
-                  <a-select-option v-for="o in col.optList" :value="o.value">{{ o.text }}</a-select-option>
+                <a-select
+                  ref="select"
+                  placeholder="请选择"
+                  v-else-if="col.dataType === 7 || col.dataType === 14"
+                  class="w-100%"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                >
+                  <a-select-option v-for="o in col.optList" :value="o.value">{{
+                    o.text
+                  }}</a-select-option>
                 </a-select>
                 <template v-else-if="col.dataType === 9">
                   <template v-if="formState.caseData[`${col.filed}`].length">
-                    <div v-for='imgItem in formState.caseData[`${col.filed}`]' class="custom-img-card">
-                      <span class="delete-img" @click='deleteItemImg(imgItem,col.filed)'>
+                    <div
+                      v-for="imgItem in formState.caseData[`${col.filed}`]"
+                      class="custom-img-card"
+                    >
+                      <span
+                        class="delete-img"
+                        @click="deleteItemImg(imgItem, col.filed)"
+                      >
                         <close-circle-outlined />
                       </span>
-                      <img width="100%" height="100%" :src="imgBaseUrl + imgItem" alt="avatar" />
+                      <img
+                        width="100%"
+                        height="100%"
+                        :src="imgBaseUrl + imgItem"
+                        alt="avatar"
+                      />
                     </div>
                   </template>
-                  <a-upload class="w-auto" :customRequest="customRequest" v-model:file-list="fileList"
-                    list-type="picture-card" :show-upload-list="false" @change="changeImg($event, `${col.filed}`)">
+                  <a-upload
+                    class="w-auto"
+                    :customRequest="customRequest"
+                    v-model:file-list="fileList"
+                    list-type="picture-card"
+                    :show-upload-list="false"
+                    @change="changeImg($event, `${col.filed}`)"
+                  >
                     <div>
                       <loading-outlined v-if="loading"></loading-outlined>
                       <plus-outlined v-else></plus-outlined>
@@ -202,18 +276,47 @@ defineExpose({ formState, formValidate });
                     </div>
                   </a-upload>
                 </template>
-                <a-select placeholder="选择或输入" v-else-if="col.dataType === 13" :showSearch="true"
-                  v-model:value="formState.caseData[`${col.filed}`]" mode="tags" style="width: 100%"
-                  :token-separators="[',']" @change="selectMutipleChange">
-                  <a-select-option v-for="o in col.optList" :value="o.text">{{ o.text }}</a-select-option>
+                <a-select
+                  placeholder="选择或输入"
+                  v-else-if="col.dataType === 13"
+                  :showSearch="true"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                  mode="tags"
+                  style="width: 100%"
+                  :token-separators="[',']"
+                >
+                  <a-select-option v-for="o in col.optList" :value="o.text">{{
+                    o.text
+                  }}</a-select-option>
                 </a-select>
-                <a-input v-else placeholder="请输入" v-model:value="formState.caseData[`${col.filed}`]" />
+                <a-select
+                  placeholder="选择或输入"
+                  v-else-if="col.dataType === 15"
+                  :showSearch="true"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                  mode="multiple"
+                  style="width: 100%"
+                  :token-separators="[',']"
+                >
+                  <a-select-option v-for="o in col.optList" :value="o.text">{{
+                    o.text
+                  }}</a-select-option>
+                </a-select>
+                <a-input
+                  v-else
+                  placeholder="请输入"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                />
               </a-form-item>
             </template>
           </div>
         </template>
       </div>
-      <div class="form-container flex-1" style="padding-left: 3em;" v-if="formData">
+      <div
+        class="form-container flex-1"
+        style="padding-left: 3em"
+        v-if="formData"
+      >
         <template v-for="(item, key) in formData">
           <div class="group-item" v-if="key != 0">
             <div class="group-item-title">
@@ -225,57 +328,119 @@ defineExpose({ formState, formValidate });
               <span class="lines"></span>
             </div>
             <template v-for="col in item.metaList">
-              <div class="w-33% inline-block" v-if="col.dataType === 14">
-                <a-form-item :colon="false" :labelCol="{span: 0}" :wrapperCol="{span: 22}"
-                  :name="['caseData', `${col.filed}`]" :rules="[
-                {
-                  required: col.isRequired == 1 ? true : false,
-                  message: col.name + '不能为空',
-                  trigger: ['change', 'blur']
-                },
-              ]">
-                  <a-select ref="select" class="w-100%" mode="tags" :placeholder="item.name" :max-tag-count="1"
-                    v-model:value="formState.caseData[`${col.filed}`]">
-                    <a-select-option v-for="o in col.optList" :value="o.value + ''"
-                      :placeholder="col.name">{{ o.text }}</a-select-option>
+              <div class="w-33% inline-block" v-if="col.dataType === 16">
+                <a-form-item
+                  :colon="false"
+                  :labelCol="{ span: 0 }"
+                  :wrapperCol="{ span: 22 }"
+                  :name="['caseData', `${col.filed}`]"
+                  :rules="[
+                    {
+                      required: col.isRequired == 1 ? true : false,
+                      message: col.name + '不能为空',
+                      trigger: ['change', 'blur'],
+                    },
+                  ]"
+                >
+                  <a-select
+                    ref="select"
+                    class="w-100%"
+                    mode="tags"
+                    :placeholder="item.name"
+                    :max-tag-count="1"
+                    v-model:value="formState.caseData[`${col.filed}`]"
+                  >
+                    <a-select-option
+                      v-for="o in col.optList"
+                      :value="o.value + ''"
+                      :placeholder="col.name"
+                      >{{ o.text }}</a-select-option
+                    >
                   </a-select>
                 </a-form-item>
               </div>
-              <a-form-item v-else :colon="false" :name="['caseData', `${col.filed}`]" :label="col.name" :rules="[
-                {
-                  required: col.isRequired == 1 ? true : false,
-                  message: col.name + '不能为空',
-                  trigger: ['change', 'blur']
-                },
-              ]">
-                <a-textarea v-if="col.dataType === 2" placeholder="请输入"
-                  v-model:value="formState.caseData[`form_${col.id}`]" :rows="4" />
-                <a-date-picker class="w-100%" placeholder="请选择" v-else-if="col.dataType === 3"
-                  v-model:value="formState.caseData[`${col.filed}`]" value-format="YYYY-MM-DD" />
-                <a-input-number placeholder="请输入" v-else-if="col.dataType === 4"
-                  v-model:value="formState.caseData[`${col.filed}`]" />
-                <a-radio-group v-else-if="col.dataType === 5" v-model:value="formState.caseData[`${col.filed}`]"
-                  :options="col.optList" />
+              <a-form-item
+                v-else
+                :colon="false"
+                :name="['caseData', `${col.filed}`]"
+                :label="col.name"
+                :rules="[
+                  {
+                    required: col.isRequired == 1 ? true : false,
+                    message: col.name + '不能为空',
+                    trigger: ['change', 'blur'],
+                  },
+                ]"
+              >
+                <a-textarea
+                  v-if="col.dataType === 2"
+                  placeholder="请输入"
+                  v-model:value="formState.caseData[`form_${col.id}`]"
+                  :rows="4"
+                />
+                <a-date-picker
+                  class="w-100%"
+                  placeholder="请选择"
+                  v-else-if="col.dataType === 3"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                  value-format="YYYY-MM-DD"
+                />
+                <a-input-number
+                  placeholder="请输入"
+                  v-else-if="col.dataType === 4"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                />
+                <a-radio-group
+                  v-else-if="col.dataType === 5"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                  :options="col.optList"
+                />
                 <!-- // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 13.可添加 -->
-                <a-checkbox-group v-else-if="col.dataType === 6" v-model:value="formState.caseData[`${col.filed}`]"
-                  :options="col.optList">
-
+                <a-checkbox-group
+                  v-else-if="col.dataType === 6"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                  :options="col.optList"
+                >
                 </a-checkbox-group>
-                <a-select ref="select" placeholder="请选择" v-else-if="col.dataType === 7" class="w-100%"
-                  v-model:value="formState.caseData[`${col.filed}`]">
-                  <a-select-option v-for="o in col.optList" :value="o.value">{{ o.text }}</a-select-option>
+                <a-select
+                  ref="select"
+                  placeholder="请选择"
+                  v-else-if="col.dataType === 7 || col.dataType === 14"
+                  class="w-100%"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                >
+                  <a-select-option v-for="o in col.optList" :value="o.value">{{
+                    o.text
+                  }}</a-select-option>
                 </a-select>
                 <template v-else-if="col.dataType === 9">
                   <template v-if="formState.caseData[`${col.filed}`].length">
-                    <div v-for='imgItem in formState.caseData[`${col.filed}`]' class="custom-img-card">
-                      <span class="delete-img" @click='deleteItemImg(imgItem,col.filed)'>
+                    <div
+                      v-for="imgItem in formState.caseData[`${col.filed}`]"
+                      class="custom-img-card"
+                    >
+                      <span
+                        class="delete-img"
+                        @click="deleteItemImg(imgItem, col.filed)"
+                      >
                         <close-circle-outlined />
                       </span>
-                      <img width="100%" height="100%" :src="imgBaseUrl + imgItem" alt="avatar" />
+                      <img
+                        width="100%"
+                        height="100%"
+                        :src="imgBaseUrl + imgItem"
+                        alt="avatar"
+                      />
                     </div>
                   </template>
-                  <a-upload class="w-auto" :customRequest="customRequest" v-model:file-list="fileList"
-                    list-type="picture-card" :show-upload-list="false" @change="changeImg($event, `${col.filed}`)">
+                  <a-upload
+                    class="w-auto"
+                    :customRequest="customRequest"
+                    v-model:file-list="fileList"
+                    list-type="picture-card"
+                    :show-upload-list="false"
+                    @change="changeImg($event, `${col.filed}`)"
+                  >
                     <div>
                       <loading-outlined v-if="loading"></loading-outlined>
                       <plus-outlined v-else></plus-outlined>
@@ -284,20 +449,38 @@ defineExpose({ formState, formValidate });
                   </a-upload>
                 </template>
 
-                <a-select placeholder="请选择" v-else-if="col.dataType === 13"
-                  v-model:value="formState.caseData[`${col.filed}`]" mode="multiple" style="width: 100%"
-                          :token-separators="[',']" >
-                  <a-select-option v-for="o in col.optList" :value="o.text">{{ o.text }}</a-select-option>
+                <a-select
+                  placeholder="选择或输入"
+                  v-else-if="col.dataType === 13"
+                  :showSearch="true"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                  mode="tags"
+                  style="width: 100%"
+                  :token-separators="[',']"
+                >
+                  <a-select-option v-for="o in col.optList" :value="o.text">{{
+                    o.text
+                  }}</a-select-option>
+                </a-select>
+                <a-select
+                  placeholder="选择或输入"
+                  v-else-if="col.dataType === 15"
+                  :showSearch="true"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                  mode="multiple"
+                  style="width: 100%"
+                  :token-separators="[',']"
+                >
+                  <a-select-option v-for="o in col.optList" :value="o.text">{{
+                    o.text
+                  }}</a-select-option>
                 </a-select>
 
-                <a-select placeholder="请选择" v-else-if="col.dataType === 16" :showSearch="true"
-                          :token-separators="[,]"
-                  v-model:value="formState.caseData[`${col.filed}`]" mode="multiple" style="width: 100%"   @change="selectMutipleChange">
-
-                  <a-select-option v-for="o in col.optList" :value="o.value + ''">{{ o.text }}</a-select-option>
-                </a-select>
-
-                <a-input v-else placeholder="请输入" v-model:value="formState.caseData[`${col.filed}`]" />
+                <a-input
+                  v-else
+                  placeholder="请输入"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                />
               </a-form-item>
             </template>
           </div>

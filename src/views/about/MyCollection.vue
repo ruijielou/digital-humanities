@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import {message} from "ant-design-vue"
-import {favoritegroup, favorite} from "@/api";
+import {favoritegroup} from "@/api";
 import Card from "../caseLibrary/Card.vue";
 const collectionDatamock = [
   {
@@ -57,11 +57,7 @@ getCollectionData();
 // 取消喜欢
 const cancelFavorited:any = async (id: number) => {
   if (!id) return;
-  const params = {
-    type: 1, //点赞2 收藏1
-    contentId: id,
-  };
-  const res = await favorite.del(params);
+  const res = await favoritegroup.del({id});
   if (res.success) {
     message.success(res.message);
     getCollectionData();
