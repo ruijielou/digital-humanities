@@ -325,7 +325,7 @@ const getDistribution = (chartData: any) => {
         left: 'right',
         bottom: 46,
         pieces: [
-          { max: 1, },
+          { max: 1 },
           { max: 20 },
           { max: 40 },
           { max: 60 },
@@ -366,12 +366,12 @@ const getDistribution = (chartData: any) => {
       // roam: true,
       mapStyle: styleJson,
       label: {
-        normal: {
-          show: false, // 是否显示对应地名
-          textStyle: {
-            color: 'rgba(0,0,0,0.4)'
-          }
+        // normal: {
+        show: false, // 是否显示对应地名
+        textStyle: {
+          color: 'rgba(0,0,0,0.4)'
         }
+        // }
       },
       emphasis: {
         label: {
@@ -414,7 +414,7 @@ const getDistribution = (chartData: any) => {
         },
         itemStyle: {
           normal: {
-            color: (data:any) => {
+            color: (data: any) => {
               return data.color
             }
           }
@@ -434,74 +434,77 @@ const getDistribution = (chartData: any) => {
   };
 }
 
-const list: any = [];
-const links: any = [];
+// const list: any = [];
+// const links: any = [];
 const KnowledgeColor = [
-  {
-    c1: "#2246E8",
-    c2: "#2246E880",
-  },
   {
     c1: '#7643DF',
     c2: '#7643DF80',
   },
   {
+    c1: "#2246E8",
+    c2: "#2246E880",
+  },
+  {
     c1: '#F243D9',
     c2: '#F243D980',
-  }
+  },
 ]
 
 const legendColor = colors.map((item) => item[1]);
 
 //计算list
-function getLists(arr:any, idx:string | number, color: string, category:any) {
-  arr.forEach((item, index) => {
+function getLists(arr: any) {
+  const list: any = []
+  arr.forEach((item: any, index: number) => {
     if (item.name === null) {
       return false;
     }
     // 设置节点大小
     let symbolSize = 30;
-    switch (idx) {
-      case 0:
-        symbolSize = 70;
-        break;
+    switch (item.level) {
       case 1:
-        symbolSize = 50;
+        symbolSize = 80;
+        break;
+      case 2:
+        symbolSize = 60;
+        break;
+      case 3:
+        symbolSize = 40;
         break;
       default:
-        symbolSize = 30;
+        // symbolSize = 20;
         break;
     }
 
     // 每个节点所对应的文本标签的样式。
     let label = null;
-    switch (idx) {
-      case 0:
-      case 1:
-        label = {
-          position: "inside",
-          rotate: 0,
-        };
-        break;
-      default:
-        break;
+    if (item.isParent) {
+      label = {
+        position: "inside",
+        rotate: 0,
+      };
     }
 
     //计算出颜色,从第二级开始
-    if (idx === 0) {
-      color = KnowledgeColor[0];
-    }
-    if (idx == 1) {
-      color = KnowledgeColor.find((itemm, eq) => eq == index % 3);
-      // legend.push(item.name);
-    }
+    // if (item.level === 1) {
+    const color = KnowledgeColor[item.level-1] ? KnowledgeColor[item.level-1] : KnowledgeColor[2];
+    // }
+    // if (item.level == 2) {
+    //   color = KnowledgeColor.find((itemm, eq) => eq == index % 2);
+    //   // legend.push(item.name);
+    // }
+    // if (item.level == 3) {
+    //   color = KnowledgeColor.find((itemm, eq) => eq == index % 3);
+    //   // legend.push(item.name);
+    // }
     // 设置线条颜色
     let lineStyle = {
       color: '#7643DF80',
     };
     // 设置节点样式
     let bgcolor = null;
-    if (idx === 0) {
+    if (item.isParent) {
       bgcolor = {
         type: "radial",
         x: 0.5,
@@ -561,20 +564,21 @@ function getLists(arr:any, idx:string | number, color: string, category:any) {
       };
     }
     let itemStyle = null;
-    if (item.list) {
+    if (!item.isParent) {
       //非子节点
       itemStyle = {
         borderColor: color.c2,
         borderWidth: 1,
         color: bgcolor,
-        borderType: item.level && item.level == 1 ? [45, 5] : [30, 5],
+        borderType: [30, 5],
+        // item.level && item.level == 1 ? [45, 5] :
       };
     } else {
       itemStyle = {
         color: bgcolor,
         borderWidth: 1,
         borderColor: color.c2,
-        borderType: [16, 5],
+        borderType: [110 / (item.level + 1), 5],
       };
     }
     //可以改变来实现节点发光效果，但体验不好
@@ -583,20 +587,20 @@ function getLists(arr:any, idx:string | number, color: string, category:any) {
       shadowBlur: 0,
     });
 
-    if (idx == 1) {
-      category = item.name;
-    }
+    // if (idx == 1) {
+    //   category = item.name;
+    // }
     let obj = {
       name: item.name,
       symbolSize: symbolSize,
-      category: category,
+      // category: category,
       label,
       color: bgcolor,
       itemStyle,
       lineStyle,
     };
     obj = Object.assign(item, obj);
-    if (idx === 0) {
+    if (item.level === 1) {
       obj = Object.assign(obj, {
         root: true,
       });
@@ -607,46 +611,36 @@ function getLists(arr:any, idx:string | number, color: string, category:any) {
       });
     }
     list.push(obj);
-    if (item.list && item.list.length > 0) {
-      getLists(item.list, idx + 1, color, category);
-    }
+
   });
+  return list
 }
 // 计算links
-function getLinks(arr:any, index:string | number, color?: string) {
-  arr.forEach((item) => {
-    if (item.list) {
-      item.list.forEach((item2, eq) => {
-        if (index === 0) {
-          color = KnowledgeColor.find((itemm, eq2) => eq2 == eq % 3);
-        }
-        let lineStyle = {
-          normal: {
-            color: "#6960BA80",
-          }
-        };
-        let obj = {
-          source: item.name,
-          target: item2.name,
-          lineStyle,
-        };
-        links.push(obj);
-        if (item2.list && item.list.length > 0) {
-          getLinks(item.list, index + 1);
-        }
-      });
-    }
+function getLinks(arr: any) {
+  const links: any = []
+  arr.forEach((item: any) => {
+    let lineStyle = {
+      normal: {
+        color: "#6960BA80",
+      }
+    };
+    let obj = {
+
+      lineStyle,
+      ...item
+    };
+    links.push(obj);
   });
+  return links
 }
 
 const getKnowledge = (chartData: any) => {
-  const categories = chartData.data[0].list.map((item) => {
-    return {
-      name: item.name,
-    };
-  });
-  getLists(JSON.parse(JSON.stringify(chartData.data)), 0);
-  getLinks(JSON.parse(JSON.stringify(chartData.data)), 0);
+  // const categories = chartData.data[0].list.map((item) => {
+  //   return {
+  //     name: item.name,
+  //   };
+  // });
+
   return {
     toolbox: {
       show: true,
@@ -678,9 +672,11 @@ const getKnowledge = (chartData: any) => {
         draggable: true,
         roam: true,
         symbol: "circle",
-        data: list,
-        links: links,
-        categories: categories,
+        data: getLists(chartData.data),
+        // getLists(chartData.data);
+        // getLinks(chartData.links);
+        links: getLinks(chartData.links),
+        categories: chartData.categories,
         focusNodeAdjacency: true,
         scaleLimit: {
           //所属组件的z分层，z值小的图形会被z值大的图形覆盖

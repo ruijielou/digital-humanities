@@ -294,8 +294,8 @@ export const seriesData = {
         },
     ],
     Theme: [
-        ["Sun",-100],
-        ["Sun",100],
+        ["Sun", -100],
+        ["Sun", 100],
         ["Mon", 40],
         ["Mon", -60],
         ["Mon", -10],
@@ -311,311 +311,357 @@ export const seriesData = {
     Knowledge: {
         data: [
             {
-                "name": "根节点1",
-                "value": 0,
-                'level': 1,
-                id:1,
-                "list": [
-                    {
-                        "name": "节点1",
-                        "value": 1,
-                        "list": [
-                            {
-                                "name": "节点1-1-1",
-                                "value": "1-1-1"
-                            },
-                            {
-                                "name": "节点1-1-2",
-                                "value": "1-1-2"
-                            },
-                            {
-                                "name": "节点1-1-3",
-                                "value": "1-1-3"
-                            },
-                            {
-                                "name": "节点1-1-4",
-                                "value": "1-1-4"
-                            },
-                            {
-                                "name": "节点1-1-5",
-                                "value": "1-1-5"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "节点2",
-                        "value": 2,
-                        "list": [
-                            {
-                                "name": "节点1-2-1",
-                                "value": "1-2-1"
-                            },
-                            {
-                                "name": "节点1-2-2",
-                                "value": "1-2-2"
-                            },
-                            {
-                                "name": "节点1-2-3",
-                                "value": "1-2-3"
-                            },
-                            {
-                                "name": "节点1-2-4",
-                                "value": "1-2-4"
-                            },
-                            {
-                                "name": "节点1-2-5",
-                                "value": "1-2-5"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "节点3",
-                        "value": 3,
-                        "list": [
-                            {
-                                "name": "节点1-3-1",
-                                "value": "1-3-1"
-                            },
-                            {
-                                "name": "节点1-3-2",
-                                "value": "1-3-2"
-                            },
-                            {
-                                "name": "节点1-3-3",
-                                "value": "1-3-3"
-                            },
-                            {
-                                "name": "节点1-3-4",
-                                "value": "1-3-4"
-                            },
-                            {
-                                "name": "节点1-3-5",
-                                "value": "1-3-5"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "节点4",
-                        "value": 4,
-                        "list": [
-                            {
-                                "name": "节点1-4-1",
-                                "value": "1-4-1"
-                            },
-                            {
-                                "name": "节点1-4-2",
-                                "value": "1-4-2"
-                            },
-                            {
-                                "name": "节点1-4-3",
-                                "value": "1-4-3"
-                            },
-                            {
-                                "name": "节点1-4-4",
-                                "value": "1-4-4"
-                            },
-                            {
-                                "name": "节点1-4-5",
-                                "value": "1-4-5"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "节点5",
-                        "value": 5,
-                        "list": [
-                            {
-                                "name": "节点1-5-1",
-                                "value": "1-5-1"
-                            },
-                            {
-                                "name": "节点1-5-2",
-                                "value": "1-5-2"
-                            },
-                            {
-                                "name": "节点1-5-3",
-                                "value": "1-5-3"
-                            },
-                            {
-                                "name": "节点1-5-4",
-                                "value": "1-5-4"
-                            },
-                            {
-                                "name": "节点1-5-5",
-                                "value": "1-5-5"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "节点6",
-                        "value": 6,
-                        "list": [
-                            {
-                                "name": "节点1-6-1",
-                                "value": "1-6-1"
-                            },
-                            {
-                                "name": "节点1-6-2",
-                                "value": "1-6-2"
-                            },
-                            {
-                                "name": "节点1-6-3",
-                                "value": "1-6-3"
-                            },
-                            {
-                                "name": "节点1-6-4",
-                                "value": "1-6-4"
-                            },
-                            {
-                                "name": "节点1-6-5",
-                                "value": "1-6-5"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "节点7",
-                        "value": 7,
-                        "list": [
-                            {
-                                "name": "节点1-7-1",
-                                "value": "1-7-1"
-                            },
-                            {
-                                "name": "节点1-7-2",
-                                "value": "1-7-2"
-                            },
-                            {
-                                "name": "节点1-7-3",
-                                "value": "1-7-3"
-                            },
-                            {
-                                "name": "节点1-7-4",
-                                "value": "1-7-4"
-                            },
-                            {
-                                "name": "节点1-7-5",
-                                "value": "1-7-5"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "节点8",
-                        "value": 8,
-                        "list": [
-                            {
-                                "name": "节点1-8-1",
-                                "value": "1-8-1"
-                            },
-                            {
-                                "name": "节点1-8-2",
-                                "value": "1-8-2"
-                            },
-                            {
-                                "name": "节点1-8-3",
-                                "value": "1-8-3"
-                            },
-                            {
-                                "name": "节点1-8-4",
-                                "value": "1-8-4"
-                            },
-                            {
-                                "name": "节点1-8-5",
-                                "value": "1-8-5"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "节点9",
-                        "value": 9,
-                        "list": [
-                            {
-                                "name": "节点1-9-1",
-                                "value": "1-9-1"
-                            },
-                            {
-                                "name": "节点1-9-2",
-                                "value": "1-9-2"
-                            },
-                            {
-                                "name": "节点1-9-3",
-                                "value": "1-9-3"
-                            },
-                            {
-                                "name": "节点1-9-4",
-                                "value": "1-9-4"
-                            },
-                            {
-                                "name": "节点1-9-5",
-                                "value": "1-9-5"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "节点10",
-                        "value": 10,
-                        "list": [
-                            {
-                                "name": "节点1-10-1",
-                                "value": "1-10-1"
-                            },
-                            {
-                                "name": "节点1-10-2",
-                                "value": "1-10-2"
-                            },
-                            {
-                                "name": "节点1-10-3",
-                                "value": "1-10-3"
-                            },
-                            {
-                                "name": "节点1-10-4",
-                                "value": "1-10-4"
-                            },
-                            {
-                                "name": "节点1-10-5",
-                                "value": "1-10-5"
-                            }
-                        ]
-                    }
-                ]
+                name: "人工智能",
+                level: 1,//第几层
+                isParent: true,//是不是父节点
             },
-            // {
-            //     "name": "根节点2",
-            //     'level': 1,
-            //     "value": 99991,
-            //     id: 2,
-            //     list: []
-            // }
-        ]
-    },
-    Knowledge_old: {
-        links: [
-            { name: "广州生物医药与健康研究院-广州生物医药与健康研究院", num: 17 },
-            { name: "北京基因组研究所-北京基因组研究所", num: 8 },
-            { name: "中国科学技术大学-中国科学技术大学", num: 20 },
-            { name: "中国科学技术大学-广州生物医药与健康研究院", num: 4 },
-            { name: "动物研究所-动物研究所", num: 48 },
-            { name: "生物化学与细胞生物学研究所-生物化学与细胞生物学研究所", num: 5 },
-            { name: "上海营养与健康研究院-上海营养与健康研究院", num: 1 },
-            { name: "动物研究所-北京基因组研究所", num: 2 },
-            { name: "中国科学技术大学-动物研究所", num: 5 },
-            { name: "广州生物医药与健康研究院-动物研究所", num: 5 },
-            { name: "苏州生物医学工程技术研究所-苏州生物医学工程技术研究所", num: 3 },
-            { name: "广州生物医药与健康研究院-北京基因组研究所", num: 6 },
-            { name: "中国科学技术大学-北京基因组研究所", num: 4 },
-            { name: "中国科学技术大学-上海营养与健康研究院", num: 1 },
-            { name: "广州生物医药与健康研究院-生物化学与细胞生物学研究所", num: 7 },
-            { name: "动物研究所-生物化学与细胞生物学研究所", num: 1 },
-            { name: "广州生物医药与健康研究院-苏州生物医学工程技术研究所", num: 1 },
+            {
+                name: "基础层",
+                level: 3,
+                category: "基础层",
+                
+            },
+            {
+                name: "AI芯片",
+                level: 4,
+                category: "基础层",
+            },
+            {
+                name: "传感器/中间件",
+                level: 4,
+                category: "基础层",
+            },
+            {
+                name: "数据库",
+                level: 4,
+                category: "基础层",
+            },
+            {
+                name: "技术层",
+                level: 2,
+                category: "技术层",
+                
+            },
+            {
+                name: "深度学习",
+                level: 4,
+                category: "技术层",
+            },
+            {
+                name: "计算机视觉",
+                level: 4,
+                category: "技术层",
+            },
+            {
+                name: "自然语言处理",
+                level: 4,
+                category: "技术层",
+            },
+            {
+                name: "通用应用层",
+                level: 2,
+                isParent: true,
+                category: "通用应用层",
+                
+            },
+            {
+                name: "语音识别",
+                level: 4,
+                category: "通用应用层",
+            },
+            {
+                name: "图像识别",
+                level: 4,
+                category: "通用应用层",
+                
+            },
+            {
+                name: "语义识别",
+                level: 4,
+                category: "通用应用层",
+                
+            },
+            {
+                name: "人脸识别",
+                level: 4,
+                category: "通用应用层",
+                
+                
+            },
+            {
+                name: "视频识别",
+                level: 4,
+                category: "通用应用层",
+                
+            },
+            {
+                name: "身份识别",
+                level: 4,
+                category: "通用应用层",
+                
+            },
+            {
+                name: "声纹识别",
+                level: 4,
+                category: "通用应用层",
+                
+            },
+            {
+                name: "文字识别",
+                level: 4,
+                category: "通用应用层",
+                
+            },
+            {
+                name: "手势识别",
+                level: 4,
+                category: "通用应用层",
+                
+            },
+            {
+                name: "指纹识别",
+                level: 4,
+                category: "通用应用层",
+                
+            },
+            {
+                name: "静脉识别",
+                level: 4,
+                category: "通用应用层",
+                
+            },
+            {
+                name: "虹膜识别",
+                level: 4,
+                category: "通用应用层",
+                
+            },
+            {
+                name: "掌纹识别",
+                level: 4,
+                category: "通用应用层",
+                
+            },
+            {
+                name: "行业应用层",
+                level: 2,
+                isParent: true,
+                category: "行业应用层",
+                
+            },
+            {
+                name: "AI医疗",
+                level: 4,
+                category: "行业应用层",
+                
+            },
+            {
+                name: "自动驾驶",
+                level: 4,
+                category: "行业应用层",
+                
+            },
+            {
+                name: "AI安防",
+                level: 4,
+                category: "行业应用层",
+                
+            },
+            {
+                name: "智能投顾",
+                level: 4,
+                category: "行业应用层",
+                
+            },
+            {
+                name: "聊天机器人",
+                level: 4,
+                category: "行业应用层",
+                
+            },
+            {
+                name: "AI教育",
+                level: 4,
+                category: "行业应用层",
+                
+            },
+            {
+                name: "智能家居",
+                level: 4,
+                category: "行业应用层",
+                
+            },
+            {
+                name: "AI金融",
+                level: 4,
+                category: "行业应用层",
+                
+            },
+            {
+                name: "安防监控系统",
+                level: 4,
+                category: "行业应用层",
+                
+            },
+            {
+                name: "安防机器人",
+                level: 4,
+                category: "行业应用层",
+                
+            },
         ],
-        nodes: [
-            { id: "广州生物医药与健康研究院" },
-            { id: "北京基因组研究所" },
-            { id: "中国科学技术大学" },
-            { id: "动物研究所" },
-            { id: "生物化学与细胞生物学研究所" },
-            { id: "上海营养与健康研究院" },
-            { id: "苏州生物医学工程技术研究所" },
-        ]
+        links: [
+            {
+                source: "人工智能",
+                target: "基础层",
+            },
+            {
+                source: "基础层",
+                target: "AI芯片",
+            },
+            {
+                source: "基础层",
+                target: "软件工程",
+            },
+            {
+                source: "基础层",
+                target: "传感器/中间件",
+            },
+            {
+                source: "基础层",
+                target: "数据库",
+            },
+            {
+                source: "人工智能",
+                target: "技术层",
+            },
+            {
+                source: "技术层",
+                target: "深度学习",
+            },
+            {
+                source: "技术层",
+                target: "计算机视觉",
+            },
+            {
+                source: "技术层",
+                target: "自然语言处理",
+            },
+            {
+                source: "人工智能",
+                target: "通用应用层",
+            },
+            {
+                source: "通用应用层",
+                target: "语音识别",
+            },
+            {
+                source: "通用应用层",
+                target: "图像识别",
+            },
+            {
+                source: "通用应用层",
+                target: "语义识别",
+            },
+            {
+                source: "通用应用层",
+                target: "人脸识别",
+            },
+            {
+                source: "通用应用层",
+                target: "视频识别",
+            },
+            {
+                source: "通用应用层",
+                target: "身份识别",
+            },
+            {
+                source: "通用应用层",
+                target: "声纹识别",
+            },
+            {
+                source: "通用应用层",
+                target: "文字识别",
+            },
+            {
+                source: "通用应用层",
+                target: "手势识别",
+            },
+            {
+                source: "通用应用层",
+                target: "指纹识别",
+            },
+            {
+                source: "通用应用层",
+                target: "静脉识别",
+            },
+            {
+                source: "通用应用层",
+                target: "虹膜识别",
+            },
+            {
+                source: "人工智能",
+                target: "行业应用层",
+            },
+            {
+                source: "通用应用层",
+                target: "掌纹识别",
+            },
+            {
+                source: "行业应用层",
+                target: "AI医疗",
+            },
+            {
+                source: "行业应用层",
+                target: "自动驾驶",
+            },
+            {
+                source: "行业应用层",
+                target: "AI安防",
+            },
+            {
+                source: "行业应用层",
+                target: "智能投顾",
+            },
+            {
+                source: "行业应用层",
+                target: "聊天机器人",
+            },
+            {
+                source: "行业应用层",
+                target: "AI教育",
+            },
+            {
+                source: "行业应用层",
+                target: "智能家居",
+            },
+            {
+                source: "行业应用层",
+                target: "AI金融",
+            },
+            {
+                source: "行业应用层",
+                target: "安防监控系统",
+            },
+            {
+                source: "行业应用层",
+                target: "安防机器人",
+            },
+        ],
+        categories: [
+            {
+                name: "基础层",
+            },
+            {
+                name: "技术层",
+            },
+            {
+                name: "通用应用层",
+            },
+            {
+                name: "行业应用层",
+            },
+        ],
     },
     Distribution: {
         data: [
