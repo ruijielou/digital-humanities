@@ -121,7 +121,7 @@ export const seriesData = {
             { "source": "Wind", "target": "Electricity grid", "value": 289.366 }
         ]
     },
-    Time: [
+    Time: [//时间谱数据
         {
             name: '德国',
             data: [
@@ -293,7 +293,7 @@ export const seriesData = {
             ]
         },
     ],
-    Theme: [
+    Theme: [//主题谱数据
         ["Sun", -100],
         ["Sun", 100],
         ["Mon", 40],
@@ -308,7 +308,7 @@ export const seriesData = {
         ["Sat", 68],
         ["Sat", -58],
     ],
-    Knowledge: {
+    Knowledge: {//知识图谱数据
         data: [
             {
                 name: "人工智能",
