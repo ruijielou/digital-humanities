@@ -317,18 +317,7 @@ const getDistribution = (chartData: any) => {
     tooltip: {
       trigger: 'item'
     },
-    // color: ['#2246E8', '#7643DF', '#F243D9'],
-    visualMaps: {
-      type: 'continuous', // 连续型visualMap
-      min: 0, // 最小值
-      max: 1000, // 最大值
-      text: ['High', 'Low'], // 文本标签，分别对应最大值和最小值
-      realtime: false, // 是否实时更新地图
-      calculable: true, // 是否显示拖拽用的手柄
-      inRange: {
-        color: ['#f5e1a4', '#e94d3d'] // 颜色范围，分别对应最小值和最大值
-      }
-    },
+
     visualMap: [
       {
         type: 'piecewise',
@@ -358,7 +347,7 @@ const getDistribution = (chartData: any) => {
       },
       {
         min: -6,
-        max: 116,
+        max: 6,
         bottom: 10,
         seriesIndex: 0,
         itemHeight: 90,
@@ -416,7 +405,7 @@ const getDistribution = (chartData: any) => {
         coordinateSystem: 'geo',
         data: convertData(chartData),
         symbolSize: (val: any) => {
-          return val[2] * 2;
+          return val[2] * 10;
         },
 
         // colorBy: 'data',
