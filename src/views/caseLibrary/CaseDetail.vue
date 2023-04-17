@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { reactive, ref,shallowRef } from "vue";
 import { Colors } from "../../utils/type";
 import { BooleanStatus, LikeStatus } from "@/utils/type";
 import CollectionModal from "@/components/CollectionGroup.vue";
@@ -20,6 +20,8 @@ import { useUserStore } from "@/store/user";
 import StepTwo from "../contribute/StepTwo.vue";
 import { imgBaseUrl } from "@/utils/config";
 import { convert_case_data } from "@/utils/case_meta_util";
+import Knowledge from "./Knowledge.vue";
+
 
 type AnyObject<T = any> = {
   [key: string]: T | any;
@@ -188,6 +190,7 @@ const goBack = () => {
     router.push("/");
   }
 };
+
 </script>
 <template>
   <div class="h-screen overflow-auto">
@@ -263,12 +266,14 @@ const goBack = () => {
         />
       </div>
       <div v-else class="detail-content">
-        <div class="m-t-8">
-          <img
+        <div class="m-t-5 h-500px chart-box">
+          <!-- <img
             style="width: 100%; height: 350px; object-fit: cover"
             :src="imgBaseUrl + formModel.caseinfo.cover"
             alt=""
-          />
+          /> -->
+          <!-- <div class="w-100% h-100%" ref="myChart"></div> -->
+          <Knowledge />
         </div>
         <div class="flex">
           <div class="flex flex-col flex-1 m-r-18">
@@ -442,6 +447,9 @@ const goBack = () => {
   z-index: 2;
   left: 0;
   top: 10px;
+}
+.chart-box {
+  background: linear-gradient(180deg, #1e1331 0%, #08122e 100%);
 }
 .detail-item {
   line-height: 24px;
