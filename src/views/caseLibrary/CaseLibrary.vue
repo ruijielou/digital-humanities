@@ -43,13 +43,14 @@ onMounted(() => {
     <a-layout-content style="padding-top: 20px" class="flex flex-col">
       <div
         class="case-container"
-        v-for="(item, index) in cardData"
+        v-for="(item, index) in cardData.filter((c:any) => c.repositoryList)"
         :style="{
           backgroundImage:
             index != 0 && index % 2 == 1 ? `url(${GLAM})` : 'none',
         }"
       >
         <LogoText
+        class="m-b-2"
           :style="{ color: index != 0 && index % 2 == 1 ? '#fff' : '' }"
           :text="item.title"
         />
@@ -85,7 +86,7 @@ onMounted(() => {
           </div>
         </div>
         <div v-else class="case-group flex m-auto">
-          <Carousel>
+          <Carousel :hover-dark="index != 0 && index % 2 == 1 ? false : true">
             <template #cards>
               <div
                 class="h-100%"
@@ -119,10 +120,10 @@ onMounted(() => {
 .case-container {
   background-size: cover;
   background-position: center center;
-  padding: 3em 0;
+  padding: 2em 0;
   & > .case-group {
     width: 80%;
-    height: 60vh;
+    height: 58vh;
   }
 }
 .more-container {

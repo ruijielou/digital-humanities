@@ -26,7 +26,7 @@ const favorited = (id: number) => {
     :style="{ backgroundImage: hoverCard ? `url(${card?.lastCover})` : '' }"
   >
     <div
-      class="flex-1 card-image"
+      class="card-image"
       :style="{
         backgroundImage: `url(${card.cover || '/src/assets/image/card.png'})`,
         opacity: hoverCard ? 0 : 1,
@@ -59,6 +59,10 @@ const favorited = (id: number) => {
   .card-image {
     background-size: cover;
     background-position: center center;
+    height: 70%;
+  }
+  .card-footer {
+    height: 30%;
   }
   &.hoverCard {
     .card-footer {

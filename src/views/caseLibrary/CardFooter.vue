@@ -15,7 +15,7 @@ const props = withDefaults(
 );
 </script>
 <template>
-  <div class="p-4">
+  <div class="p-2">
     <h2 class="code m-0" v-if="card && card.code">{{ "0" + card.code }}</h2>
     <h4 class="card-title">{{ card.caseName }}</h4>
     <template v-if="!props.noShowNumber">

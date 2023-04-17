@@ -4,20 +4,19 @@ import Card from "../caseLibrary/Card.vue";
 import { cardData } from "../caseLibrary/mock";
 import Carousel from "../caseLibrary/Carousel.vue";
 import MyCaseList from "./MyCaseList.vue";
-import {repository} from "@/api"
+import { repository } from "@/api";
 enum CaseType {
   MyCase, //我的案例
   CaseLibrary, //我的案例库
 }
 const currentType = ref<number>(CaseType.CaseLibrary);
 
-const cardData = ref<any>([])
+const cardData = ref<any>([]);
 const getCaseData = async () => {
-  const {result } = await repository.myPage();
+  const { result } = await repository.myPage();
   cardData.value = result;
-}
+};
 getCaseData();
-
 </script>
 <template>
   <div class="p-8 w-100% submission-manage">
@@ -49,27 +48,34 @@ getCaseData();
       </div>
     </div>
     <div v-if="currentType === CaseType.MyCase">
-    <MyCaseList/>
+      <MyCaseList />
     </div>
     <template v-else>
-      <div class="case-container p-t-4" v-for="item in cardData">
-        <span class="line-title text-4.5">
-          <span>{{item.title}}</span>
-        </span>
-        <div class="case-group">
-          <Carousel class="arrowTop">
-            <template #cards>
-              <div class="h-100%" v-for="card in item.repositoryList">
-                <Card
-                  @click="$router.push({ name: 'MyCaseLibraryList', params: {id: card.id} })"
-                  style="width: 22vw; height: 416px"
-                  :card="card"
-                />
-              </div>
-            </template>
-          </Carousel>
+      <template v-for="item in cardData">
+        <div class="case-container p-t-4" v-if="item.repositoryList">
+          <span class="line-title text-4.5">
+            <span>{{ item.title }}</span>
+          </span>
+          <div class="case-group m-t-2">
+            <Carousel class="arrowTop">
+              <template #cards>
+                <div class="h-100%" v-for="card in item.repositoryList">
+                  <Card
+                    @click="
+                      $router.push({
+                        name: 'MyCaseLibraryList',
+                        params: { id: card.id },
+                      })
+                    "
+                    style="width: 22vw; height: 416px"
+                    :card="card"
+                  />
+                </div>
+              </template>
+            </Carousel>
+          </div>
         </div>
-      </div>
+      </template>
     </template>
   </div>
 </template>
@@ -84,7 +90,7 @@ getCaseData();
     }
   }
   .case-container {
-    height: 450px;
+    height: 460px;
     overflow: hidden;
     .case-group {
       width: 100%;
