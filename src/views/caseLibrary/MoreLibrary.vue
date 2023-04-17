@@ -10,6 +10,7 @@ import { caseinfo, repository, repositorygroup } from "@/api";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
+
 const selectContry = ref<string>("中国");
 const selectFiled = ref<string>("项目时间");
 const loading = ref<boolean>(false);
@@ -46,6 +47,7 @@ const setSort = (type: string) => {
 };
 const repository_id = ref();
 repository_id.value = route.params.id;
+
 const repository_info = ref({
   name: "",
   description: "",
@@ -101,7 +103,7 @@ const getSlider = async () => {
     const firstData = sliderData.value.find(
       (item: any) => item.repositoryList.length > 0
     );
-    if(firstData) {
+    if(firstData && !repository_id.value) {
       repository_id.value = firstData.repositoryList[0].id;
     }
   }
@@ -136,7 +138,7 @@ initPage();
           </div>
           <div
             class="p-l-10 p-t-3 text-3.5 truncate cursor-pointer"
-            :class="{active: repository_item.id === repository_id}"
+            :class="{active: repository_item.id == repository_id}"
             v-for="repository_item in item.repositoryList"
           >
             <span @click="reset_repository(repository_item.id)">{{

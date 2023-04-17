@@ -8,7 +8,8 @@ import { LikeStatus } from "@/utils/type";
 const modalVisibility = ref<boolean>(false);
 const isOpen = ref<boolean>(false); //是否为公开
 const loading = ref<boolean>(false);
-const checkedFloder = ref<string>("");
+const checkedFloder = ref<string>("999");
+const searchInfo = ref<string>("");
 const collectionGroup = ref<any>([]);
 const collectionFloderName = ref<string>("");
 
@@ -18,7 +19,9 @@ const props = defineProps<{
 }>();
 
 const getCollectionData = async () => {
-  const { result } = await favoritegroup.myPage();
+  const { result } = await favoritegroup.myPage({
+    searchInfo: searchInfo.value,
+  });
   collectionGroup.value = result?.records || [];
 };
 
@@ -62,27 +65,52 @@ defineExpose({ modalVisibility });
     <template #title>
       <div class="text-center">收藏</div>
     </template>
-    <a-input>
+    <a-input v-model:value="searchInfo">
       <template #suffix>
-        <SearchOutlined />
+        <SearchOutlined @click="getCollectionData" />
       </template>
     </a-input>
-    <a-radio-group v-model:value="checkedFloder" v-if="collectionGroup.length">
-      <div class="p-3" v-for="item in collectionGroup">
-        <a-radio :value="item.id">{{ item.title }}</a-radio>
+    <a-radio-group v-model:value="checkedFloder" class="w-100%">
+      <div v-if="collectionGroup.length" class="collection-group">
+        <div class="p-2" v-for="item in collectionGroup">
+          <a-radio :value="item.id">{{ item.title }}</a-radio>
+        </div>
       </div>
       <div class="p-3 flex items-center">
-        <a-radio value='999'>
-          <a-input class="flex-1 m-r-3" v-model:value="collectionFloderName" placeholder="案例库名称"></a-input>
+        <a-radio value="999">
+          <a-input
+            class="flex-1 m-r-3"
+            v-model:value="collectionFloderName"
+            placeholder="案例库名称"
+          ></a-input>
         </a-radio>
         <a-switch v-model:checked="isOpen">公开</a-switch>
       </div>
     </a-radio-group>
     <template #footer>
       <div class="text-center">
-        <a-button type="primary" :loading="loading" v-if="checkedFloder == '999'" @click="createGroup">创建</a-button>
-        <a-button type="primary" :loading="loading" v-else @click="submitCollection">确定</a-button>
+        <a-button
+          type="primary"
+          :loading="loading"
+          v-if="checkedFloder == '999'"
+          @click="createGroup"
+          >创建</a-button
+        >
+        <a-button
+          type="primary"
+          :loading="loading"
+          v-else
+          @click="submitCollection"
+          >确定</a-button
+        >
       </div>
     </template>
   </a-modal>
 </template>
+<style lang="less">
+  .collection-group {
+    max-height: 300px;
+    width: 100%;
+    overflow: auto;
+  }
+</style>

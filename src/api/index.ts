@@ -244,11 +244,12 @@ export const favorite = {
 }
 
 export const favoritegroup = {
-  myPage: () => {
+  myPage: (data?: any) => {
     return request(
       {
         url: `/app/user/favoritegroup/myPage`,
         method: "get",
+        params: data
       },
     );
   },

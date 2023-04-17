@@ -6,7 +6,7 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons-vue";
 import type { PageinationType } from "../../utils/type";
-import { caseinfo,repository } from "@/api";
+import { caseinfo, repository } from "@/api";
 import { useRoute } from "vue-router";
 import { message, Modal } from "ant-design-vue";
 
@@ -60,9 +60,12 @@ const handleTableChange = async (newpager: any) => {
   getLibraryList();
 };
 const getLibraryList = async () => {
-  const { result } = await caseinfo.page(
-    `repositoryId=${route.params.id}&&pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
-  );
+  const { result } = await caseinfo.page({
+    repositoryId: route.params.id,
+    pageNo: pagination.current,
+    pageSize: pagination.pageSize,
+  });
+
   if (result) {
     dataSource.value = [...result.records];
     pagination.total = result.total;
@@ -74,7 +77,7 @@ const removeMore = () => {
   const params = [...selectedKeys.value];
   if (!params.length) {
     message.warning("选择不能为空");
-    return
+    return;
   }
   Modal.confirm({
     content: "确定要全部删除吗？",
@@ -92,26 +95,17 @@ const removeMore = () => {
   });
 };
 
-const repository_info = ref<any>({});
-const getRepositoryDetail = async ()=>{
-  const {result} = await repository.queryById(route.params.id);
+const repository_info = reactive<any>({
+  info: {},
+});
+const getRepositoryDetail = async () => {
+  const { result } = await repository.queryById(route.params.id);
   if (result) {
-    repository_info.value = result;
+    repository_info.info = { ...result };
   }
-}
+};
 getRepositoryDetail();
 
-// const getCaseList = async () => {
-//   const { result } = await repository.page(
-//     `pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
-//   );
-//   if (result) {
-//     dataSource.value = [...result.records];
-//     pagination.total = result.total;
-//     pagination.current = result.current;
-//     pagination.pageSize = result.size;
-//   }
-// };
 getLibraryList();
 
 const handleOk = (e: MouseEvent) => {
@@ -130,7 +124,7 @@ const handleOk = (e: MouseEvent) => {
     <div class="lines-purple flex justify-between">
       <div class="flex items-center m-b-2">
         <h2 class="m-0">
-          {{ repository_info?.name }}
+          {{ repository_info.info?.name }}
           <a-popover placement="bottom">
             <template #content>
               <p>开放权限</p>
@@ -150,7 +144,7 @@ const handleOk = (e: MouseEvent) => {
       </div>
     </div>
     <p class="c-#999 text-3 m-t-3 m-b-0">
-      {{ repository_info.description }}
+      {{ repository_info.info.description }}
     </p>
     <LogoText text="检索结果" />
     <div class="result-container">
@@ -173,8 +167,14 @@ const handleOk = (e: MouseEvent) => {
           onChange: onSelectChange,
         }"
       >
-        <template #bodyCell="{ column, text, index, record}">
-          <div class="c-#5b3df2 cursor-pointer" @click="$router.push({ name: 'MyCaseDetail', params: { id: record.id } })" v-if="column.dataIndex === 'name'">
+        <template #bodyCell="{ column, text, index, record }">
+          <div
+            class="c-#5b3df2 cursor-pointer"
+            @click="
+              $router.push({ name: 'MyCaseDetail', params: { id: record.id } })
+            "
+            v-if="column.dataIndex === 'name'"
+          >
             {{ text }}
           </div>
         </template>
