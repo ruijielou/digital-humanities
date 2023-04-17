@@ -267,12 +267,6 @@ const goBack = () => {
       </div>
       <div v-else class="detail-content">
         <div class="m-t-5 h-500px chart-box">
-          <!-- <img
-            style="width: 100%; height: 350px; object-fit: cover"
-            :src="imgBaseUrl + formModel.caseinfo.cover"
-            alt=""
-          /> -->
-          <!-- <div class="w-100% h-100%" ref="myChart"></div> -->
           <Knowledge />
         </div>
         <div class="flex">
