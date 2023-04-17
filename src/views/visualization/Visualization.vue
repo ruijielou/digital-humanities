@@ -12,12 +12,15 @@ import { getOption } from "./options";
 import { componentMap } from "./type";
 import { seriesData } from "./mock";
 import { caseLocation, labgroup } from "@/api";
+import { useRouter } from "vue-router"
 
 interface ChartTypeMap {
   key: componentMap;
   name: string;
   id: number;
 }
+
+const router = useRouter();
 
 const currentType = ref<componentMap>(componentMap.Distribution);
 // const chartsOption = {
@@ -78,7 +81,7 @@ const toggleChartType = (type: componentMap) => {
   }, 1000);
 };
 
-const activeRightId = ref<number>(1);
+// const activeRightId = ref<number>(1);
 const spinning = ref<boolean>(false); //加载中的样式
 const myChart = ref<any>(null);
 const chartInit = shallowRef<any>(null);
@@ -87,6 +90,7 @@ const initChart = async (type: componentMap) => {
   let resultData:any = null;
   if(type === componentMap.Distribution) {
     const { result } = await caseLocation.list();
+    case_location_list.value = [...result];
     resultData = [...result];
   }
   //其他图形在这儿添加else if
@@ -111,18 +115,20 @@ const initChart = async (type: componentMap) => {
   });
 };
 
-const changeView = (id: number, case_info: any) => {
+const changeView = (id: number) => {
   // 请求数据
   // 刷新页面资源
   // 暂时用loading状态，后期切换数据即可
-  if (activeRightId.value === id) return;
-  activeRightId.value = id;
-  spinning.value = true;
-  //TODO 增加显示的逻辑
-  setTimeout(() => {
-    initChart(currentType.value);
-    spinning.value = false;
-  }, 3000);
+  // if (activeRightId.value === id) return;
+  // activeRightId.value = id;
+  // spinning.value = true;
+  // //TODO 增加显示的逻辑
+  // setTimeout(() => {
+  //   initChart(currentType.value);
+  //   spinning.value = false;
+  // }, 3000);
+  // router.push({ name: 'CaseDetail', params: { id } })
+  window.open('/#/casedetail/' + id, '_blank')
 };
 
 onMounted(() => {
@@ -134,11 +140,11 @@ onUnmounted(() => {
 
 /* 案例列表 */
 const case_location_list = ref<any>([]);
-const load_case_location = async () => {
-  const { result } = await caseLocation.list();
-  case_location_list.value = result;
-  console.log("lab_group_list.value:", case_location_list.value);
-};
+// const load_case_location = async () => {
+//   const { result } = await caseLocation.list();
+//   case_location_list.value = result;
+//   console.log("lab_group_list.value:", case_location_list.value);
+// };
 // load_case_location();
 </script>
 <template>
@@ -169,11 +175,11 @@ const load_case_location = async () => {
           </a-input>
         </div>
         <div class="library-list">
+          <!-- :class="{ active: activeRightId === i }" -->
           <div
             class="library-item flex flex-col"
-            :class="{ active: activeRightId === i }"
             v-for="(case_location, i) in case_location_list"
-            @click="changeView(i, case_location)"
+            @click="changeView(case_location.id)"
           >
             <div
               class="h-120px w-100% item-bg"

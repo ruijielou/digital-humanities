@@ -4,7 +4,7 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import { createRouterGuards } from './router-guards';
 
 import routes from './router';
-const whiteNameList = ['home', 'CaseDetail']; //添加不用登录的页面name
+const whiteNameList = ['home', 'CaseDetail']; //添加不用登录的页面name //暂时没用到，只判断了是否为我的页面和401的跳转
 
 export const router = createRouter({
   // process.env.BASE_URL

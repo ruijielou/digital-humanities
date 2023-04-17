@@ -13,7 +13,7 @@ import {
   StarOutlined,
   UserOutlined,
 } from "@ant-design/icons-vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { caseApi, comment, favorite, meta } from "@/api";
 import { message } from "ant-design-vue";
 import { useUserStore } from "@/store/user";
@@ -34,6 +34,7 @@ const CollectionRef = ref<any>(null);
 const isEdit = ref<boolean>(false);
 const commentList = ref<any>([]);
 const route = useRoute();
+const router = useRouter();
 const repositoryList = ref([]);
 const stepTwoRef = ref<any>(null);
 const stepTwoData = reactive<any>({
@@ -164,8 +165,6 @@ const formatterStepTwoData = (data: AnyObject) => {
 };
 
 const publish_case = async (status: number) => {
-  console.log("stepTwoData.formModal:", stepTwoData.formModal);
-
   const formState: any = await stepTwoRef.value?.formValidate();
 
   const submitData = {
@@ -175,7 +174,6 @@ const publish_case = async (status: number) => {
     repositoryIds: formModel.caseinfo.repositoryIds,
     authType: formModel.caseinfo.authType,
   };
-  console.log("submitData:", submitData);
   const response = await caseApi.add(submitData);
   isEdit.value = false;
   getDetail();
@@ -188,6 +186,13 @@ const starFavorited = (isFavorite: any) => {
   isFavorite === BooleanStatus.False
     ? (CollectionRef.value.modalVisibility = true)
     : favorited(LikeStatus.Favorite, isFavorite);
+};
+const goBack = () => {
+  if (router?.options.history.state.back) {
+    router.back(); // 使用 $router.back() 方法返回上一层路由
+  } else {
+    router.push("/");
+  }
 };
 </script>
 <template>
@@ -202,7 +207,7 @@ const starFavorited = (isFavorite: any) => {
       style="padding: 20px 0; margin: 0 auto; width: 80%"
       class="flex flex-col"
     >
-      <div class="return-prev-page cursor-pointer" @click="$router.go(-1)">
+      <div class="return-prev-page cursor-pointer" @click="goBack">
         <arrow-left-outlined />
         <span class="p-l-2">返回</span>
       </div>
@@ -256,7 +261,6 @@ const starFavorited = (isFavorite: any) => {
         </div>
       </div>
       <div v-if="isEdit">
-        <!--        {{ stepTwoData.data.repositoryList }}-->
         <StepTwo
           ref="stepTwoRef"
           :selected-tag="repositoryList"
