@@ -7,6 +7,7 @@ import {
   PlusOutlined,
   PlusSquareOutlined,
   MinusSquareOutlined,
+  DeleteOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons-vue";
 import { commonUpload } from "@/api";
@@ -62,7 +63,7 @@ const formValidate = async () => {
  */
 let uploadFile: any = null;
 let uploadFileCurrentKey = "";
-const changeImg = (info: any, key: any) => {
+const changeFile = (info: any, key: any) => {
   uploadFile = info.file;
   uploadFileCurrentKey = key;
   formState.caseData[uploadFileCurrentKey] = [
@@ -102,7 +103,7 @@ const customRequest = async () => {
   }
 };
 
-const deleteItemImg = (src: string, key: string) => {
+const deleteItemFile = (src: string, key: string) => {
   formState.caseData[key] = [
     ...formState.caseData[key].filter((item: any) => item != src),
   ];
@@ -156,39 +157,7 @@ defineExpose({ formState, formValidate });
               <span class="lines"></span>
             </div>
             <template v-for="col in item.metaList">
-              <div class="w-33% inline-block" v-if="col.dataType === 16">
-                <a-form-item
-                  :colon="false"
-                  :labelCol="{ span: 0 }"
-                  :wrapperCol="{ span: 22 }"
-                  :name="['caseData', `${col.filed}`]"
-                  :rules="[
-                    {
-                      required: col.isRequired == 1 ? true : false,
-                      message: col.name + '不能为空',
-                      trigger: ['change', 'blur'],
-                    },
-                  ]"
-                >
-                  <a-select
-                    ref="select"
-                    class="w-100%"
-                    mode="tags"
-                    :placeholder="col.name"
-                    :max-tag-count="1"
-                    v-model:value="formState.caseData[`${col.filed}`]"
-                  >
-                    <a-select-option
-                      v-for="o in col.optList"
-                      :value="o.value + ''"
-                      :placeholder="col.name"
-                      >{{ o.text }}</a-select-option
-                    >
-                  </a-select>
-                </a-form-item>
-              </div>
               <a-form-item
-                v-else
                 :colon="false"
                 :name="['caseData', `${col.filed}`]"
                 :label="col.name"
@@ -241,41 +210,6 @@ defineExpose({ formState, formValidate });
                     o.text
                   }}</a-select-option>
                 </a-select>
-                <template v-else-if="col.dataType === 9">
-                  <template v-if="formState.caseData[`${col.filed}`].length">
-                    <div
-                      v-for="imgItem in formState.caseData[`${col.filed}`]"
-                      class="custom-img-card"
-                    >
-                      <span
-                        class="delete-img"
-                        @click="deleteItemImg(imgItem, col.filed)"
-                      >
-                        <close-circle-outlined />
-                      </span>
-                      <img
-                        width="100%"
-                        height="100%"
-                        :src="imgBaseUrl + imgItem"
-                        alt="avatar"
-                      />
-                    </div>
-                  </template>
-                  <a-upload
-                    class="w-auto"
-                    :customRequest="customRequest"
-                    v-model:file-list="fileList"
-                    list-type="picture-card"
-                    :show-upload-list="false"
-                    @change="changeImg($event, `${col.filed}`)"
-                  >
-                    <div>
-                      <loading-outlined v-if="loading"></loading-outlined>
-                      <plus-outlined v-else></plus-outlined>
-                      <div class="ant-upload-text">上传</div>
-                    </div>
-                  </a-upload>
-                </template>
                 <a-select
                   placeholder="选择或输入"
                   v-else-if="col.dataType === 13"
@@ -421,7 +355,7 @@ defineExpose({ formState, formValidate });
                     >
                       <span
                         class="delete-img"
-                        @click="deleteItemImg(imgItem, col.filed)"
+                        @click="deleteItemFile(imgItem, col.filed)"
                       >
                         <close-circle-outlined />
                       </span>
@@ -439,7 +373,7 @@ defineExpose({ formState, formValidate });
                     v-model:file-list="fileList"
                     list-type="picture-card"
                     :show-upload-list="false"
-                    @change="changeImg($event, `${col.filed}`)"
+                    @change="changeFile($event, `${col.filed}`)"
                   >
                     <div>
                       <loading-outlined v-if="loading"></loading-outlined>
@@ -448,7 +382,40 @@ defineExpose({ formState, formValidate });
                     </div>
                   </a-upload>
                 </template>
-
+                <template v-else-if="col.dataType === 17">
+                  <a-upload-dragger
+                    v-model:fileList="fileList"
+                    :customRequest="customRequest"
+                    :show-upload-list="false"
+                    @change="changeFile($event, `${col.filed}`)"
+                    @drop="changeFile($event, `${col.filed}`)"
+                  >
+                    <p class="ant-upload-drag-icon">
+                      <inbox-outlined></inbox-outlined>
+                    </p>
+                    <p class="ant-upload-text">
+                      单击或拖动文件到此区域进行上传
+                    </p>
+                  </a-upload-dragger>
+                  <template v-if="formState.caseData[`${col.filed}`].length">
+                    <div
+                      class="flex justify-between"
+                      v-for="imgItem in formState.caseData[`${col.filed}`]"
+                    >
+                      <a
+                        target="_blank"
+                        rel="noopener"
+                        class="ant-upload-list-item-name w-80% overflow-hidden"
+                        :title="imgItem"
+                        :href="imgBaseUrl + imgItem"
+                        >{{ imgItem }}</a
+                      >
+                      <span class="cursor-pointer" @click="deleteItemFile(imgItem, col.filed)">
+                        <delete-outlined style="color: #f243d9" />
+                      </span>
+                    </div>
+                  </template>
+                </template>
                 <a-select
                   placeholder="选择或输入"
                   v-else-if="col.dataType === 13"

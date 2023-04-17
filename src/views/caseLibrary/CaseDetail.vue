@@ -18,7 +18,6 @@ import { caseApi, comment, favorite, meta } from "@/api";
 import { message } from "ant-design-vue";
 import { useUserStore } from "@/store/user";
 import StepTwo from "../contribute/StepTwo.vue";
-// import { formatterFormInput } from "../contribute/utils";
 import { imgBaseUrl } from "@/utils/config";
 import { convert_case_data } from "@/utils/case_meta_util";
 
@@ -113,13 +112,8 @@ const getTwoFormInput = async () => {
   const { result } = await meta.findFormListGroup(idList);
   const formResult = await caseApi.findDetail(route.params.id as string);
   if (result && formResult) {
-    // const { formModal } = formatterFormInput({ result });
     let case_data_info = { ...formResult.result };
-
     case_data_info = convert_case_data(case_data_info, result);
-
-    console.log("case_data_info:", case_data_info);
-
     stepTwoData.formModal = case_data_info;
     stepTwoData.data = [...result];
 
@@ -303,7 +297,29 @@ const goBack = () => {
                   v-for="(col, colkey) in item.metaList"
                 >
                   <span> {{ col.title }}: </span>
-                  <span v-if="col.dataType != 12">{{ col.text }}</span>
+                  <template v-if="col.dataType != 12">
+                    <div v-if="col.dataType === 9" class="flex">
+                      <div
+                        class="flex-1 m-r-2"
+                        v-for="img in col.text.split(',')"
+                      >
+                        <a-image :width="200" :src="imgBaseUrl + img" />
+                      </div>
+                    </div>
+                    <div v-else-if="col.dataType === 17">
+                      <div class="m-r-2" v-for="file in col.text.split(',')">
+                        <a
+                          target="_blank"
+                          rel="noopener"
+                          class="ant-upload-list-item-name w-80% overflow-hidden"
+                          :title="file"
+                          :href="imgBaseUrl + file"
+                          >{{ file }}</a
+                        >
+                      </div>
+                    </div>
+                    <span v-else>{{ col.text }}</span>
+                  </template>
                   <a-button
                     style="padding: 0px"
                     type="link"

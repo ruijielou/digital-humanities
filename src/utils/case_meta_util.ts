@@ -31,7 +31,7 @@ export  function convert_case_data(case_data_info:any[], mete_list:any[]){
       if(meta_info){
         let data_type = meta_info.dataType;
         /*对于多选的值, 进行处理*/
-        if([5, 6, 13, 14, 15, 16].indexOf(data_type) > -1){
+        if([5, 6, 13, 14, 15, 16, 17, 9].indexOf(data_type) > -1){
           let meta_value = case_data_info[meta_filed];
           if(meta_value && meta_value.length > 0){
             case_data_info[meta_filed] = meta_value.split(',');
