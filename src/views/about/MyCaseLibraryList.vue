@@ -1,29 +1,25 @@
 <script lang="ts" setup>
-import { ref, reactive, createVNode } from "vue";
+import { ref, reactive, createVNode, watch } from "vue";
 import {
   ArrowLeftOutlined,
   SearchOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons-vue";
 import type { PageinationType } from "../../utils/type";
-import { caseinfo, repository } from "@/api";
-import { useRoute } from "vue-router";
+import { caseinfo, repository, favoritegroup, repositorygroup } from "@/api";
+import { useRoute, useRouter } from "vue-router";
 import { message, Modal } from "ant-design-vue";
+import Migrate from "./components/Migrate.vue"
 
 type Key = string | number;
 const route = useRoute();
-const caseMoveModal = ref<boolean>(false);
+const router = useRouter();
+const MigrateRef = ref<any>(null);
 const openStatus = ref<number>(1);
-const caseClasstify = ref<number>(0);
 const loading = ref<boolean>(false);
-const openCaseClasstify = ref<boolean>(false);
-const checkedMoves = ref<string[]>([]);
-const openCaseName = ref<boolean>(false);
-const caseName = ref<string>("");
 const selectedKeys = ref<Key[]>([]);
 
 const onSelectChange = (selectedRowKeys: Key[]) => {
-  // console.log("selectedRowKeys changed: ", selectedRowKeys);
   selectedKeys.value = [...selectedRowKeys];
 };
 
@@ -59,6 +55,48 @@ const handleTableChange = async (newpager: any) => {
   pagination.pageSize = newpager.pageSize;
   getLibraryList();
 };
+/**
+ * 删除案例库
+ */
+const deletRepository = () => {
+  if (!route.params.id) return;
+  Modal.confirm({
+    content: "确定要删除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    onOk: async () => {
+      // 在这儿写接口请求 请求成功刷新列表
+      const res = await repository.del({ id: route.params.id });
+
+      if (res.success) {
+        message.success("删除成功");
+        router.go(-1);
+      }
+    },
+    cancelText: "再想想",
+    onCancel() {
+      Modal.destroyAll();
+    },
+  });
+};
+
+/**
+ * 修改案例库
+ */
+const editRepository = async (authType: number) => {
+  const res = await repository.update({ ...repository_info.info, authType });
+
+  if (res.success) {
+    message.success("修改成功");
+    getRepositoryDetail();
+  }
+};
+
+watch(
+  () => openStatus.value,
+  (val) => {
+    editRepository(val);
+  }
+);
 const getLibraryList = async () => {
   const { result } = await caseinfo.page({
     repositoryId: route.params.id,
@@ -104,13 +142,13 @@ const getRepositoryDetail = async () => {
     repository_info.info = { ...result };
   }
 };
-getRepositoryDetail();
 
+const openMigrate = () => {
+  MigrateRef.value.caseMoveModal = true
+}
+getRepositoryDetail();
 getLibraryList();
 
-const handleOk = (e: MouseEvent) => {
-  caseMoveModal.value = false;
-};
 </script>
 <template>
   <a-layout-content
@@ -134,11 +172,14 @@ const handleOk = (e: MouseEvent) => {
               </a-radio-group>
             </template>
             <template #title>
-              <a-button class="block" type="text">删除</a-button>
-              <a-button class="block" type="text" @click="caseMoveModal = true"
+              <a-button class="block" type="text" @click="deletRepository"
+                >删除</a-button
+              >
+              <a-button class="block" type="text" @click="openMigrate"
                 >迁移</a-button
               >
             </template>
+            <span class="cursor-pointer">...</span>
           </a-popover>
         </h2>
       </div>
@@ -180,61 +221,10 @@ const handleOk = (e: MouseEvent) => {
         </template>
       </a-table>
     </div>
-    <a-modal
-      v-model:visible="caseMoveModal"
-      class="border-bottom-search"
-      @ok="handleOk"
-    >
-      <template #title>
-        <div class="text-center">迁移</div>
-      </template>
-      <a-input>
-        <template #suffix>
-          <SearchOutlined />
-        </template>
-      </a-input>
-      <a-checkbox-group v-model:value="checkedMoves">
-        <div class="p-3">
-          <a-checkbox value="数字学术平台案例库">数字学术平台案例库</a-checkbox>
-        </div>
-        <div class="p-3">
-          <a-checkbox value="数字计划案例库">数字计划案例库</a-checkbox>
-        </div>
-        <div class="p-3">
-          <a-checkbox value="数字人文工具案例库">数字人文工具案例库</a-checkbox>
-        </div>
-        <div class="p-3">
-          <a-checkbox value="联盟、企业案例库">联盟、企业案例库</a-checkbox>
-        </div>
-      </a-checkbox-group>
-      <div class="p-3 flex items-center">
-        <a-radio v-model:checked="openCaseClasstify"></a-radio>
-        <a-select class="flex-1" v-model:value="caseClasstify">
-          <a-select-option :value="0">分类1</a-select-option>
-          <a-select-option :value="1">分类2</a-select-option>
-          <a-select-option :value="2">分类3</a-select-option>
-          <a-select-option :value="3">分类4</a-select-option>
-        </a-select>
-      </div>
-      <div class="p-3 p-l-9 flex items-center">
-        <a-input
-          class="flex-1 m-r-3"
-          v-model="caseName"
-          placeholder="案例库名称"
-        ></a-input>
-        <a-switch v-model:checked="openCaseName" />
-      </div>
-      <template #footer>
-        <div class="text-center">
-          <a-button
-            key="submit"
-            type="primary"
-            :loading="loading"
-            @click="handleOk"
-            >创建</a-button
-          >
-        </div>
-      </template>
-    </a-modal>
+    <Migrate
+      @reload="getLibraryList"
+      :content-id="$route.params.id"
+      ref="MigrateRef"
+    />
   </a-layout-content>
 </template>

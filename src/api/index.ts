@@ -63,6 +63,15 @@ export function commonUpload(formData: any) {
 }
 
 export const repository = {
+  del: (data: any) => {
+    return request(
+      {
+        url: `/app/user/repository/del`,
+        method: "post",
+        data
+      },
+    );
+  },
   myPage: () => {
     return request(
       {
@@ -107,6 +116,16 @@ export const repository = {
     return request(
       {
         url: `/app/user/repository/insert`,
+        method: "post",
+        data
+      },
+    );
+  },
+  // repository/update
+  update: (data: any) => {
+    return request(
+      {
+        url: `/app/user/repository/update`,
         method: "post",
         data
       },

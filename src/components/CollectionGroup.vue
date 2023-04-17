@@ -8,10 +8,10 @@ import { LikeStatus } from "@/utils/type";
 const modalVisibility = ref<boolean>(false);
 const isOpen = ref<boolean>(false); //是否为公开
 const loading = ref<boolean>(false);
-const checkedFloder = ref<string>("999");
+const checkedFolder = ref<string>("999");
 const searchInfo = ref<string>("");
 const collectionGroup = ref<any>([]);
-const collectionFloderName = ref<string>("");
+const collectionFolderName = ref<string>("");
 
 const emit = defineEmits(["reload"]);
 const props = defineProps<{
@@ -26,7 +26,7 @@ const getCollectionData = async () => {
 };
 
 const createGroup = async () => {
-  if (!collectionFloderName.value) {
+  if (!collectionFolderName.value) {
     Modal.error({
       title: "提示",
       content: "案例名称不能为空",
@@ -35,19 +35,19 @@ const createGroup = async () => {
   }
   const res = await favoritegroup.insert({
     authType: isOpen.value ? 1 : 3,
-    title: collectionFloderName.value,
+    title: collectionFolderName.value,
   });
   if (res.success) {
-    collectionFloderName.value = "";
+    collectionFolderName.value = "";
     getCollectionData();
   }
 };
 const submitCollection = async () => {
-  if (!checkedFloder.value) return;
+  if (!checkedFolder.value) return;
   const result = await favorite.insert({
     type: LikeStatus.Favorite,
     contentId: props.contentId,
-    groupId: checkedFloder.value,
+    groupId: checkedFolder.value,
   });
   if (result.success) {
     message.success(result.message);
@@ -70,7 +70,7 @@ defineExpose({ modalVisibility });
         <SearchOutlined @click="getCollectionData" />
       </template>
     </a-input>
-    <a-radio-group v-model:value="checkedFloder" class="w-100%">
+    <a-radio-group v-model:value="checkedFolder" class="w-100%">
       <div v-if="collectionGroup.length" class="collection-group">
         <div class="p-2" v-for="item in collectionGroup">
           <a-radio :value="item.id">{{ item.title }}</a-radio>
@@ -80,7 +80,7 @@ defineExpose({ modalVisibility });
         <a-radio value="999">
           <a-input
             class="flex-1 m-r-3"
-            v-model:value="collectionFloderName"
+            v-model:value="collectionFolderName"
             placeholder="案例库名称"
           ></a-input>
         </a-radio>
@@ -92,7 +92,7 @@ defineExpose({ modalVisibility });
         <a-button
           type="primary"
           :loading="loading"
-          v-if="checkedFloder == '999'"
+          v-if="checkedFolder == '999'"
           @click="createGroup"
           >创建</a-button
         >

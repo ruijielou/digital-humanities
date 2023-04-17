@@ -2,20 +2,20 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import { dhuuser, repositorygroup } from "@/api";
-import type { SelectProps } from "ant-design-vue";
+import type { DefaultOptionType } from "ant-design-vue/lib/vc-select/Select";
 import { Modal } from "ant-design-vue";
 
 const layout = {
   labelCol: { span: 2, offset: 7 },
   wrapperCol: { span: 8 },
 };
-const repositorygroup_options = ref<SelectProps['options']>([
+const repositorygroup_options = ref<DefaultOptionType[]>([
 ]);
 
 repositorygroup.list().then((res) => {
   if (res.success) {
     let i;
-    let repositorygroup_list:SelectProps[] = [];
+    let repositorygroup_list:DefaultOptionType[] = [];
     for(i in res.result){
       let opt:any = res.result[i];
       repositorygroup_list.push({value:opt.id, label: opt.title});
@@ -48,7 +48,6 @@ const onFinish = async (values: any) => {
   }
 
   const result = await dhuuser.updateAuth({ ...values.user });
-  console.log(result);
   if (result.success) {
     Modal.success({
       title: () => "提示",
