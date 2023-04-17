@@ -48,13 +48,17 @@ const getCaseData = async () => {
     `status=${tableCaseType.value}&pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
   );
 
-  result && (dataSource.value = [...result.records]);
+  if(result){
+    dataSource.value = [...result.records];
+    pagination.total = result.total;
+  }
 };
 
 getCaseData();
 
 const changeType = (type: CaseType) => {
   tableCaseType.value = type;
+  pagination.current = 1;
   getCaseData();
 }
 
