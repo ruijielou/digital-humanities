@@ -11,7 +11,7 @@ import {
   PlusSquareOutlined,
   StarFilled,
   StarOutlined,
-  UserOutlined
+  UserOutlined,
 } from "@ant-design/icons-vue";
 import { useRoute } from "vue-router";
 import { caseApi, comment, favorite, meta } from "@/api";
@@ -19,14 +19,14 @@ import { message } from "ant-design-vue";
 import { useUserStore } from "@/store/user";
 import StepTwo from "../contribute/StepTwo.vue";
 // import { formatterFormInput } from "../contribute/utils";
-import {imgBaseUrl} from "@/utils/config"
+import { imgBaseUrl } from "@/utils/config";
 import { convert_case_data } from "@/utils/case_meta_util";
 
 type AnyObject<T = any> = {
   [key: string]: T | any;
 };
 
-const { userInfo } = useUserStore();
+const { userInfo, openLogin } = useUserStore();
 
 const showDetailKey = ref<number[]>([0]);
 const caseComment = ref<string>("");
@@ -59,12 +59,14 @@ const getDetail = async () => {
   const { result } = await caseApi.findViewDetail(id as string);
   if (!result) return;
 
-  formModel.metaGroupList = result.metaGroupList ? [...result.metaGroupList] : [];
+  formModel.metaGroupList = result.metaGroupList
+    ? [...result.metaGroupList]
+    : [];
   formModel.labList = result.labList && [...result.labList];
-  formModel.technologyList = result.technologyList ? [
-    ...result.technologyList,
-  ]: [];
-  formModel.relateList = result.relateList ? [...result.relateList]:[];
+  formModel.technologyList = result.technologyList
+    ? [...result.technologyList]
+    : [];
+  formModel.relateList = result.relateList ? [...result.relateList] : [];
   formModel.caseinfo = result.caseinfo ? { ...result.caseinfo } : {};
   formModel.metaGroupList[0] && changeCurrentKey(formModel.metaGroupList[0].id);
 
@@ -85,7 +87,7 @@ const publishComment = async () => {
   const res = await comment.insert(params);
   if (res.success) {
     message.success("评论成功");
-    caseComment.value = '';
+    caseComment.value = "";
     getCommentList();
   }
 };
@@ -108,15 +110,14 @@ const getTwoFormInput = async () => {
   const idList: string = formModel.caseinfo.repositoryIds;
   if (!idList) return;
   const { result } = await meta.findFormListGroup(idList);
-  const formResult = await caseApi.findDetail(route.params.id as string)
+  const formResult = await caseApi.findDetail(route.params.id as string);
   if (result && formResult) {
     // const { formModal } = formatterFormInput({ result });
     let case_data_info = { ...formResult.result };
 
     case_data_info = convert_case_data(case_data_info, result);
 
-    console.log('case_data_info:', case_data_info)
-
+    console.log("case_data_info:", case_data_info);
 
     stepTwoData.formModal = case_data_info;
     stepTwoData.data = [...result];
@@ -130,8 +131,7 @@ getCommentList();
 const changeEdit = () => {
   isEdit.value = !isEdit.value;
   isEdit.value && getTwoFormInput();
-}
-
+};
 
 const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
   if (!route.params.id) return;
@@ -140,7 +140,9 @@ const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
     contentId: route.params.id,
   };
   const isCancel = value == BooleanStatus.True;
-  const res =  isCancel ?await favorite.del(params) : await favorite.insert(params);
+  const res = isCancel
+    ? await favorite.del(params)
+    : await favorite.insert(params);
   if (res.success) {
     message.success(res.message);
     getFavoriteStatus();
@@ -161,23 +163,32 @@ const formatterStepTwoData = (data: AnyObject) => {
   return { ...newFormData };
 };
 
-const publish_case = async (status:number) => {
-  console.log('stepTwoData.formModal:', stepTwoData.formModal)
+const publish_case = async (status: number) => {
+  console.log("stepTwoData.formModal:", stepTwoData.formModal);
 
   const formState: any = await stepTwoRef.value?.formValidate();
 
   const submitData = {
     ...formatterStepTwoData({ ...formState.caseData }),
-    id:route.params?.id,
-    status:status,
-    repositoryIds:formModel.caseinfo.repositoryIds,
-    authType:formModel.caseinfo.authType,
+    id: route.params?.id,
+    status: status,
+    repositoryIds: formModel.caseinfo.repositoryIds,
+    authType: formModel.caseinfo.authType,
   };
-  console.log('submitData:', submitData)
+  console.log("submitData:", submitData);
   const response = await caseApi.add(submitData);
-  isEdit.value = false
+  isEdit.value = false;
   getDetail();
-}
+};
+const starFavorited = (isFavorite: any) => {
+  if (!userInfo.id) {
+    openLogin();
+    return;
+  }
+  isFavorite === BooleanStatus.False
+    ? (CollectionRef.value.modalVisibility = true)
+    : favorited(LikeStatus.Favorite, isFavorite);
+};
 </script>
 <template>
   <div class="h-screen overflow-auto">
@@ -203,7 +214,9 @@ const publish_case = async (status:number) => {
           </p>
         </div>
         <div class="tool-group" v-if="$route.name !== 'MyCaseDetail'">
-          <a-button @click="favorited(LikeStatus.Like,formModel.caseinfo.isLike)">
+          <a-button
+            @click="favorited(LikeStatus.Like, formModel.caseinfo.isLike)"
+          >
             <heart-outlined
               v-if="formModel.caseinfo.isLike == BooleanStatus.False"
             />
@@ -213,7 +226,10 @@ const publish_case = async (status:number) => {
             />
             喜欢
           </a-button>
-          <a-button class="m-l-4"  @click="formModel.caseinfo.isFavorite === BooleanStatus.False ? CollectionRef.modalVisibility = true : favorited(LikeStatus.Favorite, formModel.caseinfo.isFavorite)">
+          <a-button
+            class="m-l-4"
+            @click="starFavorited(formModel.caseinfo.isFavorite)"
+          >
             <star-outlined
               v-if="formModel.caseinfo.isFavorite === BooleanStatus.False"
             />
@@ -240,7 +256,7 @@ const publish_case = async (status:number) => {
         </div>
       </div>
       <div v-if="isEdit">
-<!--        {{ stepTwoData.data.repositoryList }}-->
+        <!--        {{ stepTwoData.data.repositoryList }}-->
         <StepTwo
           ref="stepTwoRef"
           :selected-tag="repositoryList"
@@ -283,8 +299,13 @@ const publish_case = async (status:number) => {
                   v-for="(col, colkey) in item.metaList"
                 >
                   <span> {{ col.title }}: </span>
-                  <span v-if="col.dataType != 12" >{{ col.text }}</span>
-                  <a-button style="padding: 0px;" type="link"  v-if="col.dataType == 12">{{ col.text }}</a-button>
+                  <span v-if="col.dataType != 12">{{ col.text }}</span>
+                  <a-button
+                    style="padding: 0px"
+                    type="link"
+                    v-if="col.dataType == 12"
+                    >{{ col.text }}</a-button
+                  >
                 </div>
               </div>
             </div>
@@ -294,7 +315,11 @@ const publish_case = async (status:number) => {
               <div>标签：</div>
               <div>
                 <template v-for="(item, k) in formModel.labList">
-                  <a-tag :color="`#${item.extList[lab_i]}`" v-for="(lab_item, lab_i) in item.textList ">{{ lab_item }}</a-tag>
+                  <a-tag
+                    :color="`#${item.extList[lab_i]}`"
+                    v-for="(lab_item, lab_i) in item.textList"
+                    >{{ lab_item }}</a-tag
+                  >
                 </template>
               </div>
             </div>
@@ -310,7 +335,10 @@ const publish_case = async (status:number) => {
             </div>
             <div class="m-b-10">
               <div>关联项目：</div>
-              <div v-if="formModel.relateList && formModel.relateList.length > 0" class="p-4 bg-#f7f7f7">
+              <div
+                v-if="formModel.relateList && formModel.relateList.length > 0"
+                class="p-4 bg-#f7f7f7"
+              >
                 <template v-for="(item, k) in formModel.relateList">
                   <p>{{ k + 1 }}. {{ item.text }}</p>
                 </template>
@@ -381,6 +409,7 @@ const publish_case = async (status:number) => {
     <Footer />
     <CollectionModal
       @reload="getDetail"
+      v-if="userInfo?.id"
       :content-id="$route.params.id"
       ref="CollectionRef"
     />
