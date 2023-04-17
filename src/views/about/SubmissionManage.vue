@@ -62,7 +62,7 @@ getCaseData();
               <div class="h-100%" v-for="card in item.repositoryList">
                 <Card
                   @click="$router.push({ name: 'MyCaseLibraryList', params: {id: card.id} })"
-                  style="width: 22vw; height: 50vh"
+                  style="width: 22vw; height: 416px"
                   :card="card"
                 />
               </div>

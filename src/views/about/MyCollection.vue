@@ -78,7 +78,7 @@ const cancelFavorited:any = async (id: number) => {
           :no-show-views="true"
           @cancelFavorited="cancelFavorited"
           @click.stop="$router.push({name: 'CollectionsClassify', params: { id: item.id, name: item.name }})"
-          style="width: 31%; height: 50vh; margin: 0 20px 20px 0"
+          style="width: 31%; height: 416px; margin: 0 20px 20px 0"
           :card="item"
         />
       </div>
