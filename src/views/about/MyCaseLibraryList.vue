@@ -9,7 +9,7 @@ import type { PageinationType } from "../../utils/type";
 import { caseinfo, repository, favoritegroup, repositorygroup } from "@/api";
 import { useRoute, useRouter } from "vue-router";
 import { message, Modal } from "ant-design-vue";
-import Migrate from "./components/Migrate.vue"
+import Migrate from "./components/Migrate.vue";
 
 type Key = string | number;
 const route = useRoute();
@@ -72,6 +72,7 @@ const deletRepository = () => {
       }
     },
     cancelText: "再想想",
+    okText: '确定',
     onCancel() {
       Modal.destroyAll();
     },
@@ -107,22 +108,28 @@ const getLibraryList = async () => {
     pagination.pageSize = result.size;
   }
 };
-const removeMore = () => {
+const removeMore = (type: string) => {
   const params = [...selectedKeys.value];
   if (!params.length) {
     message.warning("选择不能为空");
     return;
   }
   Modal.confirm({
-    content: "确定要全部删除吗？",
+    content: `确定要全部${type === "delete" ? "删除" : "迁移"}吗？`,
     icon: createVNode(ExclamationCircleOutlined),
     onOk() {
       // 在这儿写接口请求 请求成功刷新列表
-      dataSource.value = [
-        ...dataSource.value.filter((item: any) => !params.includes(item.id)),
-      ];
+      if (type === "delete") {
+        dataSource.value = [
+          ...dataSource.value.filter((item: any) => !params.includes(item.id)),
+        ];
+      }
+      if (type === "migrate") {
+        // todosomething
+      }
     },
     cancelText: "再想想",
+    okText: '确定',
     onCancel() {
       Modal.destroyAll();
     },
@@ -140,11 +147,10 @@ const getRepositoryDetail = async () => {
 };
 
 const openMigrate = () => {
-  MigrateRef.value.caseMoveModal = true
-}
+  MigrateRef.value.caseMoveModal = true;
+};
 getRepositoryDetail();
 getLibraryList();
-
 </script>
 <template>
   <a-layout-content
@@ -187,8 +193,8 @@ getLibraryList();
     <div class="result-container">
       <div class="result-filter flex p-b-4">
         <div class="flex-1 flex justify-end">
-          <a-button type="danger" @click="removeMore">全部删除</a-button>
-          <a-button class="m-l-3" type="primary">全部迁移</a-button>
+          <a-button type="danger" @click="removeMore('delete')">全部删除</a-button>
+          <a-button class="m-l-3" type="primary" @click="removeMore('migrate')">全部迁移</a-button>
         </div>
       </div>
 

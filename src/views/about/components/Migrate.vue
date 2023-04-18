@@ -5,7 +5,6 @@ import type { DefaultOptionType } from "ant-design-vue/lib/vc-select/Select";
 import { Modal, message } from "ant-design-vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 
-
 const emit = defineEmits(["reload"]);
 const caseMoveModal = ref<boolean>(false);
 const searchInfo = ref<string>("");
@@ -13,37 +12,28 @@ const checkedFolder = ref<string>("999");
 const groupId = ref<string | number | null | undefined>("");
 const loading = ref<boolean>(false);
 const isOpen = ref<boolean>(false);
-const caseName = ref<string>("");
+const repositoryName = ref<string>("");
 
 const handleOk = (e: MouseEvent) => {
   caseMoveModal.value = false;
 };
 
-
 const repositoryGroup = ref<{ [key: string]: string }[]>([]);
+const repositoryList = ref<{ [key: string]: string }[]>([]);
 const getRepositoryGroup = async () => {
   const { result } = await repositorygroup.findList();
-  repositoryGroup.value = result?.records || [];
+  if (result) {
+    repositoryGroup.value = [...result];
+    repositoryList.value = result.reduce((prev: any, cur: any) => {
+      return cur.repositoryList ? [...prev, ...cur.repositoryList] : [...prev];
+    }, []);
+  }
 };
-// const repositorygroup_options = ref<DefaultOptionType[]>([]);
-  // const { result } = await repositorygroup.findList();
-// repositorygroup.findList().then((res) => {
-//   if (res.success) {
-//     let i;
-//     let repositorygroup_list: DefaultOptionType[] = [];
-//     for (i in res.result) {
-//       let opt: any = res.result[i];
-//       repositorygroup_list.push({ value: opt.id, label: opt.title });
-//     }
-//     groupId.value = repositorygroup_list[0].value
-//     repositorygroup_options.value = repositorygroup_list;
-//   }
-// });
 
 getRepositoryGroup();
 
 const createGroup = async () => {
-  if (!caseName.value) {
+  if (!repositoryName.value) {
     Modal.error({
       title: "提示",
       content: "案例库名称不能为空",
@@ -60,24 +50,22 @@ const createGroup = async () => {
 
   const res = await repository.insert({
     authType: isOpen.value ? 1 : 3,
-    name: caseName.value,
+    name: repositoryName.value,
     groupId: groupId.value,
     description: "",
     status: 2,
   });
   if (res.success) {
-    caseName.value = "";
+    repositoryName.value = "";
     getRepositoryGroup();
   }
 };
 const submitCollection = async () => {
   if (!checkedFolder.value) return;
   // 添加提交的接口
-  // emit("editRepository", {groupId: checkedFolder.value,authType: repositoryGroup.value.find((item:any) => item.id === checkedFolder.value).authType});
   caseMoveModal.value = false;
 };
 defineExpose({ caseMoveModal });
-
 </script>
 <template>
   <a-modal
@@ -88,31 +76,25 @@ defineExpose({ caseMoveModal });
     <template #title>
       <div class="text-center">迁移</div>
     </template>
-    <a-input>
-      <template #suffix>
-        <SearchOutlined @click="getRepositoryGroup" />
-      </template>
-    </a-input>
     <a-radio-group v-model:value="checkedFolder" class="w-100%">
-      <div v-if="repositoryGroup.length" class="collection-group">
-        <div class="p-2" v-for="item in repositoryGroup">
-          <a-radio :value="item.id">{{ item.title }}</a-radio>
+      <div v-if="repositoryList.length" class="repository-group">
+        <div class="p-2" v-for="item in repositoryList">
+          <a-radio :value="item.id">{{ item.name }}</a-radio>
         </div>
       </div>
       <div class="p-2">
         <div class="flex">
           <a-radio value="999"> </a-radio>
-          <a-select
-            v-model:value="groupId"
-            class="w-100%"
-            :options="repositorygroup_options"
-          >
+          <a-select v-model:value="groupId" class="w-100%">
+            <a-select-option v-for="o in repositoryGroup" :value="o.id">{{
+              o.title
+            }}</a-select-option>
           </a-select>
         </div>
         <div class="flex p-l-23px p-t-2 items-center">
           <a-input
             class="flex-1 m-r-3"
-            v-model:value="caseName"
+            v-model:value="repositoryName"
             placeholder="案例库名称"
           ></a-input>
           <a-switch v-model:checked="isOpen">公开</a-switch>
@@ -139,3 +121,10 @@ defineExpose({ caseMoveModal });
     </template>
   </a-modal>
 </template>
+<style lang="less">
+.repository-group {
+  max-height: 400px;
+  overflow: auto;
+  width: 100%;
+}
+</style>

@@ -40,7 +40,7 @@ const logoutCallback = () => {
   Modal.confirm({
     title: "提示",
     content: "确定要退出登录吗？",
-    okText: "确认",
+    okText: "确定",
     cancelText: "取消",
     onOk: () => {
       logout();
