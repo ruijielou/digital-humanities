@@ -320,6 +320,24 @@ export const repositorygroup = {
 }
 
 export const caseApi = {
+  delBatch: (data: any) => {
+    return request(
+      {
+        url: `/app/user/case/delBatch`,
+        method: "post",
+        data
+      },
+    );
+  },
+  transferRepository: (data: any) => {
+    return request(
+      {
+        url: `/app/user/case/transferRepository`,
+        method: "post",
+        data
+      },
+    );
+  },
   add: (data: any) => {
     return request(
       {

@@ -1,13 +1,17 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-import { favoritegroup, repositorygroup, repository } from "@/api";
+import { caseApi, repositorygroup, repository } from "@/api";
 import type { DefaultOptionType } from "ant-design-vue/lib/vc-select/Select";
 import { Modal, message } from "ant-design-vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
+import { useRoute } from "vue-router";
+import router from "@/router/router";
 
+const route = useRoute();
 const emit = defineEmits(["reload"]);
 const caseMoveModal = ref<boolean>(false);
 const searchInfo = ref<string>("");
+const caseIds = ref<string>("");
 const checkedFolder = ref<string>("999");
 const groupId = ref<string | number | null | undefined>("");
 const loading = ref<boolean>(false);
@@ -63,9 +67,22 @@ const createGroup = async () => {
 const submitCollection = async () => {
   if (!checkedFolder.value) return;
   // 添加提交的接口
+  const res = await caseApi.transferRepository({
+    resRepositoryId: route.params.id, // 源仓库id
+    destRepositoryId: checkedFolder.value, // 目标仓库id
+    caseIds: caseIds.value
+  });
+  if(res.success) {
+    message.success('迁移成功')
+    emit('reload')
+  }
+
   caseMoveModal.value = false;
+  if(!caseIds.value) {
+    router.push({name: 'MyCaseLibraryList', params: {id: checkedFolder.value}});
+  }
 };
-defineExpose({ caseMoveModal });
+defineExpose({ caseMoveModal,caseIds });
 </script>
 <template>
   <a-modal

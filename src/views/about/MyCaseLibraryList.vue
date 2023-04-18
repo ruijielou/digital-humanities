@@ -6,7 +6,7 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons-vue";
 import type { PageinationType } from "../../utils/type";
-import { caseinfo, repository, favoritegroup, repositorygroup } from "@/api";
+import { caseinfo, repository, caseApi, repositorygroup } from "@/api";
 import { useRoute, useRouter } from "vue-router";
 import { message, Modal } from "ant-design-vue";
 import Migrate from "./components/Migrate.vue";
@@ -72,7 +72,7 @@ const deletRepository = () => {
       }
     },
     cancelText: "再想想",
-    okText: '确定',
+    okText: "确定",
     onCancel() {
       Modal.destroyAll();
     },
@@ -117,19 +117,18 @@ const removeMore = (type: string) => {
   Modal.confirm({
     content: `确定要全部${type === "delete" ? "删除" : "迁移"}吗？`,
     icon: createVNode(ExclamationCircleOutlined),
-    onOk() {
+    onOk: async () => {
       // 在这儿写接口请求 请求成功刷新列表
       if (type === "delete") {
-        dataSource.value = [
-          ...dataSource.value.filter((item: any) => !params.includes(item.id)),
-        ];
-      }
-      if (type === "migrate") {
-        // todosomething
+        const res = await caseApi.delBatch({ ids: params.join(",") });
+        if (res.success) {
+          message.success("删除成功");
+          getLibraryList();
+        }
       }
     },
     cancelText: "再想想",
-    okText: '确定',
+    okText: "确定",
     onCancel() {
       Modal.destroyAll();
     },
@@ -146,7 +145,17 @@ const getRepositoryDetail = async () => {
   }
 };
 
-const openMigrate = () => {
+const openMigrate = (isDeleteCaseId?: boolean) => {
+  MigrateRef.value.caseIds = "";
+  if (isDeleteCaseId) {
+    const params = [...selectedKeys.value];
+    if (!params.length) {
+      message.warning("选择不能为空");
+      return;
+    }
+    MigrateRef.value.caseIds = params.join(",");
+  }
+
   MigrateRef.value.caseMoveModal = true;
 };
 getRepositoryDetail();
@@ -177,7 +186,7 @@ getLibraryList();
               <a-button class="block" type="text" @click="deletRepository"
                 >删除</a-button
               >
-              <a-button class="block" type="text" @click="openMigrate"
+              <a-button class="block" type="text" @click="openMigrate()"
                 >迁移</a-button
               >
             </template>
@@ -193,8 +202,12 @@ getLibraryList();
     <div class="result-container">
       <div class="result-filter flex p-b-4">
         <div class="flex-1 flex justify-end">
-          <a-button type="danger" @click="removeMore('delete')">全部删除</a-button>
-          <a-button class="m-l-3" type="primary" @click="removeMore('migrate')">全部迁移</a-button>
+          <a-button type="danger" @click="removeMore('delete')"
+            >全部删除</a-button
+          >
+          <a-button class="m-l-3" type="primary" @click="openMigrate"
+            >全部迁移</a-button
+          >
         </div>
       </div>
 
