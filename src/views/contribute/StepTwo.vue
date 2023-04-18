@@ -348,7 +348,7 @@ defineExpose({ formState, formValidate });
                   }}</a-select-option>
                 </a-select>
                 <template v-else-if="col.dataType === 9">
-                  <template v-if="formState.caseData[`${col.filed}`].length">
+                  <template v-if="formState.caseData[`${col.filed}`]?.length">
                     <div
                       v-for="imgItem in formState.caseData[`${col.filed}`]"
                       class="custom-img-card"
@@ -397,7 +397,7 @@ defineExpose({ formState, formValidate });
                       单击或拖动文件到此区域进行上传
                     </p>
                   </a-upload-dragger>
-                  <template v-if="formState.caseData[`${col.filed}`].length">
+                  <template v-if="formState.caseData[`${col.filed}`]?.length">
                     <div
                       class="flex justify-between"
                       v-for="imgItem in formState.caseData[`${col.filed}`]"

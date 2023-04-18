@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref,shallowRef } from "vue";
+import { nextTick, reactive, ref,shallowRef } from "vue";
 import { Colors } from "../../utils/type";
 import { BooleanStatus, LikeStatus } from "@/utils/type";
 import CollectionModal from "@/components/CollectionGroup.vue";
@@ -175,8 +175,11 @@ const publish_case = async (status: number) => {
   getDetail();
 };
 const starFavorited = (isFavorite: any) => {
+
   if (!userInfo.id) {
+   nextTick(() => {
     openLogin();
+   })
     return;
   }
   isFavorite === BooleanStatus.False

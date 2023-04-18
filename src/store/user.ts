@@ -70,6 +70,9 @@ export const useUserStore = defineStore({
     async openLogin() {
       this.isOpenLogin = true;
     },
+    async closeLogin() {
+      this.isOpenLogin = false;
+    },
 
     /** 退出登陆 */
     async logout() {

@@ -60,7 +60,7 @@ service.interceptors.response.use(
       userStore.resetToken();
       userStore.openLogin();
     }
-    $message.error(errMsg);
+    statusCode !== 401 && $message.error(errMsg);
     error.message = errMsg;
     return Promise.reject(error);
   }

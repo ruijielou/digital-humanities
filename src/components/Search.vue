@@ -18,13 +18,10 @@ const changeShowLabels = () => {
 };
 const router = useRouter();
 const do_search = () => {
-  console.log('searchType:', searchType)
-  console.log('searchFields:', searchFields)
   let keywords = searchFields.value;
   if(keywords){
-    console.log('router:', router)
     emit('closeSearch');
-    router.push({ name: "Search",query:{keywords:keywords} });
+    router.push({ name: "SearchResult",query:{keywords:keywords} });
   }else {
     message.warning("请输入关键字");
   }
@@ -47,6 +44,11 @@ onMounted(() => {
     searchFields.value = query.keywords as string;
   }
 })
+
+const goAdvanceSearch = () => {
+  localStorage.removeItem('formstate');
+  route.name === 'AdvancedSearch' ? location.reload() : router.push({name: 'AdvancedSearch'})
+}
 </script>
 <template>
   <div class="flex items-center justify-center m-b-2">
@@ -73,7 +75,7 @@ onMounted(() => {
         </div>
       </template>
     </a-input>
-    <span class="c-white p-l-4 cursor-pointer" @click="$router.push({name: 'AdvancedSearch'})">
+    <span class="c-white p-l-4 cursor-pointer" @click="goAdvanceSearch">
       高级检索
       <double-right-outlined />
     </span>

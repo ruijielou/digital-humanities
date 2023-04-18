@@ -1,88 +1,32 @@
 <script setup lang="ts">
-import { ref, computed, reactive, onMounted } from "vue";
+import { ref, reactive } from "vue";
 import LogoText from "../../components/LogoText.vue";
-import type { PageinationType } from "../../utils/type";
 import {
   ArrowLeftOutlined,
-  CaretDownOutlined,
-  SortDescendingOutlined,
-  SortAscendingOutlined,
 } from "@ant-design/icons-vue";
-import { caseinfo, meta } from "@/api";
+import { meta } from "@/api";
 import { formatterFormInput, formatterFormData } from "@/utils/config";
 import FormFiled from "@/components/FormFiled.vue";
 import { useRouter, useRoute } from "vue-router";
 
-const selectContry = ref<string>("中国");
-const selectFiled = ref<string>("项目时间");
-const loading = ref<boolean>(false);
 const filedFromRef = ref<any>(null);
-const sortedInfo = ref();
 
 const search_condition_params = ref({});
 
 const router = useRouter();
-const route = useRoute();
 
-const columns = computed(() => {
-  const sorted = sortedInfo.value || {};
-
-  return [
-    {
-      title: "名称",
-      dataIndex: "name",
-      // sorter: (a: any, b: any) =>
-      //   a.name.localeCompare(b.name, "zh-Hans-CN", {
-      //     sensitivity: "accent",
-      //   }),
-      // sortOrder: sorted.columnKey === "name" && sorted.order,
-    },
-    {
-      title: "国别",
-      dataIndex: "country",
-    },
-    {
-      title: "所属机构",
-      dataIndex: "subOrg",
-    },
-    {
-      title: "项目时间",
-      dataIndex: "itemTime",
-    },
-  ];
-});
-
-const dataSource = ref<{ [key: string]: string }[]>([]);
-
-const pagination = reactive<PageinationType>({
-  total: 0,
-  current: 1,
-  pageSize: 10,
-  column: "name",
-  order: "asc",
-});
 
 const getCaseData = async () => {
   let submitData: any = { ...search_condition_params.value };
-  submitData.pageNo = pagination.current;
-  submitData.pageSize = pagination.pageSize;
-  submitData.column = pagination.column;
-  submitData.order = pagination.order;
-  const { result } = await caseinfo.page(submitData);
+  const queryString = new URLSearchParams(submitData).toString()
+  router.push({name: 'SearchResult', query: {s: queryString}})
+  // const { result } = await caseinfo.page(submitData);
 
-  result && (dataSource.value = [...result.records]);
-  pagination.total = result.total;
-  console.log("pagination : ", pagination);
+  // result && (dataSource.value = [...result.records]);
+  // pagination.total = result.total;
+  // console.log("pagination : ", pagination);
 };
 
-const handleTableChange = async (newpager: any) => {
-  pagination.total = newpager.total;
-  pagination.current = newpager.current;
-  pagination.pageSize = newpager.pageSize;
-  getCaseData();
-};
-
-const showSearchRes = ref<boolean>(false);
 
 const formFiled = reactive<any>({
   data: null,
@@ -97,6 +41,7 @@ const getInputMeta = async () => {
       result[i].isRequired = 2;
     }
     const { formModal } = formatterFormInput({ result });
+    
     formFiled.formModal = { ...formModal };
     formFiled.data = [...result];
   }
@@ -107,6 +52,7 @@ const enterSearch = async (param: any) => {
   const formState: any = await filedFromRef.value?.formValidate();
 
   if (formState) {
+    localStorage.formstate = JSON.stringify(formState.formFiledData)
     search_condition_params.value = {
       ...formatterFormData({ ...formState.formFiledData }),
       ...param,
@@ -116,42 +62,14 @@ const enterSearch = async (param: any) => {
       ...param,
     };
   }
-
-  showSearchRes.value = true;
   getCaseData();
 };
+
 getInputMeta();
 
-const setSort = (type: string) => {
-  pagination.order = type;
-  getCaseData();
-};
-
-// }
-/*加载过滤条件*/
-const search_condition_meta_list = ref([]);
-const load_search_condition = async () => {
-  const { result } = await meta.findSearchCondition();
-  search_condition_meta_list.value = result;
-};
-
-const gotoBack = () => {
-  if (route.name === "Search") {
-    router.push({ name: "AdvancedSearch" });
-  }
-
-  showSearchRes.value = false;
-};
-
-onMounted(() => {
-  const { query } = route;
-  if (query && query.keywords) {
-    enterSearch({ keywords: query.keywords });
-  }
-  load_search_condition();
-});
 </script>
 <template>
+  <keep-alive>
   <div class="h-screen overflow-auto advanced-search">
     <Header
       class="visualization-header"
@@ -161,7 +79,6 @@ onMounted(() => {
     <a-layout-content
       style="padding: 20px 0; margin: 0 auto; width: 80%"
       class="flex flex-col"
-      v-show="!showSearchRes && $route.name !== 'Search'"
     >
       <div
         class="return-prev-page cursor-pointer"
@@ -186,87 +103,13 @@ onMounted(() => {
         </div>
       </div>
     </a-layout-content>
-    <a-layout-content
-      style="padding: 20px 0; margin: 0 auto; width: 80%"
-      class="flex flex-col"
-      v-if="showSearchRes || $route.name == 'Search'"
-    >
-      <div class="return-prev-page cursor-pointer" @click="gotoBack">
-        <arrow-left-outlined />
-        <span class="p-l-2">高级检索</span>
-      </div>
-      <LogoText text="检索结果" />
-      <div class="result-container p-t-5">
-        <div class="result-filter flex p-b-4">
-          <a-dropdown type="primary">
-            <div @click.prevent>
-              <caret-down-outlined />
-              {{ selectContry }}
-            </div>
-            <template #overlay>
-              <a-menu @click="(e:any) => selectContry = e.key">
-                <a-menu-item key="中国"> 中国 </a-menu-item>
-                <a-menu-item key="日本"> 日本 </a-menu-item>
-                <a-menu-item key="韩国"> 韩国 </a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
-          <a-dropdown class="m-l-8" type="primary">
-            <div @click.prevent>
-              <caret-down-outlined />
-              {{ selectFiled }}
-            </div>
-            <template #overlay>
-              <a-menu @click="(e:any) => selectFiled = e.key">
-                <a-menu-item key="项目进度"> 项目进度 </a-menu-item>
-                <a-menu-item key="项目质量"> 项目质量 </a-menu-item>
-                <a-menu-item key="项目名称"> 项目名称 </a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
-          <div class="flex-1 flex justify-end">
-            <span class="cursor-pointer" @click="setSort('asc')">
-              <sort-ascending-outlined
-                :class="{ 'c-#5b3df2': pagination.order === 'asc' }"
-              />
-            </span>
-            <a-divider type="vertical" />
-            <span class="cursor-pointer" @click="setSort('desc')">
-              <sort-descending-outlined
-                :class="{ 'c-#5b3df2': pagination.order === 'desc' }"
-              />
-            </span>
-          </div>
-        </div>
-
-        <a-table
-          :columns="columns"
-          :row-key="(record:any) => record.id"
-          :data-source="dataSource"
-          :pagination="pagination"
-          :loading="loading"
-          @change="handleTableChange"
-        >
-          <template #bodyCell="{ column, text, index, record }">
-            <div
-              class="c-#5b3df2 cursor-pointer"
-              @click="
-                $router.push({ name: 'CaseDetail', params: { id: record.id } })
-              "
-              v-if="column.dataIndex === 'name'"
-            >
-              {{ index }} {{ text }}
-            </div>
-          </template>
-        </a-table>
-      </div>
-    </a-layout-content>
   </div>
+</keep-alive>
 </template>
 <style lang="less">
 .advanced-search {
   position: relative;
-  .return-prev-page {
+  .advance-return {
     color: #666666;
     position: absolute;
     z-index: 2;

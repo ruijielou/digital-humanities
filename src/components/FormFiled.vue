@@ -1,10 +1,26 @@
 <script setup lang="ts">
-import { reactive, watch, ref } from "vue";
+import {
+  reactive,
+  watch,
+  ref,
+  Ref,
+  onMounted,
+  nextTick,
+  defineExpose,
+} from "vue";
+import { useRoute } from "vue-router";
+import { RouteLocationNormalized } from "vue-router";
+
+// 声明 $route 变量类型
+
 const props = defineProps<{
   formModal?: any;
   formData: any;
   layout: any;
 }>();
+
+const route = useRoute();
+// const $route: Ref<RouteLocationNormalized> = $route
 const formRef = ref<any>(null);
 const formState = reactive<any>({
   formFiledData: {},
@@ -12,18 +28,47 @@ const formState = reactive<any>({
 const initForm = () => {
   if (props.formModal) {
     formState.formFiledData = { ...props.formModal };
+    setData();
   }
 };
 watch(
-  () => props.formData,
+  () => props.formModal,
   (val) => {
     initForm();
-  }
+  },
+  { immediate: true }
 );
+
+// watch(
+//   route,
+//   (to, from) => {
+//     if (from?.name === "CaseDetail" || !from) {
+//       setData();
+//     }
+//   },
+//   { immediate: true } // 如果要立即执行一次，请添加此选项
+// );
+
 const formValidate = async () => {
   return await formRef.value.validate();
 };
-initForm();
+const setData = () => {
+  const localData = localStorage.formstate && JSON.parse(localStorage.formstate);
+  if (localData) {
+    //如果有缓存的数据就添加进去，记住搜索
+    const copyFormModel = { ...formState.formFiledData };
+    Object.keys(localData).forEach((key) => {
+      if (localData[key] && copyFormModel[key] != undefined) {
+        copyFormModel[key] = localData[key];
+      }
+    });
+    nextTick(() => {
+      formState.formFiledData = { ...copyFormModel };
+      console.log(copyFormModel);
+    });
+  }
+};
+
 defineExpose({ formState, formValidate });
 </script>
 <template>
@@ -34,7 +79,7 @@ defineExpose({ formState, formValidate });
     :model="formState"
   >
     <template v-for="col in formData">
-     <a-form-item
+      <a-form-item
         :colon="false"
         :name="['formFiledData', `${col.filed}`]"
         :label="col.name"
@@ -102,7 +147,7 @@ defineExpose({ formState, formValidate });
         </a-select>
         <a-select
           placeholder="选择或输入"
-          v-else-if="col.dataType === 15  || col.dataType === 16"
+          v-else-if="col.dataType === 15 || col.dataType === 16"
           :showSearch="true"
           v-model:value="formState.formFiledData[`${col.filed}`]"
           mode="multiple"

@@ -11,7 +11,7 @@ const router = useRouter();
 const do_search = () => {
   let keywords = searchFields.value;
   if(keywords){
-    router.push({ name: "Search",query:{keywords:keywords} });
+    router.push({ name: "SearchResult",query:{keywords:keywords} });
   }else {
     message.warning("请输入关键字");
   }
@@ -37,10 +37,10 @@ const do_search = () => {
         </span>
       </div>
     </div>
-    <div class="flex-2 footer-search p-t-20" @click="do_search()">
+    <div class="flex-2 footer-search p-t-20" >
       <a-input v-model:value="searchFields" >
         <template #suffix>
-          <SearchOutlined />
+          <SearchOutlined @click="do_search()" />
         </template>
       </a-input>
     </div>

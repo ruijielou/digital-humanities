@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, watch } from "vue";
 import { message, Modal } from "ant-design-vue";
 import { useUserStore } from "@/store/user";
 // import type { LoginState } from "../views/home/type";
@@ -17,8 +17,8 @@ interface LoginState {
 
 const loginType = ref<LoginTypeMap>(LoginTypeMap.Password);
 const visible = ref<boolean>(false);
-const handleOk = () => {
-  console.log("handleOk");
+const afterClose = () => {
+  userStore.closeLogin();
 };
 const changeVisibile = () => {
   visible.value = !visible.value;
@@ -147,7 +147,7 @@ defineExpose({ visible, changeLoginType });
   <a-modal
     wrapClassName="digital-modal"
     v-model:visible="visible"
-    @ok="handleOk"
+    :afterClose="afterClose"
     :width="510"
     :footer="null"
     :closable="false"

@@ -52,10 +52,15 @@ export default [
     name: "AdvancedSearch",
     component: () => import("../views/advancedSearch/AdvancedSearch.vue"),
   },
+  // {
+  //   path: "/search",
+  //   name: "Search",
+  //   component: () => import("../views/advancedSearch/AdvancedSearch.vue"),
+  // },
   {
-    path: "/search",
-    name: "Search",
-    component: () => import("../views/advancedSearch/AdvancedSearch.vue"),
+    path: "/searchresult",
+    name: "SearchResult",
+    component: () => import("../views/advancedSearch/SearchResult.vue"),
   },
   {
     path: "/about",
