@@ -13,9 +13,6 @@ const showLabels = ref<boolean>(false);
 const searchType = ref<number>(0);
 const repository_suggest_list = ref<any[]>([]);
 
-const changeShowLabels = () => {
-  showLabels.value = !showLabels.value;
-};
 const router = useRouter();
 const do_search = () => {
   let keywords = searchFields.value;
@@ -49,6 +46,12 @@ const goAdvanceSearch = () => {
   localStorage.removeItem('formstate');
   route.name === 'AdvancedSearch' ? location.reload() : router.push({name: 'AdvancedSearch'})
 }
+const openRepository = (id:string) => {
+  emit('closeSearch');
+router.push({name: 'MoreLibrary', params: {id} });
+// location.reload()
+}
+
 </script>
 <template>
   <div class="flex items-center justify-center m-b-2">
@@ -82,7 +85,7 @@ const goAdvanceSearch = () => {
   </div>
   <div class="content-text-wrapper flex justify-center p-4" v-if='repository_suggest_list.length'>
     <div class="text-wrapper flex-col" v-for="suggest_item in repository_suggest_list">
-      <span class="text" @click=" $router.push({ name: 'MoreLibrary', params: { id: suggest_item.id }, })">{{suggest_item.name}}</span>
+      <span class="text cursor-pointer" @click="openRepository(suggest_item.id)">{{suggest_item.name}}</span>
     </div>
     <div class="text-wrapper flex-col">
       <span class="text">

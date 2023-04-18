@@ -2,9 +2,13 @@
 <script lang="ts" setup>
 import { ref, reactive } from "vue";
 import { favorite } from "@/api";
-import { ArrowLeftOutlined, SearchOutlined,HeartFilled } from "@ant-design/icons-vue";
+import {
+  ArrowLeftOutlined,
+  SearchOutlined,
+  HeartFilled,
+} from "@ant-design/icons-vue";
 import type { PageinationType } from "../../utils/type";
-import {message} from "ant-design-vue"
+import { message } from "ant-design-vue";
 
 const caseMoveModal = ref<boolean>(false);
 const openStatus = ref<number>(1);
@@ -54,12 +58,12 @@ const handleTableChange = async (newpager: any) => {
 
 const getMylike = async () => {
   const paramsQuery = {
-    type:2,
+    type: 2,
     pageNo: pagination.current,
-    pageSize: pagination.pageSize
+    pageSize: pagination.pageSize,
   };
- 
-  const { result } = await favorite.myPage({...paramsQuery});
+
+  const { result } = await favorite.myPage({ ...paramsQuery });
   if (result) {
     dataSource.value = [...result.records];
   }
@@ -77,7 +81,7 @@ const cancelFavorited = async (id: string) => {
     message.success(res.message);
     getMylike();
   }
-}
+};
 </script>
 <template>
   <a-layout-content
@@ -100,10 +104,11 @@ const cancelFavorited = async (id: string) => {
       >
         <template #bodyCell="{ column, text, record }">
           <div
+            class="c-#5b3df2 cursor-pointer"
             @click="
               $router.push({ name: 'CaseDetail', params: { id: record.id } })
             "
-            v-if="column.dataIndex === 'name'"
+            v-if="column.dataIndex === 'caseName'"
           >
             {{ text }}
           </div>
@@ -114,15 +119,11 @@ const cancelFavorited = async (id: string) => {
               cancel-text="取消"
               @confirm="cancelFavorited(record.contentId)"
             >
-              <span
-                class="cursor-pointer"
-              >
-              <HeartFilled style="color: #f243d9" />
-              取消
-          </span>
+              <span class="cursor-pointer">
+                <HeartFilled style="color: #f243d9" />
+                取消
+              </span>
             </a-popconfirm>
-
-
           </template>
         </template>
       </a-table>

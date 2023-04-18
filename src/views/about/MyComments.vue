@@ -75,10 +75,11 @@ getComment();
       >
         <template #bodyCell="{ column, text, index, record }">
           <div
+            class="c-#5b3df2 cursor-pointer"
             @click="
-              $router.push({ name: 'CaseDetail', params: { id: record.id } })
+              $router.push({ name: 'CaseDetail', params: { id: record.contentId } })
             "
-            v-if="column.dataIndex === 'name'"
+            v-if="column.dataIndex === 'caseName'"
           >
             {{ `${index + 1}` }}
             <span class="m-l-6">{{ text }}</span>
@@ -90,7 +91,7 @@ getComment();
               cancel-text="取消"
               @confirm="moreOperation(record.id)"
             >
-              <a-button type="text">删除</a-button>
+              <span class="cursor-pointer">删除</span>
             </a-popconfirm>
           </div>
         </template>

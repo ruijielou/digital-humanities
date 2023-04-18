@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, watch } from "vue";
 import type { PageinationType } from "../../utils/type";
 import {
   CaretDownOutlined,
@@ -54,7 +54,7 @@ const repository_info = ref({
 });
 
 const getRepositoryDetail = async () => {
-  if(!repository_id.value) return
+  if (!repository_id.value) return;
   const { result } = await repository.queryById(repository_id.value);
   if (result) {
     repository_info.value = result;
@@ -102,13 +102,13 @@ const getSlider = async () => {
     const firstData = sliderData.value.find(
       (item: any) => item.repositoryList.length > 0
     );
-    if(firstData && !repository_id.value) {
+    if (firstData && !repository_id.value) {
       repository_id.value = firstData.repositoryList[0].id;
     }
   }
 };
 
-const reset_repository = (id: number) => {
+const reset_repository = (id: any) => {
   repository_id.value = id;
   getRepositoryDetail();
   getLibraryList();
@@ -118,6 +118,13 @@ const initPage = async () => {
   await getRepositoryDetail();
   getLibraryList();
 };
+watch(
+  route,
+  (to, from) => {
+    reset_repository(to.params.id);
+  },
+  { immediate: true } // 如果要立即执行一次，请添加此选项
+);
 initPage();
 </script>
 <template>
@@ -137,7 +144,7 @@ initPage();
           </div>
           <div
             class="p-l-10 p-t-3 text-3.5 truncate cursor-pointer"
-            :class="{active: repository_item.id == repository_id}"
+            :class="{ active: repository_item.id == repository_id }"
             v-for="repository_item in item.repositoryList"
           >
             <span @click="reset_repository(repository_item.id)">{{
@@ -235,7 +242,8 @@ initPage();
     overflow: auto;
     background: #f4f1ff;
     .slider-items {
-      & > div:hover,&>.active {
+      & > div:hover,
+      & > .active {
         color: @primary-color;
       }
     }

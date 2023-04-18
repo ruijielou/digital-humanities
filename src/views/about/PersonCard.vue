@@ -60,9 +60,9 @@ const logoutCallback = () => {
         class="m-t-10"
         :title="userInfo.username"
       >
-        <!-- <template #icon>
+        <template #icon>
           <UserOutlined />
-        </template> -->
+        </template>
       </a-avatar>
       <a-avatar
         shape="circle"

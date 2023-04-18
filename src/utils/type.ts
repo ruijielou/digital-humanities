@@ -1,4 +1,15 @@
 
+class Constant {
+  code: number
+  name: string
+  desc: string
+
+  constructor(code?: number, name?: string, desc?: string) {
+    this.code = code || 0;
+    this.name = name || '';
+    this.desc = desc || '';
+  }
+}
 export interface CategoryItem {
   name: string;
   label: string;
@@ -88,3 +99,12 @@ export const Colors = ['#9292F5', '#C987FA', '#F5A95D', '#26D7BF', '#AF90F0', '#
 // /app/user/repositorygroup/findAllFormInput?repositoryIds=17
 // 合并之后的接口,
 // 参数传案例库id, 多个id用逗号隔开
+
+export const AuthType = {
+  /** 公开  */
+  1: new Constant(1, "公开"),
+  /** 仅自己看  */
+  2: new Constant(2, "仅自己看"),
+  /** 默认字段  */
+  3: new Constant(3, "默认字段"),
+};

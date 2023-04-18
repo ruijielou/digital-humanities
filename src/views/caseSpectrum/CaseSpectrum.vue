@@ -114,7 +114,9 @@ getCaseData();
           </span>
         </div>
         <div class="spectrum-list p-t-5">
-          <div class="spectrun-items" v-for="item in dataSource">
+          <div class="spectrun-items cursor-pointer" v-for="item in dataSource" @click="
+              $router.push({ name: 'CaseDetail', params: { id: item.id } })
+            ">
             {{ `${item.name}${item.code ? "(" + item.code + ")" : ""}` }}
           </div>
           <p

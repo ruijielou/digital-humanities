@@ -13,13 +13,13 @@ const getPage = async () => {
   spinning.value = true;
   const { result } = await repository.findRepositoryGroupIndex();
   if (result) {
-    const firstCase = result.find((item) => item.title === "特选案例") || {};
+    const firstCase = result.find((item:any) => item.title === "特选案例") || {};
     if (firstCase) {
       firstCase.isFirst = true;
     }
     cardData.value = [
       { ...firstCase },
-      ...result.filter((item) => item.title !== "特选案例"),
+      ...result.filter((item:any) => item.title !== "特选案例"),
     ];
   }
   spinning.value = false;

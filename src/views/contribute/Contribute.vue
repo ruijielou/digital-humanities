@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, nextTick, onMounted } from "vue";
+import { ref, reactive, computed, onMounted } from "vue";
 import { Modal } from "ant-design-vue";
 import LogoText from "../../components/LogoText.vue";
 import SetpOne from "./StepOne.vue";
@@ -145,7 +145,7 @@ onMounted(() => {
       <LogoText text="案例投稿" />
       <div class="p-l-100 p-r-100 p-t-5 p-b-5">
         <a-steps :current="currentStep" size="small" @change="changeStep">
-          <a-step :disabled="currentStep == stepData.length-1 ? true : false" :title="item.label" :key="item.name"
+          <a-step :disabled="true" :title="item.label" :key="item.name"
             v-for="item in stepData" />
         </a-steps>
       </div>

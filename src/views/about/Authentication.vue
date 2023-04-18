@@ -17,15 +17,12 @@ enum CardType {
 
 const formState = reactive({
   user: {
-    // ...userInfo
     username: userInfo.username,
     realName: userInfo.realName,
     idType: userInfo.idType,
     idNumber: userInfo.idNumber,
-    // cardNumber: "",
     phone: userInfo.phone,
     code: "",
-    // verifyCode: "",
   },
 });
 
@@ -33,6 +30,7 @@ const formState = reactive({
 const getValidCode = async () => {
   // 7为实名认证
   await dhuvalidcode({ username: formState.user.phone, type: 7 });
+
   codeTimerStart();
 };
 
@@ -70,9 +68,9 @@ const onFinish = async (values: any) => {
     });
     return
   }
-  const result = await dhuuser.updateAuth({...values.user});
+  const res = await dhuuser.updateAuth({...values.user});
 
-  if (result.success) {
+  if (res.success) {
     Modal.success({
       title: () => "提示",
       content: () => "认证成功",
@@ -81,9 +79,7 @@ const onFinish = async (values: any) => {
   }
   
 };
-const getCode = () => {
-  console.log("get code is request");
-};
+
 </script>
 <template>
   <div class="p-8 w-100% authentication">
@@ -129,7 +125,6 @@ const getCode = () => {
         <a-form-item
           :colon="false"
           :name="['user', 'code']"
-          @click="getCode"
           label="验证码"
         >
           <div class="flex">
