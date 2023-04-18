@@ -11,7 +11,6 @@ const lab_group_list = ref<any>([]);
 const load_lab_group = async () => {
   const { result } = await labgroup.loadList();
   lab_group_list.value = result;
-  console.log("lab_group_list.value:", lab_group_list.value);
 };
 load_lab_group();
 const dataSource = ref<{ [key: string]: string }[]>([]);

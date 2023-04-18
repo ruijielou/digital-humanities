@@ -90,7 +90,6 @@ const getLibraryList = async () => {
  * @description 分页改变
  */
 const handleTableChange = async (newpager: any) => {
-  console.log(newpager);
   pagination.total = newpager.total;
   pagination.current = newpager.current;
   pagination.pageSize = newpager.pageSize;

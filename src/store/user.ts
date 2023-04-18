@@ -58,7 +58,6 @@ export const useUserStore = defineStore({
 
         // 在这儿调用获取用户信息的接口 return获取到的数据
         const { result } = await dhuuser.findUserInfo();
-        console.log(result, 'userinfo');
         this.userInfo = result;
         return { ...result };
       } catch (error) {

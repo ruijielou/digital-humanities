@@ -13,7 +13,6 @@ import { message } from "ant-design-vue";
 
 const route = useRoute();
 
-console.log("route.params.id:");
 const groupId = route.params.id;
 const groupName = route.params.name;
 
@@ -65,7 +64,6 @@ const pagination = reactive<PageinationType>({
   order: "asc",
 });
 const handleTableChange = async (newpager: any) => {
-  console.log(newpager);
   pagination.total = newpager.total;
   pagination.current = newpager.current;
   pagination.pageSize = newpager.pageSize;

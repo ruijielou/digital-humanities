@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-import { favoritegroup, repositorygroup } from "@/api";
+import { favoritegroup, repositorygroup, repository } from "@/api";
 import type { DefaultOptionType } from "ant-design-vue/lib/vc-select/Select";
 import { Modal, message } from "ant-design-vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
@@ -20,35 +20,33 @@ const handleOk = (e: MouseEvent) => {
 };
 
 
-const collectionGroup = ref<{ [key: string]: string }[]>([]);
-const getCollectionData = async () => {
-  const { result } = await favoritegroup.myPage({
-    searchInfo: searchInfo.value,
-  });
-  collectionGroup.value = result?.records || [];
+const repositoryGroup = ref<{ [key: string]: string }[]>([]);
+const getRepositoryGroup = async () => {
+  const { result } = await repositorygroup.findList();
+  repositoryGroup.value = result?.records || [];
 };
-const repositorygroup_options = ref<DefaultOptionType[]>([]);
+// const repositorygroup_options = ref<DefaultOptionType[]>([]);
+  // const { result } = await repositorygroup.findList();
+// repositorygroup.findList().then((res) => {
+//   if (res.success) {
+//     let i;
+//     let repositorygroup_list: DefaultOptionType[] = [];
+//     for (i in res.result) {
+//       let opt: any = res.result[i];
+//       repositorygroup_list.push({ value: opt.id, label: opt.title });
+//     }
+//     groupId.value = repositorygroup_list[0].value
+//     repositorygroup_options.value = repositorygroup_list;
+//   }
+// });
 
-repositorygroup.list().then((res) => {
-  if (res.success) {
-    let i;
-    let repositorygroup_list: DefaultOptionType[] = [];
-    for (i in res.result) {
-      let opt: any = res.result[i];
-      repositorygroup_list.push({ value: opt.id, label: opt.title });
-    }
-    groupId.value = repositorygroup_list[0].value
-    repositorygroup_options.value = repositorygroup_list;
-  }
-});
-
-getCollectionData();
+getRepositoryGroup();
 
 const createGroup = async () => {
   if (!caseName.value) {
     Modal.error({
       title: "提示",
-      content: "案例名称不能为空",
+      content: "案例库名称不能为空",
     });
     return;
   }
@@ -59,22 +57,27 @@ const createGroup = async () => {
     });
     return;
   }
-  const res = await favoritegroup.insert({
+
+  const res = await repository.insert({
     authType: isOpen.value ? 1 : 3,
-    title: caseName.value,
+    name: caseName.value,
+    groupId: groupId.value,
+    description: "",
+    status: 2,
   });
   if (res.success) {
     caseName.value = "";
-    getCollectionData();
+    getRepositoryGroup();
   }
 };
 const submitCollection = async () => {
   if (!checkedFolder.value) return;
   // 添加提交的接口
-  emit("reload");
+  // emit("editRepository", {groupId: checkedFolder.value,authType: repositoryGroup.value.find((item:any) => item.id === checkedFolder.value).authType});
   caseMoveModal.value = false;
 };
 defineExpose({ caseMoveModal });
+
 </script>
 <template>
   <a-modal
@@ -87,12 +90,12 @@ defineExpose({ caseMoveModal });
     </template>
     <a-input>
       <template #suffix>
-        <SearchOutlined @click="getCollectionData" />
+        <SearchOutlined @click="getRepositoryGroup" />
       </template>
     </a-input>
     <a-radio-group v-model:value="checkedFolder" class="w-100%">
-      <div v-if="collectionGroup.length" class="collection-group">
-        <div class="p-2" v-for="item in collectionGroup">
+      <div v-if="repositoryGroup.length" class="collection-group">
+        <div class="p-2" v-for="item in repositoryGroup">
           <a-radio :value="item.id">{{ item.title }}</a-radio>
         </div>
       </div>

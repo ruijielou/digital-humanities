@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import LoginModal from "./LoginModal.vue";
 import IconLogin from "./icons/IconLogin.vue";
 import IconUser from "./icons/IconUser.vue";
@@ -8,9 +8,11 @@ import IconMessage from "./icons/IconMessage.vue";
 import LogoIcon from "./LogoIcon.vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 import Search from "./Search.vue";
-import { Storage, TOKEN_KEY,imgBaseUrl } from "@/utils/config";
+import { Storage, TOKEN_KEY, imgBaseUrl } from "@/utils/config";
 import { LoginTypeMap } from "@/utils/type";
 import { useUserStore } from "@/store/user";
+import { categoryList } from "@/utils/type";
+
 // const token = Storage.get(TOKEN_KEY);
 // const emit = defineEmits(['fun1', '']);
 
@@ -21,6 +23,7 @@ defineProps<{
 
 const userStore = useUserStore();
 const router = useRouter();
+const route = useRoute();
 const loginModalRef = ref();
 const visibleSearch = ref<boolean>(false);
 
@@ -42,6 +45,13 @@ watch(
     val && openLoginModal();
   }
 );
+const visible = ref<boolean>(false);
+const changeVisibile = () => {
+  visible.value = !visible.value;
+};
+const goPages = (name: string) => {
+  route.name === name ? location.reload() : router.push({ name })
+}
 </script>
 <template>
   <a-layout-header
@@ -50,7 +60,7 @@ watch(
       backgroundImage: bgName ? `url(/src/assets/image/${bgName}.png)` : 'none',
     }"
   >
-    <LogoIcon />
+    <LogoIcon @click="changeVisibile" />
     <div class="header-title">{{ title }}</div>
     <div class="header-icons flex items-center">
       <span @click="visibleSearch = !visibleSearch">
@@ -93,9 +103,35 @@ watch(
       :footer="null"
       :closable="true"
     >
-      <Search @closeSearch="() => visibleSearch = !visibleSearch"/>
+      <Search @closeSearch="() => (visibleSearch = !visibleSearch)" />
     </a-modal>
     <LoginModal ref="loginModalRef" />
+    <a-drawer
+      placement="left"
+      :closable="false"
+      :visible="visible"
+      @close="changeVisibile"
+    >
+      <div class="draw-content text-center h-100% flex flex-col">
+        <LogoIcon />
+        <h4 class="title">数字人文多媒体案例资源库</h4>
+        <div
+          class="draw-category text-left flex-1 flex flex-col justify-center"
+        >
+          <div
+            class="category-item cursor-pointer"
+            v-for="item in categoryList"
+            :key="item.name"
+            @click="goPages(item.name)"
+          >
+            <span class="line"></span>
+            <span class="m-l-2">
+              {{ item.label }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </a-drawer>
   </a-layout-header>
 </template>
 <style lang="less">
@@ -119,6 +155,58 @@ watch(
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+  }
+}
+.ant-drawer-body {
+  padding-left: 0;
+}
+
+.draw-content {
+  .title {
+    overflow-wrap: break-word;
+    color: rgba(255, 255, 255, 1);
+    font-size: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+    line-height: 21px;
+    margin: 24px 0 0 40px;
+  }
+
+  .category-item {
+    margin: 15px 0;
+
+    .line {
+      width: 70px;
+      border-top: 1px solid #fff;
+      position: relative;
+      display: inline-block;
+      vertical-align: middle;
+      transition: width 0.2s linear;
+      &:after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: -2px;
+        width: 3px;
+        border-radius: 50%;
+        height: 3px;
+        background-color: #fff;
+        transition: all 0.2s linear;
+      }
+    }
+
+    &.active,
+    &:hover {
+      .line {
+        width: 130px;
+        border-image: linear-gradient(
+            270deg,
+            rgba(242, 67, 217, 1),
+            rgba(24, 96, 247, 1)
+          )
+          1 1;
+      }
+    }
   }
 }
 </style>

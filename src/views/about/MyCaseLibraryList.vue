@@ -49,7 +49,6 @@ const pagination = reactive<PageinationType>({
   pageSize: 10,
 });
 const handleTableChange = async (newpager: any) => {
-  console.log(newpager, "handleTableChange");
   pagination.total = newpager.total;
   pagination.current = newpager.current;
   pagination.pageSize = newpager.pageSize;
@@ -79,12 +78,9 @@ const deletRepository = () => {
   });
 };
 
-/**
- * 修改案例库
- */
+/** 修改案例库 */
 const editRepository = async (authType: number) => {
   const res = await repository.update({ ...repository_info.info, authType });
-
   if (res.success) {
     message.success("修改成功");
     getRepositoryDetail();

@@ -30,8 +30,8 @@ const do_search = () => {
 const load_repository_suggest = async () => {
   const {result } = await repository.suggest();
   repository_suggest_list.value = result;
-  console.log('repository_suggest_list:', repository_suggest_list.value)
 }
+
 load_repository_suggest();
 
 const gotoVisuali = () => {

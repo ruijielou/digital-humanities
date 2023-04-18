@@ -54,6 +54,11 @@ export interface PageinationType {
 }
 export const categoryList: CategoryItem[] = [
   {
+    name: "home",
+    label: "首页",
+    type: 9,
+  },
+  {
     name: "CaseLibrary",
     label: "案例库",
     type: CategoryType.CaseLibrary,

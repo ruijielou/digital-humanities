@@ -64,7 +64,6 @@ const setData = () => {
     });
     nextTick(() => {
       formState.formFiledData = { ...copyFormModel };
-      console.log(copyFormModel);
     });
   }
 };
