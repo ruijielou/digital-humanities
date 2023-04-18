@@ -11,7 +11,7 @@ import * as echarts from "echarts";
 import { getOption } from "./options";
 import { componentMap } from "./type";
 import { seriesData } from "./mock";
-import { caseLocation, labgroup } from "@/api";
+import { caseLocation, caseApi } from "@/api";
 import { useRouter } from "vue-router"
 
 interface ChartTypeMap {
@@ -85,12 +85,15 @@ const toggleChartType = (type: componentMap) => {
 const spinning = ref<boolean>(false); //加载中的样式
 const myChart = ref<any>(null);
 const chartInit = shallowRef<any>(null);
+/* 案例列表 */
+const case_location_list = ref<any>([]);
 
 const initChart = async (type: componentMap) => {
   let resultData:any = null;
   if(type === componentMap.Distribution) {
-    const { result } = await caseLocation.list();
-    case_location_list.value = [...result];
+    resultData = case_location_list.value
+  }else if(type === componentMap.Time) {
+    const { result } = await caseApi.findTimeReport();
     resultData = [...result];
   }
   //其他图形在这儿添加else if
@@ -138,14 +141,12 @@ onUnmounted(() => {
   chartInit.value && chartInit.value.dispose();
 });
 
-/* 案例列表 */
-const case_location_list = ref<any>([]);
-// const load_case_location = async () => {
-//   const { result } = await caseLocation.list();
-//   case_location_list.value = result;
-//   console.log("lab_group_list.value:", case_location_list.value);
-// };
-// load_case_location();
+
+const load_case_location = async () => {
+  const { result } = await caseLocation.list();
+  case_location_list.value = result;
+};
+load_case_location();
 </script>
 <template>
   <div class="h-screen overflow-auto">
