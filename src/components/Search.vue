@@ -90,7 +90,7 @@ const goAdvanceSearch = () => {
       </span>
     </div>
   </div>
-  <Labels v-if="searchType" @setSearch="(val: string) => searchFields = val" />
+  <Labels v-if="searchType == 2" @setSearch="(val: string) => searchFields = val" />
   <div class="flex justify-center flex-1 items-end">
     <div class="class-item">
       <span class="c-white" @click="gotoVisuali">分布谱</span>
