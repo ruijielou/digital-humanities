@@ -353,6 +353,14 @@ export const caseApi = {
       },
     );
   },
+  findTimeReport: () => {
+    return request(
+      {
+        url: `/app/common/case/findTimeReport`,
+        method: "get",
+      },
+    );
+  },
 }
 
 // @ts-ignore
