@@ -89,12 +89,29 @@ const chartInit = shallowRef<any>(null);
 const case_location_list = ref<any>([]);
 
 const initChart = async (type: componentMap) => {
+  console.log('initChart:', type)
   let resultData:any = null;
   if(type === componentMap.Distribution) {
-    resultData = case_location_list.value
+    const { result } = await caseLocation.list();
+    resultData = [...result];
   }else if(type === componentMap.Time) {
     const { result } = await caseApi.findTimeReport();
     resultData = [...result];
+  }else if(type === componentMap.Knowledge) {
+    const { result } = await caseApi.findCaseRelationCharGraphDto();
+    resultData = result;
+  }else if(type === componentMap.Theme) {
+    const { result } = await caseApi.findThemeCharGraph();
+    let kes = [];
+    let i ;
+    for(i in result){
+      kes.push([i, result[i]]);
+    }
+    resultData = kes;
+  }else if(type === componentMap.Cooperate) {
+    const { result } = await caseApi.findCharSankey();
+    resultData = result;
+    console.log('resultData:', resultData);
   }
   //其他图形在这儿添加else if
   else {

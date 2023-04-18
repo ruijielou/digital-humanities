@@ -270,7 +270,7 @@ const goBack = () => {
       </div>
       <div v-else class="detail-content">
         <div class="m-t-5 h-500px chart-box">
-          <Knowledge />
+          <Knowledge :recored_id="$route.params.id"/>
         </div>
         <div class="flex">
           <div class="flex flex-col flex-1 m-r-18">
