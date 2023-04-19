@@ -186,14 +186,23 @@ defineExpose({ formState, formValidate });
                 <a-radio-group
                   v-else-if="col.dataType === 5"
                   v-model:value="formState.caseData[`${col.filed}`]"
-                  :options="col.optList"
-                />
+                >
+                  <a-radio
+                    v-for="radioItem in col.optList"
+                    :value="radioItem.value"
+                    >{{ radioItem.text }}</a-radio
+                  >
+                </a-radio-group>
                 <!-- // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 -->
                 <a-checkbox-group
                   v-else-if="col.dataType === 6"
                   v-model:value="formState.caseData[`${col.filed}`]"
-                  :options="col.optList"
                 >
+                  <a-checkbox
+                    v-for="checkItem in col.optList"
+                    :value="checkItem.value"
+                    >{{ checkItem.text }}</a-checkbox
+                  >
                 </a-checkbox-group>
                 <a-select
                   ref="select"
@@ -232,6 +241,78 @@ defineExpose({ formState, formValidate });
                     o.text
                   }}</a-select-option>
                 </a-select>
+                <template v-else-if="col.dataType === 9">
+                  <template v-if="formState.caseData[`${col.filed}`]?.length">
+                    <div
+                      v-for="imgItem in formState.caseData[`${col.filed}`]"
+                      class="custom-img-card"
+                    >
+                      <span
+                        class="delete-img"
+                        @click="deleteItemFile(imgItem, col.filed)"
+                      >
+                        <close-circle-outlined />
+                      </span>
+                      <img
+                        class="w-100% h-100%"
+                        :src="imgBaseUrl + imgItem"
+                        alt="avatar"
+                      />
+                    </div>
+                  </template>
+                  <a-upload
+                    class="w-auto"
+                    :customRequest="customRequest"
+                    v-model:file-list="fileList"
+                    list-type="picture-card"
+                    :show-upload-list="false"
+                    accept=".jpg, .jpeg, .png"
+                    @change="changeFile($event, `${col.filed}`)"
+                  >
+                    <div>
+                      <loading-outlined v-if="loading"></loading-outlined>
+                      <plus-outlined v-else></plus-outlined>
+                      <div class="ant-upload-text">上传</div>
+                    </div>
+                  </a-upload>
+                </template>
+                <template v-else-if="col.dataType === 17">
+                  <a-upload-dragger
+                    v-model:fileList="fileList"
+                    :customRequest="customRequest"
+                    :show-upload-list="false"
+                    @change="changeFile($event, `${col.filed}`)"
+                    @drop="changeFile($event, `${col.filed}`)"
+                  >
+                    <p class="ant-upload-drag-icon">
+                      <inbox-outlined></inbox-outlined>
+                    </p>
+                    <p class="ant-upload-text">
+                      单击或拖动文件到此区域进行上传
+                    </p>
+                  </a-upload-dragger>
+                  <template v-if="formState.caseData[`${col.filed}`]?.length">
+                    <div
+                      class="flex justify-between"
+                      v-for="imgItem in formState.caseData[`${col.filed}`]"
+                    >
+                      <a
+                        target="_blank"
+                        rel="noopener"
+                        class="ant-upload-list-item-name w-80% overflow-hidden"
+                        :title="imgItem"
+                        :href="imgBaseUrl + imgItem"
+                        >{{ imgItem }}</a
+                      >
+                      <span
+                        class="cursor-pointer"
+                        @click="deleteItemFile(imgItem, col.filed)"
+                      >
+                        <delete-outlined style="color: #f243d9" />
+                      </span>
+                    </div>
+                  </template>
+                </template>
                 <a-input
                   v-else
                   placeholder="请输入"
@@ -323,14 +404,23 @@ defineExpose({ formState, formValidate });
                 <a-radio-group
                   v-else-if="col.dataType === 5"
                   v-model:value="formState.caseData[`${col.filed}`]"
-                  :options="col.optList"
-                />
-                <!-- // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 13.可添加 -->
+                >
+                  <a-radio
+                    v-for="radioItem in col.optList"
+                    :value="radioItem.value"
+                    >{{ radioItem.text }}</a-radio
+                  >
+                </a-radio-group>
+                <!-- // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 -->
                 <a-checkbox-group
                   v-else-if="col.dataType === 6"
                   v-model:value="formState.caseData[`${col.filed}`]"
-                  :options="col.optList"
                 >
+                  <a-checkbox
+                    v-for="checkItem in col.optList"
+                    :value="checkItem.value"
+                    >{{ checkItem.text }}</a-checkbox
+                  >
                 </a-checkbox-group>
                 <a-select
                   ref="select"
