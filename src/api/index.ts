@@ -379,6 +379,38 @@ export const caseApi = {
       },
     );
   },
+  findCaseCharGraphDto: (id: string) => {
+    return request(
+      {
+        url: `/app/common/case/findCaseCharGraphDto?id=${id}`,
+        method: "get",
+      },
+    );
+  },
+  findCaseRelationCharGraphDto: () => {
+    return request(
+      {
+        url: `/app/common/case/findCaseRelationCharGraphDto`,
+        method: "get",
+      },
+    );
+  },
+  findThemeCharGraph: () => {
+    return request(
+      {
+        url: `/app/common/case/findThemeCharGraph`,
+        method: "get",
+      },
+    );
+  },
+  findCharSankey: () => {
+    return request(
+      {
+        url: `/app/common/case/findCharSankey`,
+        method: "get",
+      },
+    );
+  },
 }
 
 // @ts-ignore
