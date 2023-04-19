@@ -8,7 +8,7 @@ const userStore = useUserStoreWithOut();
 NProgress.configure({ showSpinner: false });
 
 export function createRouterGuards(router: any, whiteNameList: string[]) {
-  router.beforeEach(async (to:any, _:any, next:any) => {
+  router.beforeEach(async (to: any, _: any, next: any) => {
     NProgress.start();
 
     const token = Storage.get(TOKEN_KEY, undefined);
@@ -17,7 +17,7 @@ export function createRouterGuards(router: any, whiteNameList: string[]) {
      */
     if (!token && (to.path.includes('/about') || to.name === 'Contribute')) {
       userStore.openLogin();
-      next('/');
+      next({ name: 'home', replace: true });
     } else {
       if (token) {
         const [err] = await _to(userStore.afterLogin());
@@ -30,7 +30,7 @@ export function createRouterGuards(router: any, whiteNameList: string[]) {
     }
   });
 
-  router.afterEach((to:any, from:any, failure:any) => {
+  router.afterEach((to: any, from: any, failure: any) => {
     if (isNavigationFailure(failure)) {
       console.error('failed navigation', failure);
     }

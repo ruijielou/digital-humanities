@@ -114,6 +114,7 @@ const handleOk = () => {
       type: data.type,
     });
     file.uid = Date.now();
+    debugger
     formData.append("biz", "temp");
     formData.append("file", file);
 

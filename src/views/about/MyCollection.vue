@@ -1,69 +1,53 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import {message} from "ant-design-vue"
-import {favoritegroup} from "@/api";
+import { ref, createVNode } from "vue";
+import { message, Modal } from "ant-design-vue";
+import { favoritegroup } from "@/api";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import Card from "../caseLibrary/Card.vue";
-const collectionDatamock = [
-  {
-    id: 1,
-    title: "默认收藏夹",
-    caseNumber: 134,
-    recentUpdates: "欧洲时光机",
-    comments: [],
-    image: "/src/assets/image/card2.png",
-  },
-  {
-    id :2,
-    title: "英国项目",
-    caseNumber: 134,
-    recentUpdates: "E人类",
-    comments: [],
-    image: "/src/assets/image/card.png",
-  },
-  {
-    id: 3,
-    title: "数据可视化项目",
-    caseNumber: 134,
-    recentUpdates: "中国人民大学数字人文研究中心",
-    comments: [],
-    image: "/src/assets/image/card.png",
-  },
-];
+
 const collectionData = ref<any[]>([]);
 const getCollectionData = async () => {
-  const {result} = await favoritegroup.myPage();
-  let datas:any[] = [];
-  let i
-  for(i in result?.records){
+  const { result } = await favoritegroup.myPage();
+  let datas: any[] = [];
+  let i;
+  for (i in result?.records) {
     let record = result?.records[i];
-    datas.push(
-      {
-        id: record.id,
-        name: record.title,
-        caseQuantity: record.caseQuantity,
-        lastCaseName: record.caseName,
-        comments: [],
-        cover: record.caseCover,
-        favoriteId: record.favoriteId
-      }
-    )
+    datas.push({
+      id: record.id,
+      name: record.title,
+      caseQuantity: record.caseQuantity,
+      lastCaseName: record.caseName,
+      comments: [],
+      cover: record.caseCover,
+      favoriteId: record.favoriteId,
+    });
   }
   collectionData.value = datas;
-}
-
+};
 
 getCollectionData();
 
 // 取消喜欢
-const cancelFavorited:any = async (id: number) => {
+const cancelFavorited: any = async (id: number) => {
   if (!id) return;
-  const res = await favoritegroup.del({id});
-  if (res.success) {
-    message.success(res.message);
-    getCollectionData();
-  }
-}
- </script>
+  Modal.confirm({
+    content: "确定要取消收藏吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    onOk: async () => {
+      const res = await favoritegroup.del({ id });
+      if (res.success) {
+        message.success(res.message);
+        getCollectionData();
+      }
+    },
+    cancelText: "再想想",
+    okText: "确定",
+    onCancel() {
+      Modal.destroyAll();
+    },
+  });
+};
+</script>
 <template>
   <div class="p-8 w-100% mycollection-manage">
     <div class="lines-purple flex justify-between">
@@ -77,7 +61,12 @@ const cancelFavorited:any = async (id: number) => {
           v-for="item in collectionData"
           :no-show-views="true"
           @cancelFavorited="cancelFavorited"
-          @click.stop="$router.push({name: 'CollectionsClassify', params: { id: item.id, name: item.name }})"
+          @click.stop="
+            $router.push({
+              name: 'CollectionsClassify',
+              params: { id: item.id, name: item.name },
+            })
+          "
           style="width: 31%; height: 416px; margin: 0 20px 20px 0"
           :card="item"
         />

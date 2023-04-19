@@ -3,13 +3,10 @@ import {
   reactive,
   watch,
   ref,
-  Ref,
-  onMounted,
   nextTick,
   defineExpose,
 } from "vue";
 import { useRoute } from "vue-router";
-import { RouteLocationNormalized } from "vue-router";
 
 // 声明 $route 变量类型
 

@@ -13,9 +13,6 @@ import { LoginTypeMap } from "@/utils/type";
 import { useUserStore } from "@/store/user";
 import { categoryList } from "@/utils/type";
 
-// const token = Storage.get(TOKEN_KEY);
-// const emit = defineEmits(['fun1', '']);
-
 defineProps<{
   title?: string;
   bgName?: string;
@@ -28,7 +25,11 @@ const loginModalRef = ref();
 const visibleSearch = ref<boolean>(false);
 
 const openToContribute = () => {
-  router.push({ name: "Contribute" });
+  if (!Storage.get(TOKEN_KEY)) {
+    userStore.openLogin();
+  } else {
+    router.push({ name: "Contribute" });
+  }
 };
 
 const openLoginModal = () => {
@@ -50,8 +51,8 @@ const changeVisibile = () => {
   visible.value = !visible.value;
 };
 const goPages = (name: string) => {
-  route.name === name ? location.reload() : router.push({ name })
-}
+  route.name === name ? location.reload() : router.push({ name });
+};
 </script>
 <template>
   <a-layout-header

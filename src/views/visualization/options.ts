@@ -164,134 +164,6 @@ const addNodes = (arry: any, cell: any) => {
   arry.push(cell);
 }
 
-const getKnowledge_old = (chartData: any) => {
-  chartData.nodes.map((item: any) => {
-    item.symbolSize = 40;
-    item.category = item.id;
-    item.name = item.id;
-  });
-
-  let nodesTmp = JSON.parse(JSON.stringify(chartData.nodes));
-  let linkList: any = [];
-  let arry = null;
-  let nodeList = JSON.parse(JSON.stringify(chartData.nodes));
-  chartData.links.map((item: any) => {
-    arry = item.name.split("-");
-    linkList.push({
-      source: arry[0],
-      target: arry[1],
-    });
-    if (item.num > 1) {
-      //如果自己到自己且不只一条
-      for (let i = 1; i < item.num; i++) {
-        addNodes(nodeList, {
-          id: arry[1] + i,
-          category: arry[1],
-          symbolSize: 20,
-          name: arry[0],
-        });
-        linkList.push({
-          source: arry[0],
-          target: arry[1] + i,
-        });
-      }
-      if (arry[0] == arry[1]) {
-        for (let i = 1; i < item.num; i++) {
-          addNodes(nodeList, {
-            id: arry[1] + i,
-            category: arry[1],
-            symbolSize: 20,
-            name: arry[0],
-          });
-          linkList.push({
-            source: arry[0],
-            target: arry[1] + i,
-          });
-        }
-      } else {
-        for (let i = 1; i < item.num; i++) {
-          addNodes(nodeList, {
-            id: arry[1] + i,
-            category: arry[1],
-            symbolSize: 20,
-            name: arry[0],
-          });
-          linkList.push({
-            source: arry[0],
-            target: arry[1] + i,
-          });
-        }
-      }
-    }
-  });
-
-  return {
-    grid,
-    color: colors.map(item => {
-      return new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-        {
-          offset: 0,
-          color: item[0]
-        },
-        {
-          offset: 1,
-          color: item[1]
-        },
-        // {
-        //   offset: 1,
-        //   color: 'rgba(0,0,0,1)'
-        // }
-      ])
-    }),
-    series: [
-      {
-        type: "graph",
-        layout: "force",
-        data: nodeList,
-        links: linkList,
-        categories: nodesTmp,
-        roam: true,
-        label: {
-          show: true,
-          position: "left",
-          color: '#fff',
-        },
-        force: {
-          repulsion: 100,
-          "edgeLength": 140
-        },
-        itemStyle: {
-          borderColor: '#6960BA80',
-          borderWidth: 2,
-          shadowColor: '#6960BA',
-          shadowBlur: 20,
-          color: {
-            type: "radial",
-            x: 0.5,
-            y: 0.5,
-            r: 0.5,
-            colorStops: [
-              {
-                offset: 0.7,
-                color: '#6960BA', // 0% 处的颜色
-              },
-              {
-                offset: 0.7,
-                color: 'rgba(0, 0, 0, .5)', // 80% 处的颜色
-              },
-              {
-                offset: 1,
-                color: "rgba(0, 0, 0, 1)", // 100% 处的颜色
-              },
-            ],
-            global: false,
-          },
-        },
-      },
-    ],
-  }
-}
-
 const convertData = function (data: any) {
   const res: any = {};
   for (const item of data) {
@@ -487,17 +359,7 @@ function getLists(arr: any) {
     }
 
     //计算出颜色,从第二级开始
-    // if (item.level === 1) {
-    const color = KnowledgeColor[item.level-1] ? KnowledgeColor[item.level-1] : KnowledgeColor[2];
-    // }
-    // if (item.level == 2) {
-    //   color = KnowledgeColor.find((itemm, eq) => eq == index % 2);
-    //   // legend.push(item.name);
-    // }
-    // if (item.level == 3) {
-    //   color = KnowledgeColor.find((itemm, eq) => eq == index % 3);
-    //   // legend.push(item.name);
-    // }
+    const color = KnowledgeColor[item.level - 1] ? KnowledgeColor[item.level - 1] : KnowledgeColor[2];
     // 设置线条颜色
     let lineStyle = {
       color: '#7643DF80',
@@ -511,18 +373,17 @@ function getLists(arr: any) {
         y: 0.5,
         r: 0.5,
         colorStops: [
-
           {
             offset: 0.8,
             color: color.c1, // 0% 处的颜色
           },
           {
             offset: 0.8,
-            color: 'rgba(0, 0, 0, .5)', // 80% 处的颜色
+            color: 'rgba(0, 0, 0, .0)', // 80% 处的颜色
           },
           {
             offset: 1,
-            color: "rgba(0, 0, 0, 1)", // 100% 处的颜色
+            color: "rgba(0, 0, 0, 0)", // 100% 处的颜色
           },
         ],
         global: false,
@@ -552,11 +413,11 @@ function getLists(arr: any) {
           },
           {
             offset: 0.7,
-            color: 'rgba(0, 0, 0, .5)', // 80% 处的颜色
+            color: 'rgba(0, 0, 0, 0)', // 80% 处的颜色
           },
           {
             offset: 1,
-            color: "rgba(0, 0, 0, 1)", // 100% 处的颜色
+            color: "rgba(0, 0, 0, 0)", // 100% 处的颜色
           },
         ],
 
@@ -570,8 +431,7 @@ function getLists(arr: any) {
         borderColor: color.c2,
         borderWidth: 1,
         color: bgcolor,
-        borderType: [30, 5],
-        // item.level && item.level == 1 ? [45, 5] :
+        borderType: item.level == 1 ? [55, 5] : [40, 5],
       };
     } else {
       itemStyle = {
@@ -587,13 +447,9 @@ function getLists(arr: any) {
       shadowBlur: 0,
     });
 
-    // if (idx == 1) {
-    //   category = item.name;
-    // }
     let obj = {
       name: item.name,
       symbolSize: symbolSize,
-      // category: category,
       label,
       color: bgcolor,
       itemStyle,
@@ -622,10 +478,14 @@ function getLinks(arr: any) {
     let lineStyle = {
       normal: {
         color: "#6960BA80",
-      }
+      },
     };
     let obj = {
-
+      label: {
+        show: true,
+        distance: 5,
+        fontSize: 10,
+      },
       lineStyle,
       ...item
     };
@@ -635,11 +495,6 @@ function getLinks(arr: any) {
 }
 
 const getKnowledge = (chartData: any) => {
-  // const categories = chartData.data[0].list.map((item) => {
-  //   return {
-  //     name: item.name,
-  //   };
-  // });
 
   return {
     toolbox: {
@@ -665,16 +520,15 @@ const getKnowledge = (chartData: any) => {
         hoverAnimation: true,
         layout: "force",
         force: {
-          repulsion: 200,
-          edgeLength: 100,
+          edgeLength: 230,
+          repulsion: 500,
+          gravity: 0.2
         },
         nodeScaleRatio: 0.6,
         draggable: true,
         roam: true,
         symbol: "circle",
         data: getLists(chartData.data),
-        // getLists(chartData.data);
-        // getLinks(chartData.links);
         links: getLinks(chartData.links),
         categories: chartData.categories,
         focusNodeAdjacency: true,
@@ -694,7 +548,7 @@ const getKnowledge = (chartData: any) => {
           },
         },
         itemStyle: {
-          borderType: [50, 4],
+          borderType: [60, 4],
           borderDashOffset: 5
         },
         lineStyle: {
@@ -787,6 +641,8 @@ export const getOption = (type: componentMap, chartData: any) => {
       break;
     case componentMap.Knowledge:
       options = { ...getKnowledge(chartData) }
+      console.log(options);
+
       break;
     case componentMap.Distribution:
       options = { ...getDistribution(chartData) }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, reactive, ref,shallowRef } from "vue";
+import { nextTick, reactive, ref, shallowRef } from "vue";
 import { Colors } from "../../utils/type";
 import { BooleanStatus, LikeStatus } from "@/utils/type";
 import CollectionModal from "@/components/CollectionGroup.vue";
@@ -21,7 +21,6 @@ import StepTwo from "../contribute/StepTwo.vue";
 import { imgBaseUrl } from "@/utils/config";
 import { convert_case_data } from "@/utils/case_meta_util";
 import Knowledge from "./Knowledge.vue";
-
 
 type AnyObject<T = any> = {
   [key: string]: T | any;
@@ -175,11 +174,10 @@ const publish_case = async (status: number) => {
   getDetail();
 };
 const starFavorited = (isFavorite: any) => {
-
   if (!userInfo.id) {
-   nextTick(() => {
-    openLogin();
-   })
+    nextTick(() => {
+      openLogin();
+    });
     return;
   }
   isFavorite === BooleanStatus.False
@@ -193,7 +191,6 @@ const goBack = () => {
     router.push("/");
   }
 };
-
 </script>
 <template>
   <div class="h-screen overflow-auto">
@@ -270,7 +267,7 @@ const goBack = () => {
       </div>
       <div v-else class="detail-content">
         <div class="m-t-5 h-500px chart-box">
-          <Knowledge :recored_id="$route.params.id"/>
+          <Knowledge :recored-id="$route.params.id" />
         </div>
         <div class="flex">
           <div class="flex flex-col flex-1 m-r-18">
@@ -303,9 +300,10 @@ const goBack = () => {
                     <div v-if="col.dataType === 9" class="flex">
                       <div
                         class="flex-1 m-r-2"
+                        style="height: 100px"
                         v-for="img in col.text.split(',')"
                       >
-                        <a-image :width="200" :src="imgBaseUrl + img" />
+                        <a-image :height="100" :src="imgBaseUrl + img" />
                       </div>
                     </div>
                     <div v-else-if="col.dataType === 17">
@@ -376,21 +374,13 @@ const goBack = () => {
                       :size="24"
                       class="m-r-2 w-24px"
                       title="person"
-                      v-if="userInfo.avatar"
                       :src="imgBaseUrl + userInfo.avatar"
-                    >
-                    </a-avatar>
-                    <a-avatar
-                      shape="circle"
-                      :size="24"
-                      class="m-r-2 w-24px"
-                      title="person"
-                      v-else
                     >
                       <template #icon>
                         <UserOutlined />
                       </template>
                     </a-avatar>
+
                     <a-textarea
                       class="flex-1"
                       v-model:value="caseComment"
@@ -410,7 +400,7 @@ const goBack = () => {
                     :size="24"
                     class="m-r-2"
                     title="person"
-                    :src="item.userAvatar"
+                    :src="imgBaseUrl + item.userAvatar"
                   >
                     <template #icon>
                       <UserOutlined />
@@ -457,6 +447,9 @@ const goBack = () => {
   }
   & > span:nth-child(2) {
     flex: 1;
+  }
+  .ant-image-img {
+    max-height: 100%;
   }
 }
 .detail-right {

@@ -23,7 +23,7 @@ export function LoginByUser<T extends Record<string, any>>(data: T) {
     },
   );
 }
-// {{URL}}/app/common/login/reg?phone=15680696883&code=7527&password=123456&pwdLevel=3
+
 export function LoginReg<T extends Record<string, any>>(data: T) {
   return request(
     {
@@ -32,7 +32,7 @@ export function LoginReg<T extends Record<string, any>>(data: T) {
     },
   );
 }
-// {{URL}}/app/common/login/updatePwdByPhone?phone={{USERNAME}}&code=4316&newPwd=123456
+
 export function updatePwdByPhone<T extends Record<string, any>>(data: T) {
   return request(
     {
@@ -41,7 +41,7 @@ export function updatePwdByPhone<T extends Record<string, any>>(data: T) {
     },
   );
 }
-// {{URL}}/app/common/dhuvalidcode/send?phone={{USERNAME}}&type=1
+
 export function dhuvalidcode<T extends Record<string, any>>(data: T) {
   return request(
     {
@@ -50,12 +50,11 @@ export function dhuvalidcode<T extends Record<string, any>>(data: T) {
     },
   );
 }
-// sys/common/upload
+
 export function commonUpload(formData: any) {
   return request(
     {
       url: `/app/common/upload`,
-      // /app/common/upload
       method: "post",
       data: formData,
     },

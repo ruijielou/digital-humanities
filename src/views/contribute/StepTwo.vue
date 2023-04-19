@@ -64,6 +64,7 @@ const formValidate = async () => {
 let uploadFile: any = null;
 let uploadFileCurrentKey = "";
 const changeFile = (info: any, key: any) => {
+  //上传图片
   uploadFile = info.file;
   uploadFileCurrentKey = key;
   formState.caseData[uploadFileCurrentKey] = [
@@ -83,13 +84,8 @@ const changeFile = (info: any, key: any) => {
 
 const customRequest = async () => {
   const formData: any = new FormData();
-  const file: any = new File([uploadFile], uploadFile.name, {
-    type: uploadFile.type,
-  });
-  file.uid = Date.now();
   formData.append("biz", "temp");
-  formData.append("file", file);
-
+  formData.append("file", uploadFile.originFileObj);
   const res = await commonUpload(formData);
 
   if (res.success && res.message) {
@@ -360,8 +356,7 @@ defineExpose({ formState, formValidate });
                         <close-circle-outlined />
                       </span>
                       <img
-                        width="100%"
-                        height="100%"
+                        class="w-100% h-100%"
                         :src="imgBaseUrl + imgItem"
                         alt="avatar"
                       />
@@ -373,6 +368,7 @@ defineExpose({ formState, formValidate });
                     v-model:file-list="fileList"
                     list-type="picture-card"
                     :show-upload-list="false"
+                    accept=".jpg, .jpeg, .png"
                     @change="changeFile($event, `${col.filed}`)"
                   >
                     <div>
@@ -410,7 +406,10 @@ defineExpose({ formState, formValidate });
                         :href="imgBaseUrl + imgItem"
                         >{{ imgItem }}</a
                       >
-                      <span class="cursor-pointer" @click="deleteItemFile(imgItem, col.filed)">
+                      <span
+                        class="cursor-pointer"
+                        @click="deleteItemFile(imgItem, col.filed)"
+                      >
                         <delete-outlined style="color: #f243d9" />
                       </span>
                     </div>

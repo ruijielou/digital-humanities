@@ -23,13 +23,6 @@ interface ChartTypeMap {
 const router = useRouter();
 
 const currentType = ref<componentMap>(componentMap.Distribution);
-// const chartsOption = {
-//   [componentMap.Time]: areaOption,
-//   [componentMap.Theme]: null,
-//   [componentMap.Cooperate]: null,
-//   [componentMap.Distribution]: null,
-//   [componentMap.Knowledge]: null,
-// };
 
 const chartType = ref<ChartTypeMap[]>([
   {
@@ -73,7 +66,7 @@ const toggleChartType = (type: componentMap) => {
     ...chartType.value.splice(reloadIndex),
     ...chartType.value,
   ];
-  // if (type === componentMap.Distribution) return; //分布图加载地图组件，不渲染chart
+
   spinning.value = true;
   setTimeout(() => {
     initChart(type);
@@ -81,7 +74,6 @@ const toggleChartType = (type: componentMap) => {
   }, 1000);
 };
 
-// const activeRightId = ref<number>(1);
 const spinning = ref<boolean>(false); //加载中的样式
 const myChart = ref<any>(null);
 const chartInit = shallowRef<any>(null);
@@ -89,7 +81,6 @@ const chartInit = shallowRef<any>(null);
 const case_location_list = ref<any>([]);
 
 const initChart = async (type: componentMap) => {
-  console.log('initChart:', type)
   let resultData:any = null;
   if(type === componentMap.Distribution) {
     const { result } = await caseLocation.list();

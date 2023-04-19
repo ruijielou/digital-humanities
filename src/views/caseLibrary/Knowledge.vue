@@ -1,20 +1,20 @@
 <script lang="ts" setup>
-import { ref, shallowRef, onMounted,onUnmounted } from "vue";
+import { ref, shallowRef, onMounted, onUnmounted } from "vue";
 import * as echarts from "echarts";
 import { getOption } from "../visualization/options";
 import { componentMap } from "../visualization/type";
 import { caseApi } from "@/api";
 
+const props = defineProps<{
+  recoredId: any;
+}>();
+
 const myChart = ref<any>(null);
 const chartInit = shallowRef<any>(null);
 const initChart = async () => {
-
-  // const props = defineProps<{
-  //   recored_id?: any;
-  // }>();
-  // console.log('recored_id:', props.recored_id)
-  //TODO  把参数换成从
-  const { result } = await caseApi.findCaseCharGraphDto('134');
+  const id = props.recoredId;
+  if (!id) return;
+  const { result } = await caseApi.findCaseCharGraphDto(id as string);
 
   const options: any = getOption(componentMap.Knowledge, result);
   if (!options) return;
