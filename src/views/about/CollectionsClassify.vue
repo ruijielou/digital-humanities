@@ -10,28 +10,19 @@ import type { PageinationType } from "../../utils/type";
 import { favorite } from "@/api";
 import { useRoute } from "vue-router";
 import { message } from "ant-design-vue";
+import QueryFiled from "@/components/QueryFiled.vue"
 
 const route = useRoute();
 
 const groupId = route.params.id;
 const groupName = route.params.name;
-
-const selectContry = ref<string>("中国");
-const selectFiled = ref<string>("项目时间");
 const loading = ref<boolean>(false);
-const sortedInfo = ref();
 const columns = computed(() => {
-  const sorted = sortedInfo.value || {};
 
   return [
     {
       title: "名称",
       dataIndex: "caseName",
-      sorter: (a: any, b: any) =>
-        a.name.localeCompare(b.name, "zh-Hans-CN", {
-          sensitivity: "accent",
-        }),
-      sortOrder: sorted.columnKey === "name" && sorted.order,
     },
     {
       title: "国别",
@@ -69,14 +60,19 @@ const handleTableChange = async (newpager: any) => {
   pagination.pageSize = newpager.pageSize;
   getMyFavorite();
 };
+const queryParams = reactive<any>({data: {}})
 const dataSource = ref<any[]>([]);
-const getMyFavorite = async () => {
+const getMyFavorite = async (params?:any) => {
+  if(params) {
+    queryParams.data = {...params}
+  }
   const paramsQuery: any = {
     type: 1,
     pageNo: pagination.current,
     pageSize: pagination.pageSize,
     column: pagination.column,
     order: pagination.order,
+    ...queryParams.data
   };
 
   if (groupId) {
@@ -119,32 +115,7 @@ const cancelFavorited = async (id: string) => {
     </div>
     <div class="result-container p-t-5">
       <div class="result-filter flex p-b-4">
-        <a-dropdown type="primary">
-          <div @click.prevent>
-            <caret-down-outlined />
-            {{ selectContry }}
-          </div>
-          <template #overlay>
-            <a-menu @click="(e:any) => selectContry = e.key">
-              <a-menu-item key="中国"> 中国 </a-menu-item>
-              <a-menu-item key="日本"> 日本 </a-menu-item>
-              <a-menu-item key="韩国"> 韩国 </a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
-        <a-dropdown class="m-l-8" type="primary">
-          <div @click.prevent>
-            <caret-down-outlined />
-            {{ selectFiled }}
-          </div>
-          <template #overlay>
-            <a-menu @click="(e:any) => selectFiled = e.key">
-              <a-menu-item key="项目进度"> 项目进度 </a-menu-item>
-              <a-menu-item key="项目质量"> 项目质量 </a-menu-item>
-              <a-menu-item key="项目名称"> 项目名称 </a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
+        <QueryFiled ref="queryFiledRef" @reload="getMyFavorite" />
         <div class="flex-1 flex justify-end">
           <span class="cursor-pointer" @click="setSort('asc')">
             <sort-ascending-outlined

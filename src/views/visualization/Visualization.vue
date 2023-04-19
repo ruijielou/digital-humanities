@@ -21,9 +21,7 @@ interface ChartTypeMap {
 }
 
 const router = useRouter();
-
 const currentType = ref<componentMap>(componentMap.Distribution);
-
 const chartType = ref<ChartTypeMap[]>([
   {
     // key: "Theme",
@@ -56,6 +54,7 @@ const chartType = ref<ChartTypeMap[]>([
     id: 5,
   },
 ]);
+const searchInfo = ref<string>('');
 
 const toggleChartType = (type: componentMap) => {
   if (type === currentType.value) return;
@@ -149,9 +148,8 @@ onUnmounted(() => {
   chartInit.value && chartInit.value.dispose();
 });
 
-
 const load_case_location = async () => {
-  const { result } = await caseLocation.list();
+  const { result } = await caseLocation.list({nameFuzzy: searchInfo.value});
   case_location_list.value = result;
 };
 load_case_location();
@@ -177,9 +175,9 @@ load_case_location();
       </div>
       <div class="right-slider w-300px">
         <div class="border-bottom-search">
-          <a-input style="border-color: #fff; color: #fff">
+          <a-input @keyup.enter.native = "load_case_location()" style="border-color: #fff; color: #fff" v-model:value="searchInfo">
             <template #suffix>
-              <SearchOutlined style="color: #fff" />
+              <SearchOutlined style="color: #fff;cursor: pointer;"  @click="load_case_location()"/>
             </template>
           </a-input>
         </div>

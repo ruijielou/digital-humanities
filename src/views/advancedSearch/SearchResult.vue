@@ -10,9 +10,9 @@ import {
 } from "@ant-design/icons-vue";
 import { caseinfo } from "@/api";
 import { useRouter, useRoute } from "vue-router";
+import QueryFiled from "@/components/QueryFiled.vue"
 
-const selectContry = ref<string>("中国");
-const selectFiled = ref<string>("项目时间");
+
 const loading = ref<boolean>(false);
 
 const search_condition_params = ref({});
@@ -50,14 +50,17 @@ const pagination = reactive<PageinationType>({
   column: "name",
   order: "asc",
 });
-
-const getCaseData = async () => {
+const queryParams = reactive<any>({data: {}})
+const getCaseData = async (params?:any) => {
+  if(params) {
+    queryParams.data = {...params}
+  }
   let submitData: any = { ...search_condition_params.value };
   submitData.pageNo = pagination.current;
   submitData.pageSize = pagination.pageSize;
   submitData.column = pagination.column;
   submitData.order = pagination.order;
-  const { result } = await caseinfo.page(submitData);
+  const { result } = await caseinfo.page({...submitData, ...queryParams.data });
 
   result && (dataSource.value = [...result.records]);
   pagination.total = result.total;
@@ -123,32 +126,7 @@ onMounted(async () => {
       <LogoText text="检索结果" />
       <div class="result-container p-t-5">
         <div class="result-filter flex p-b-4">
-          <a-dropdown type="primary">
-            <div @click.prevent>
-              <caret-down-outlined />
-              {{ selectContry }}
-            </div>
-            <template #overlay>
-              <a-menu @click="(e:any) => selectContry = e.key">
-                <a-menu-item key="中国"> 中国 </a-menu-item>
-                <a-menu-item key="日本"> 日本 </a-menu-item>
-                <a-menu-item key="韩国"> 韩国 </a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
-          <a-dropdown class="m-l-8" type="primary">
-            <div @click.prevent>
-              <caret-down-outlined />
-              {{ selectFiled }}
-            </div>
-            <template #overlay>
-              <a-menu @click="(e:any) => selectFiled = e.key">
-                <a-menu-item key="项目进度"> 项目进度 </a-menu-item>
-                <a-menu-item key="项目质量"> 项目质量 </a-menu-item>
-                <a-menu-item key="项目名称"> 项目名称 </a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
+          <QueryFiled ref="queryFiledRef" @reload="getCaseData" />
           <div class="flex-1 flex justify-end">
             <span class="cursor-pointer" @click="setSort('asc')">
               <sort-ascending-outlined

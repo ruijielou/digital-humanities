@@ -435,11 +435,12 @@ export const caseinfo = {
  }
 
 export const meta = {
-  findSearchCondition: () => {
+  findSearchCondition: (data?:any) => {
     return request(
       {
         url: `/app/common/meta/findSearchCondition`,
         method: "get",
+        params: data
       },
     );
   },
@@ -465,12 +466,12 @@ export const labgroup = {
  }
 
 export const caseLocation = {
-  list: () => {
+  list: (data?:any) => {
     return request(
       {
         url: `/app/common/caselocation/list`,
         method: "get",
-        params:{}
+        params:data
       },
     );
   },

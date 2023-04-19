@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons-vue";
 import { caseinfo, repository, repositorygroup } from "@/api";
 import { useRoute } from "vue-router";
+import QueryFiled from "@/components/QueryFiled.vue"
 
 const route = useRoute();
 
@@ -21,11 +22,6 @@ const columns = computed(() => {
     {
       title: "名称",
       dataIndex: "name",
-      // sorter: (a: any, b: any) =>
-      //   a.name.localeCompare(b.name, "zh-Hans-CN", {
-      //     sensitivity: "accent",
-      //   }),
-      // sortOrder: sorted.columnKey === "name" && sorted.order,
     },
     {
       title: "国别",
@@ -70,13 +66,18 @@ const pagination = reactive<PageinationType>({
   column: "name",
   order: "asc",
 });
-const getLibraryList = async () => {
+const queryParams = reactive<any>({data: {}})
+const getLibraryList = async (params?:any) => {
+  if(params) {
+    queryParams.data = {...params}
+  }
   const { result } = await caseinfo.page({
     repositoryId: repository_id.value,
     pageNo: pagination.current,
     pageSize: pagination.pageSize,
     column: pagination.column,
     order: pagination.order,
+    ...queryParams.data
   });
   if (result) {
     dataSource.value = [...result.records];
@@ -162,32 +163,7 @@ initPage();
         </p>
         <div class="result-container p-t-5">
           <div class="result-filter flex p-b-4">
-            <a-dropdown type="primary">
-              <div @click.prevent>
-                <caret-down-outlined />
-                {{ selectContry }}
-              </div>
-              <template #overlay>
-                <a-menu @click="(e:any) => selectContry = e.key">
-                  <a-menu-item key="中国"> 中国 </a-menu-item>
-                  <a-menu-item key="日本"> 日本 </a-menu-item>
-                  <a-menu-item key="韩国"> 韩国 </a-menu-item>
-                </a-menu>
-              </template>
-            </a-dropdown>
-            <a-dropdown class="m-l-8" type="primary">
-              <div @click.prevent>
-                <caret-down-outlined />
-                {{ selectFiled }}
-              </div>
-              <template #overlay>
-                <a-menu @click="(e:any) => selectFiled = e.key">
-                  <a-menu-item key="项目进度"> 项目进度 </a-menu-item>
-                  <a-menu-item key="项目质量"> 项目质量 </a-menu-item>
-                  <a-menu-item key="项目名称"> 项目名称 </a-menu-item>
-                </a-menu>
-              </template>
-            </a-dropdown>
+            <QueryFiled ref="queryFiledRef" @reload="getLibraryList" />
             <div class="flex-1 flex justify-end">
               <span class="cursor-pointer" @click="setSort('asc')">
                 <sort-ascending-outlined
