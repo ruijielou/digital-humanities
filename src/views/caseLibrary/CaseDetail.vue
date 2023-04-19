@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, reactive, ref, shallowRef } from "vue";
+import { nextTick, reactive, ref } from "vue";
 import { Colors } from "../../utils/type";
 import { BooleanStatus, LikeStatus } from "@/utils/type";
 import CollectionModal from "@/components/CollectionGroup.vue";
@@ -18,17 +18,15 @@ import { caseApi, comment, favorite, meta } from "@/api";
 import { message } from "ant-design-vue";
 import { useUserStore } from "@/store/user";
 import StepTwo from "../contribute/StepTwo.vue";
-import { imgBaseUrl } from "@/utils/config";
+import {formatterFormInput} from "../contribute/utils";
+import { imgBaseUrl, formatterFormData } from "@/utils/config";
 import { convert_case_data } from "@/utils/case_meta_util";
 import Knowledge from "./Knowledge.vue";
-
-type AnyObject<T = any> = {
-  [key: string]: T | any;
-};
 
 const { userInfo, openLogin } = useUserStore();
 
 const showDetailKey = ref<number[]>([0]);
+const loading = ref<boolean>(false);
 const caseComment = ref<string>("");
 const CollectionRef = ref<any>(null);
 const isEdit = ref<boolean>(false);
@@ -59,7 +57,7 @@ const getDetail = async () => {
   if (!id) return;
   const { result } = await caseApi.findViewDetail(id as string);
   if (!result) return;
-
+  showDetailKey.value = [0];
   formModel.metaGroupList = result.metaGroupList
     ? [...result.metaGroupList]
     : [];
@@ -110,14 +108,18 @@ const getFavoriteStatus = async () => {
 const getTwoFormInput = async () => {
   const idList: string = formModel.caseinfo.repositoryIds;
   if (!idList) return;
+  loading.value = true;
   const { result } = await meta.findFormListGroup(idList);
   const formResult = await caseApi.findDetail(route.params.id as string);
   if (result && formResult) {
     let case_data_info = { ...formResult.result };
-    case_data_info = convert_case_data(case_data_info, result);
-    stepTwoData.formModal = case_data_info;
+    //方法未对表单的值进行全部初始化，暂时不用
+    // case_data_info = convert_case_data(case_data_info, result);
+  
+    const { formModal } = formatterFormInput({result},case_data_info);
+    stepTwoData.formModal = {...formModal};
     stepTwoData.data = [...result];
-
+    loading.value = false;
     repositoryList.value = formResult.result?.repositoryList;
   }
 };
@@ -145,25 +147,10 @@ const favorited = async (type: LikeStatus, value?: BooleanStatus) => {
   }
 };
 
-const formatterStepTwoData = (data: AnyObject) => {
-  const newFormData: AnyObject = {};
-  for (const key in data) {
-    if (data[key] && data[key] != "") {
-      if (data[key].constructor == Array) {
-        newFormData[key] = data[key].map((item: any) => item + "").join(",");
-      } else {
-        newFormData[key] = data[key];
-      }
-    }
-  }
-  return { ...newFormData };
-};
-
 const publish_case = async (status: number) => {
   const formState: any = await stepTwoRef.value?.formValidate();
-
   const submitData = {
-    ...formatterStepTwoData({ ...formState.caseData }),
+    ...formatterFormData({ ...formState.caseData }),
     id: route.params?.id,
     status: status,
     repositoryIds: formModel.caseinfo.repositoryIds,
@@ -257,9 +244,15 @@ const goBack = () => {
           <a-button v-if="!isEdit" @click="changeEdit"> 修改 </a-button>
         </div>
       </div>
-      <div v-if="isEdit">
+      <div v-if="isEdit" style="min-height: 400px">
+        <a-spin
+          v-if="loading"
+          :spinning="loading"
+          class="position-center h-100%"
+        ></a-spin>
         <StepTwo
           ref="stepTwoRef"
+          style="padding: 20px 0"
           :selected-tag="repositoryList"
           :form-modal="stepTwoData.formModal"
           :form-data="stepTwoData.data"

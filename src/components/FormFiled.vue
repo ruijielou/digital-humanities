@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-  reactive,
-  watch,
-  ref,
-  nextTick,
-  defineExpose,
-} from "vue";
+import { reactive, watch, ref, nextTick, defineExpose } from "vue";
 import { useRoute } from "vue-router";
 
 // 声明 $route 变量类型
@@ -50,7 +44,8 @@ const formValidate = async () => {
   return await formRef.value.validate();
 };
 const setData = () => {
-  const localData = localStorage.formstate && JSON.parse(localStorage.formstate);
+  const localData =
+    localStorage.formstate && JSON.parse(localStorage.formstate);
   if (localData) {
     //如果有缓存的数据就添加进去，记住搜索
     const copyFormModel = { ...formState.formFiledData };
@@ -94,8 +89,8 @@ defineExpose({ formState, formValidate });
           :rows="4"
         />
         <a-date-picker
-          placeholder="请选择"
-          class="w-100%"
+        placeholder="请选择"
+        class="w-100%"
           v-else-if="col.dataType === 3"
           v-model:value="formState.formFiledData[`${col.filed}`]"
           value-format="YYYY-MM-DD"
@@ -108,14 +103,26 @@ defineExpose({ formState, formValidate });
         <a-radio-group
           v-else-if="col.dataType === 5"
           v-model:value="formState.formFiledData[`${col.filed}`]"
-          :options="col.optList"
-        />
+        >
+          <a-radio
+            v-for="radioItem in col.optList"
+            :value="radioItem.value + ''"
+            >{{ radioItem.text }}</a-radio
+          >
+          <div>
+            {{ formState.formFiledData[`${col.filed}`] }}
+          </div>
+        </a-radio-group>
         <!-- // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 -->
         <a-checkbox-group
           v-else-if="col.dataType === 6"
           v-model:value="formState.formFiledData[`${col.filed}`]"
-          :options="col.optList"
         >
+          <a-checkbox
+            v-for="checkItem in col.optList"
+            :value="checkItem.value + ''"
+            >{{ checkItem.text }}</a-checkbox
+          >
         </a-checkbox-group>
         <a-select
           ref="select"
@@ -124,7 +131,7 @@ defineExpose({ formState, formValidate });
           class="w-100%"
           v-model:value="formState.formFiledData[`${col.filed}`]"
         >
-          <a-select-option v-for="o in col.optList" :value="o.value">{{
+          <a-select-option v-for="o in col.optList" :value="o.value + ''">{{
             o.text
           }}</a-select-option>
         </a-select>
@@ -154,6 +161,7 @@ defineExpose({ formState, formValidate });
             o.text
           }}</a-select-option>
         </a-select>
+
         <a-input
           v-else
           placeholder="请输入"

@@ -5,8 +5,6 @@ import { imgBaseUrl } from "@/utils/config";
 import {
   LoadingOutlined,
   PlusOutlined,
-  PlusSquareOutlined,
-  MinusSquareOutlined,
   DeleteOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons-vue";
@@ -27,19 +25,7 @@ const formState = reactive<any>({
 
 // metaList中 dataType:
 // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接
-/**
- *  提交的数据格式
- *  "repositoryIds":"16",
-    "form_329":"比利时时光机",
-    "form_330":"http://www.baidu.com",
-    "form_332":"2023-03-26 04:56",
-    "form_333":"1",
-    "form_335":"比利时时光机摘要222",
-    "form_340":"2",
-    "tag_12":20,
-    "tag_13":23,
-    "authType":1
- */
+
 const layout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 19 },
@@ -50,14 +36,14 @@ const initForm = () => {
     formState.caseData = { ...props.formModal };
   }
 };
-onMounted(() => {
-  // initForm();
-});
 
 const formValidate = async () => {
-  return await formRef.value.validate();
-};
-
+  try {
+    return await formRef.value.validate();
+  } catch (error) {
+    message.warning("请检查表单的完整性");
+  }
+}
 /**
  * 上传图片
  */
@@ -153,6 +139,37 @@ defineExpose({ formState, formValidate });
               <span class="lines"></span>
             </div>
             <template v-for="col in item.metaList">
+              <div class="w-33% inline-block" v-if="col.dataType === 16">
+                <a-form-item
+                  :colon="false"
+                  :labelCol="{ span: 0 }"
+                  :wrapperCol="{ span: 22 }"
+                  :name="['caseData', `${col.filed}`]"
+                  :rules="[
+                    {
+                      required: col.isRequired == 1 ? true : false,
+                      message: col.name + '不能为空',
+                      trigger: ['change', 'blur'],
+                    },
+                  ]"
+                >
+                  <a-select
+                    ref="select"
+                    class="w-100%"
+                    mode="tags"
+                    :placeholder="item.name"
+                    :max-tag-count="1"
+                    v-model:value="formState.caseData[`${col.filed}`]"
+                  >
+                    <a-select-option
+                      v-for="o in col.optList"
+                      :value="o.value + ''"
+                      :placeholder="col.name"
+                      >{{ o.text }}</a-select-option
+                    >
+                  </a-select>
+                </a-form-item>
+              </div>
               <a-form-item
                 :colon="false"
                 :name="['caseData', `${col.filed}`]"
@@ -189,7 +206,7 @@ defineExpose({ formState, formValidate });
                 >
                   <a-radio
                     v-for="radioItem in col.optList"
-                    :value="radioItem.value"
+                    :value="radioItem.value + ''"
                     >{{ radioItem.text }}</a-radio
                   >
                 </a-radio-group>
@@ -200,7 +217,7 @@ defineExpose({ formState, formValidate });
                 >
                   <a-checkbox
                     v-for="checkItem in col.optList"
-                    :value="checkItem.value"
+                    :value="checkItem.value + ''"
                     >{{ checkItem.text }}</a-checkbox
                   >
                 </a-checkbox-group>
@@ -211,9 +228,11 @@ defineExpose({ formState, formValidate });
                   class="w-100%"
                   v-model:value="formState.caseData[`${col.filed}`]"
                 >
-                  <a-select-option v-for="o in col.optList" :value="o.value">{{
-                    o.text
-                  }}</a-select-option>
+                  <a-select-option
+                    v-for="o in col.optList"
+                    :value="o.value + ''"
+                    >{{ o.text }}</a-select-option
+                  >
                 </a-select>
                 <a-select
                   placeholder="选择或输入"
@@ -237,7 +256,7 @@ defineExpose({ formState, formValidate });
                   style="width: 100%"
                   :token-separators="[',']"
                 >
-                  <a-select-option v-for="o in col.optList" :value="o.text">{{
+                  <a-select-option v-for="o in col.optList" :value="o.value">{{
                     o.text
                   }}</a-select-option>
                 </a-select>
@@ -270,7 +289,9 @@ defineExpose({ formState, formValidate });
                     @change="changeFile($event, `${col.filed}`)"
                   >
                     <div>
-                      <loading-outlined v-if="loading"></loading-outlined>
+                      <loading-outlined
+                        v-if="loading && uploadFileCurrentKey == col.filed"
+                      ></loading-outlined>
                       <plus-outlined v-else></plus-outlined>
                       <div class="ant-upload-text">上传</div>
                     </div>
@@ -407,9 +428,12 @@ defineExpose({ formState, formValidate });
                 >
                   <a-radio
                     v-for="radioItem in col.optList"
-                    :value="radioItem.value"
+                    :value="radioItem.value + ''"
                     >{{ radioItem.text }}</a-radio
                   >
+                  <div>
+                    {{ formState.caseData[`${col.filed}`] }}
+                  </div>
                 </a-radio-group>
                 <!-- // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 -->
                 <a-checkbox-group
@@ -418,7 +442,7 @@ defineExpose({ formState, formValidate });
                 >
                   <a-checkbox
                     v-for="checkItem in col.optList"
-                    :value="checkItem.value"
+                    :value="checkItem.value + ''"
                     >{{ checkItem.text }}</a-checkbox
                   >
                 </a-checkbox-group>
@@ -429,9 +453,11 @@ defineExpose({ formState, formValidate });
                   class="w-100%"
                   v-model:value="formState.caseData[`${col.filed}`]"
                 >
-                  <a-select-option v-for="o in col.optList" :value="o.value">{{
-                    o.text
-                  }}</a-select-option>
+                  <a-select-option
+                    v-for="o in col.optList"
+                    :value="o.value + ''"
+                    >{{ o.text }}</a-select-option
+                  >
                 </a-select>
                 <template v-else-if="col.dataType === 9">
                   <template v-if="formState.caseData[`${col.filed}`]?.length">
@@ -462,7 +488,9 @@ defineExpose({ formState, formValidate });
                     @change="changeFile($event, `${col.filed}`)"
                   >
                     <div>
-                      <loading-outlined v-if="loading"></loading-outlined>
+                      <loading-outlined
+                        v-if="loading && uploadFileCurrentKey == col.filed"
+                      ></loading-outlined>
                       <plus-outlined v-else></plus-outlined>
                       <div class="ant-upload-text">上传</div>
                     </div>
@@ -527,7 +555,7 @@ defineExpose({ formState, formValidate });
                   style="width: 100%"
                   :token-separators="[',']"
                 >
-                  <a-select-option v-for="o in col.optList" :value="o.text">{{
+                  <a-select-option v-for="o in col.optList" :value="o.value">{{
                     o.text
                   }}</a-select-option>
                 </a-select>
@@ -568,6 +596,7 @@ defineExpose({ formState, formValidate });
     position: absolute;
     right: 0;
     top: 0;
+    z-index: 9;
     background-color: #fff;
     display: block;
     color: #f243d9;

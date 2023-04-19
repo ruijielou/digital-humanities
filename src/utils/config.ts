@@ -97,9 +97,9 @@ export const formatterFormInput = (props: any) => {
 export const formatterFormData = (data: AnyObject) => {
   const newFormData: AnyObject = {};
   for (const key in data) {
-    if (data[key] && data[key] != "") {
+    if (data[key] != undefined && data[key] != "") {
       if (data[key].constructor == Array) {
-        newFormData[key] = data[key].map((item: any) => item + "").join(",");
+        newFormData[key] = data[key].map((item: any) => item).join(",");
       } else {
         newFormData[key] = data[key];
       }
