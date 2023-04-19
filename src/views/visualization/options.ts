@@ -483,8 +483,11 @@ function getLinks(arr: any) {
     let obj = {
       label: {
         show: true,
-        distance: 5,
         fontSize: 10,
+        color: '#fff',
+        formatter: function (params:any) {
+          return params.data.name
+        }
       },
       lineStyle,
       ...item

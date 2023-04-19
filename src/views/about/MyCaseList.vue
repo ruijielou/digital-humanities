@@ -44,11 +44,13 @@ const pagination = reactive<PageinationType>({
   pageSize: 10,
 });
 const getCaseData = async () => {
-  const { result } = await caseinfo.myPage(
-    `status=${tableCaseType.value}&pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
-  );
+  const { result } = await caseinfo.myPage({
+    status: tableCaseType.value,
+    pageNo: pagination.current,
+    pageSize: pagination.pageSize,
+  });
 
-  if(result){
+  if (result) {
     dataSource.value = [...result.records];
     pagination.total = result.total;
   }
@@ -60,7 +62,7 @@ const changeType = (type: CaseType) => {
   tableCaseType.value = type;
   pagination.current = 1;
   getCaseData();
-}
+};
 
 const handleTableChange = async (newpager: any) => {
   pagination.total = newpager.total;
@@ -79,7 +81,7 @@ const handleTableChange = async (newpager: any) => {
         <span
           class="text-3.5 cursor-pointer m-4 m-l-0"
           v-for="item in CaseTypeMap"
-          :style="{color: tableCaseType === item.type ? '#222' : '#999'}"
+          :style="{ color: tableCaseType === item.type ? '#222' : '#999' }"
           :class="{ 'line-title': tableCaseType === item.type }"
           @click="changeType(item.type)"
         >

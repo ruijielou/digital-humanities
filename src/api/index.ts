@@ -423,11 +423,12 @@ export const caseinfo = {
       },
     );
   },
-  myPage: (query?:string) => {
+  myPage: (data?:any) => {
     return request(
       {
-        url: `/app/user/caseinfo/myPage?${query}`,
+        url: `/app/user/caseinfo/myPage`,
         method: "get",
+        params: data
       },
     );
   },

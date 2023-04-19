@@ -95,7 +95,7 @@ watch(
   }
 );
 const getLibraryList = async () => {
-  const { result } = await caseinfo.page({
+  const { result } = await caseinfo.myPage({
     repositoryId: route.params.id,
     pageNo: pagination.current,
     pageSize: pagination.pageSize,
