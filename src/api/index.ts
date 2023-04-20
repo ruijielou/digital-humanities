@@ -378,15 +378,15 @@ export const caseApi = {
       },
     );
   },
-  findTimeReport: () => {
+  findTimeReport: (id?: string) => {
     return request(
       {
-        url: `/app/common/case/findTimeReport`,
+        url: `/app/common/case/findTimeReport?id=${id}`,
         method: "get",
       },
     );
   },
-  findCaseCharGraphDto: (id: string) => {
+  findCaseCharGraphDto: (id?: string) => {
     return request(
       {
         url: `/app/common/case/findCaseCharGraphDto?id=${id}`,
@@ -394,26 +394,26 @@ export const caseApi = {
       },
     );
   },
-  findCaseRelationCharGraphDto: () => {
+  findCaseRelationCharGraphDto: (id?: string) => {
     return request(
       {
-        url: `/app/common/case/findCaseRelationCharGraphDto`,
+        url: `/app/common/case/findCaseRelationCharGraphDto?id=${id}`,
         method: "get",
       },
     );
   },
-  findThemeCharGraph: () => {
+  findThemeCharGraph: (id?: string) => {
     return request(
       {
-        url: `/app/common/case/findThemeCharGraph`,
+        url: `/app/common/case/findThemeCharGraph?id=${id}`,
         method: "get",
       },
     );
   },
-  findCharSankey: () => {
+  findCharSankey: (id?: string) => {
     return request(
       {
-        url: `/app/common/case/findCharSankey`,
+        url: `/app/common/case/findCharSankey?id=${id}`,
         method: "get",
       },
     );

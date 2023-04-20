@@ -2,6 +2,7 @@
 import { reactive } from "vue";
 import { CaretDownOutlined } from "@ant-design/icons-vue";
 import { meta } from "@/api";
+import {isNotEmpty} from "@/utils/config"
 
 const emit = defineEmits(["reload"]);
 const optionsData = reactive<any>({
@@ -10,15 +11,20 @@ const optionsData = reactive<any>({
 });
 const getQueryOption = async () => {
   const { result } = await meta.findSearchCondition({ ids: "333,340" });
-  console.log(result);
   optionsData.result = { ...result };
 };
 getQueryOption();
 
 const changeKeys = ($event: any, filed: string) => {
-  console.log($event, filed);
   optionsData.formState[filed] = $event.key;
-  emit("reload", { ...optionsData.formState });
+  const filterParams: any = {};
+    // 过滤参数
+    Object.keys(optionsData.formState).forEach((key) => {
+      if (isNotEmpty(optionsData.formState[key])) {
+        filterParams[key] = optionsData.formState[key];
+      }
+    });
+  emit("reload", { ...filterParams });
 };
 const getName = (data: any, filed: string) => {
   const filterData = data.find(

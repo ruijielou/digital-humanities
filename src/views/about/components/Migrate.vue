@@ -1,16 +1,13 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { caseApi, repositorygroup, repository } from "@/api";
-import type { DefaultOptionType } from "ant-design-vue/lib/vc-select/Select";
 import { Modal, message } from "ant-design-vue";
-import { SearchOutlined } from "@ant-design/icons-vue";
-import { useRoute } from "vue-router";
-import router from "@/router/router";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
+const router = useRouter();
 const emit = defineEmits(["reload"]);
 const caseMoveModal = ref<boolean>(false);
-const searchInfo = ref<string>("");
 const caseIds = ref<string>("");
 const checkedFolder = ref<string>("999");
 const groupId = ref<string | number | null | undefined>("");
@@ -80,10 +77,14 @@ const submitCollection = async () => {
     message.success('迁移成功')
     emit('reload')
   }
-
   caseMoveModal.value = false;
   if(!caseIds.value) {
-    router.push({name: 'MyCaseLibraryList', params: {id: checkedFolder.value}});
+    
+    router.push({ path: '/about/myCaseLibraryList/' + checkedFolder.value});
+   
+    setTimeout(() => {
+      location.reload()
+    }, 500);
   }
 };
 defineExpose({ caseMoveModal,caseIds });

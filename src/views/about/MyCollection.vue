@@ -67,7 +67,7 @@ const cancelFavorited: any = async (id: number) => {
               params: { id: item.id, name: item.name },
             })
           "
-          style="width: 31%; height: 416px; margin: 0 20px 20px 0"
+          style="width: 31%; height: 428px; margin: 0 20px 20px 0"
           :card="item"
         />
       </div>

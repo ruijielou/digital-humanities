@@ -10,8 +10,7 @@ import {
 } from "@ant-design/icons-vue";
 import { caseinfo } from "@/api";
 import { useRouter, useRoute } from "vue-router";
-import QueryFiled from "@/components/QueryFiled.vue"
-
+import QueryFiled from "@/components/QueryFiled.vue";
 
 const loading = ref<boolean>(false);
 
@@ -50,17 +49,20 @@ const pagination = reactive<PageinationType>({
   column: "name",
   order: "asc",
 });
-const queryParams = reactive<any>({data: {}})
-const getCaseData = async (params?:any) => {
-  if(params) {
-    queryParams.data = {...params}
+const queryParams = reactive<any>({ data: {} });
+const getCaseData = async (params?: any) => {
+  if (params) {
+    queryParams.data = { ...params };
   }
   let submitData: any = { ...search_condition_params.value };
   submitData.pageNo = pagination.current;
   submitData.pageSize = pagination.pageSize;
   submitData.column = pagination.column;
   submitData.order = pagination.order;
-  const { result } = await caseinfo.page({...submitData, ...queryParams.data });
+  const { result } = await caseinfo.page({
+    ...submitData,
+    ...queryParams.data,
+  });
 
   result && (dataSource.value = [...result.records]);
   pagination.total = result.total;
@@ -73,12 +75,11 @@ const handleTableChange = async (newpager: any) => {
   getCaseData();
 };
 
-
 const enterSearch = async (param: any) => {
   const formState: any = route.query?.s;
+
   if (formState) {
     const params = Object.fromEntries(new URLSearchParams(formState));
-
     search_condition_params.value = {
       ...params,
       ...param,

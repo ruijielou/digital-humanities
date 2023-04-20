@@ -18,7 +18,7 @@ import { caseApi, comment, favorite, meta } from "@/api";
 import { message } from "ant-design-vue";
 import { useUserStore } from "@/store/user";
 import StepTwo from "../contribute/StepTwo.vue";
-import {formatterFormInput} from "../contribute/utils";
+import { formatterFormInput } from "../contribute/utils";
 import { imgBaseUrl, formatterFormData } from "@/utils/config";
 import { convert_case_data } from "@/utils/case_meta_util";
 import Knowledge from "./Knowledge.vue";
@@ -115,9 +115,9 @@ const getTwoFormInput = async () => {
     let case_data_info = { ...formResult.result };
     //方法未对表单的值进行全部初始化，暂时不用
     // case_data_info = convert_case_data(case_data_info, result);
-  
-    const { formModal } = formatterFormInput({result},case_data_info);
-    stepTwoData.formModal = {...formModal};
+
+    const { formModal } = formatterFormInput({ result }, case_data_info);
+    stepTwoData.formModal = { ...formModal };
     stepTwoData.data = [...result];
     loading.value = false;
     repositoryList.value = formResult.result?.repositoryList;
@@ -206,26 +206,22 @@ const goBack = () => {
           <a-button
             @click="favorited(LikeStatus.Like, formModel.caseinfo.isLike)"
           >
-            <heart-outlined
-              v-if="formModel.caseinfo.isLike == BooleanStatus.False"
-            />
             <HeartFilled
               style="color: #f243d9"
               v-if="formModel.caseinfo.isLike == BooleanStatus.True"
             />
+            <heart-outlined v-else />
             喜欢
           </a-button>
           <a-button
             class="m-l-4"
             @click="starFavorited(formModel.caseinfo.isFavorite)"
           >
-            <star-outlined
-              v-if="formModel.caseinfo.isFavorite === BooleanStatus.False"
-            />
             <star-filled
               style="color: #5b3df2"
               v-if="formModel.caseinfo.isFavorite === BooleanStatus.True"
             />
+            <star-outlined v-else />
             收藏
           </a-button>
         </div>

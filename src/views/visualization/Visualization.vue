@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, shallowRef } from "vue";
+import { ref, onMounted, onUnmounted, shallowRef, watch } from "vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 import Distribution from "../../components/icons/Distribution.vue";
 import Theme from "../../components/icons/Theme.vue";
@@ -12,7 +12,7 @@ import { getOption } from "./options";
 import { componentMap } from "./type";
 import { seriesData } from "./mock";
 import { caseLocation, caseApi } from "@/api";
-import { useRouter } from "vue-router"
+import { useRoute, useRouter } from "vue-router";
 
 interface ChartTypeMap {
   key: componentMap;
@@ -20,6 +20,7 @@ interface ChartTypeMap {
   id: number;
 }
 
+const route = useRoute();
 const router = useRouter();
 const currentType = ref<componentMap>(componentMap.Distribution);
 const chartType = ref<ChartTypeMap[]>([
@@ -54,7 +55,7 @@ const chartType = ref<ChartTypeMap[]>([
     id: 5,
   },
 ]);
-const searchInfo = ref<string>('');
+const searchInfo = ref<string>("");
 
 const toggleChartType = (type: componentMap) => {
   if (type === currentType.value) return;
@@ -74,38 +75,39 @@ const toggleChartType = (type: componentMap) => {
 };
 
 const spinning = ref<boolean>(false); //加载中的样式
+const currentId = ref<string>(""); //选中了哪个ID
 const myChart = ref<any>(null);
 const chartInit = shallowRef<any>(null);
 /* 案例列表 */
 const case_location_list = ref<any>([]);
 
 const initChart = async (type: componentMap) => {
-  let resultData:any = null;
-  if(type === componentMap.Distribution) {
+  let resultData: any = null;
+  const id: string = currentId.value;
+  if (type === componentMap.Distribution) {
     const { result } = await caseLocation.list();
+    resultData = id ? result.filter((a:any) => a.id == id) : [...result];
+  } else if (type === componentMap.Time) {
+    const { result } = await caseApi.findTimeReport(id);
     resultData = [...result];
-  }else if(type === componentMap.Time) {
-    const { result } = await caseApi.findTimeReport();
-    resultData = [...result];
-  }else if(type === componentMap.Knowledge) {
-    const { result } = await caseApi.findCaseRelationCharGraphDto();
+  } else if (type === componentMap.Knowledge) {
+    const { result } = await caseApi.findCaseRelationCharGraphDto(id);
     resultData = result;
-  }else if(type === componentMap.Theme) {
-    const { result } = await caseApi.findThemeCharGraph();
+  } else if (type === componentMap.Theme) {
+    const { result } = await caseApi.findThemeCharGraph(id);
     let kes = [];
-    let i ;
-    for(i in result){
+    let i;
+    for (i in result) {
       kes.push([i, result[i]]);
     }
     resultData = kes;
-  }else if(type === componentMap.Cooperate) {
-    const { result } = await caseApi.findCharSankey();
+  } else if (type === componentMap.Cooperate) {
+    const { result } = await caseApi.findCharSankey(id);
     resultData = result;
-    console.log('resultData:', resultData);
   }
   //其他图形在这儿添加else if
   else {
-    resultData = seriesData[type]
+    resultData = seriesData[type];
   }
   const options: any = getOption(type, resultData);
   if (!options) return;
@@ -125,22 +127,17 @@ const initChart = async (type: componentMap) => {
   });
 };
 
-const changeView = (id: number) => {
-  // 请求数据
-  // 刷新页面资源
-  // 暂时用loading状态，后期切换数据即可
-  // if (activeRightId.value === id) return;
-  // activeRightId.value = id;
-  // spinning.value = true;
-  // //TODO 增加显示的逻辑
-  // setTimeout(() => {
-  //   initChart(currentType.value);
-  //   spinning.value = false;
-  // }, 3000);
-  // router.push({ name: 'CaseDetail', params: { id } })
-  window.open('/#/casedetail/' + id, '_blank')
+const changeView = (id: string) => {
+  currentId.value = currentId.value == id ? '' : id;
 };
-
+watch(
+  currentId,
+  (val) => {
+    chartInit.value && chartInit.value.dispose();
+    initChart(currentType.value);
+  },
+  { immediate: true } // 如果要立即执行一次，请添加此选项
+);
 onMounted(() => {
   initChart(currentType.value);
 });
@@ -149,7 +146,7 @@ onUnmounted(() => {
 });
 
 const load_case_location = async () => {
-  const { result } = await caseLocation.list({nameFuzzy: searchInfo.value});
+  const { result } = await caseLocation.list({ nameFuzzy: searchInfo.value });
   case_location_list.value = result;
 };
 load_case_location();
@@ -175,15 +172,22 @@ load_case_location();
       </div>
       <div class="right-slider w-300px">
         <div class="border-bottom-search">
-          <a-input @keyup.enter.native = "load_case_location()" style="border-color: #fff; color: #fff" v-model:value="searchInfo">
+          <a-input
+            @keyup.enter.native="load_case_location()"
+            style="border-color: #fff; color: #fff"
+            v-model:value="searchInfo"
+          >
             <template #suffix>
-              <SearchOutlined style="color: #fff;cursor: pointer;"  @click="load_case_location()"/>
+              <SearchOutlined
+                style="color: #fff; cursor: pointer"
+                @click="load_case_location()"
+              />
             </template>
           </a-input>
         </div>
         <div class="library-list">
-          <!-- :class="{ active: activeRightId === i }" -->
           <div
+            :class="{ active: currentId == case_location.id }"
             class="library-item flex flex-col"
             v-for="(case_location, i) in case_location_list"
             @click="changeView(case_location.id)"

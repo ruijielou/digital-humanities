@@ -34,11 +34,11 @@ const props = withDefaults(
           shape="circle"
           :size="24"
           class="m-r-2"
-          :title="person.name"
-          v-for="person in card.userAvatarList"
+          :title="photo"
+          v-for="photo in card.userAvatarList"
         >
           <template #icon>
-            <img v-if="person.photo" :src="imgBaseUrl + person.photo" alt="" />
+            <img v-if="photo" :src="imgBaseUrl + photo" alt="" />
             <UserOutlined v-else />
           </template>
         </a-avatar>

@@ -43,7 +43,7 @@ export default [
     component: () => import("../views/caseSpectrum/CaseSpectrum.vue"),
   },
   {
-    path: "/visualization",
+    path: "/visualization/:id?",
     name: "Visualization",
     component: () => import("../views/visualization/Visualization.vue"),
   },

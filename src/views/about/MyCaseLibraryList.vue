@@ -138,6 +138,7 @@ const removeMore = (type: string) => {
 const repository_info = reactive<any>({
   info: {},
 });
+
 const getRepositoryDetail = async () => {
   const { result } = await repository.queryById(route.params.id);
   if (result) {

@@ -17,7 +17,7 @@ export function createRouterGuards(router: any, whiteNameList: string[]) {
      */
     if (!token && (to.path.includes('/about') || to.name === 'Contribute')) {
       userStore.openLogin();
-      next({ name: 'home', replace: true });
+      next(false);
     } else {
       if (token) {
         const [err] = await _to(userStore.afterLogin());
@@ -31,13 +31,13 @@ export function createRouterGuards(router: any, whiteNameList: string[]) {
   });
 
   router.afterEach((to: any, from: any, failure: any) => {
-    if (isNavigationFailure(failure)) {
-      console.error('failed navigation', failure);
-    }
+    // if (isNavigationFailure(failure)) {
+    //   console.error('failed navigation', failure);
+    // }
     NProgress.done();
   });
 
-  router.onError((error: Error) => {
-    console.log(error, '路由错误');
-  });
+  // router.onError((error: Error) => {
+  //   console.log(error, '路由错误');
+  // });
 }
