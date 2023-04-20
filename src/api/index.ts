@@ -79,6 +79,14 @@ export const repository = {
       },
     );
   },
+  myList: () => {
+    return request(
+      {
+        url: `/app/user/repository/myList`,
+        method: "get",
+      },
+    );
+  },
   page: (query: string) => {
     return request(
       {

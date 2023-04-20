@@ -184,19 +184,19 @@ defineExpose({ formState, formValidate });
               >
                 <a-textarea
                   v-if="col.dataType === 2"
-                  placeholder="请输入"
+                  :placeholder="col.placeholder ||('请输入 ' + col.name)"
                   v-model:value="formState.caseData[`form_${col.id}`]"
                   :rows="4"
                 />
                 <a-date-picker
-                  placeholder="请选择"
+                  :placeholder="col.placeholder ||('请选择 ' + col.name)"
                   class="w-100%"
                   v-else-if="col.dataType === 3"
                   v-model:value="formState.caseData[`${col.filed}`]"
                   value-format="YYYY-MM-DD"
                 />
                 <a-input-number
-                  placeholder="请输入"
+                  :placeholder="col.placeholder ||('请输入 ' + col.name)"
                   v-else-if="col.dataType === 4"
                   v-model:value="formState.caseData[`${col.filed}`]"
                 />
@@ -223,7 +223,7 @@ defineExpose({ formState, formValidate });
                 </a-checkbox-group>
                 <a-select
                   ref="select"
-                  placeholder="请选择"
+                  :placeholder="col.placeholder ||('请选择 ' + col.name)"
                   v-else-if="col.dataType === 7 || col.dataType === 14"
                   class="w-100%"
                   v-model:value="formState.caseData[`${col.filed}`]"
@@ -235,7 +235,7 @@ defineExpose({ formState, formValidate });
                   >
                 </a-select>
                 <a-select
-                  placeholder="选择或输入"
+                  :placeholder="col.placeholder ||('选择或输入 ' + col.name)"
                   v-else-if="col.dataType === 13"
                   :showSearch="true"
                   v-model:value="formState.caseData[`${col.filed}`]"
@@ -248,7 +248,7 @@ defineExpose({ formState, formValidate });
                   }}</a-select-option>
                 </a-select>
                 <a-select
-                  placeholder="选择或输入"
+                  :placeholder="col.placeholder ||('选择或输入 ' + col.name)"
                   v-else-if="col.dataType === 15"
                   :showSearch="true"
                   v-model:value="formState.caseData[`${col.filed}`]"
@@ -336,7 +336,7 @@ defineExpose({ formState, formValidate });
                 </template>
                 <a-input
                   v-else
-                  placeholder="请输入"
+                  :placeholder="col.placeholder ||('请输入 ' + col.name)"
                   v-model:value="formState.caseData[`${col.filed}`]"
                 />
               </a-form-item>
@@ -378,7 +378,7 @@ defineExpose({ formState, formValidate });
                     ref="select"
                     class="w-100%"
                     mode="tags"
-                    :placeholder="item.name"
+                    :placeholder="'请选择 ' + col.name"
                     :max-tag-count="1"
                     v-model:value="formState.caseData[`${col.filed}`]"
                   >
@@ -406,19 +406,19 @@ defineExpose({ formState, formValidate });
               >
                 <a-textarea
                   v-if="col.dataType === 2"
-                  placeholder="请输入"
+                  :placeholder="col.placeholder ||('请输入 ' + col.name)"
                   v-model:value="formState.caseData[`form_${col.id}`]"
                   :rows="4"
                 />
                 <a-date-picker
                   class="w-100%"
-                  placeholder="请选择"
+                  :placeholder="col.placeholder ||('请选择 ' + col.name)"
                   v-else-if="col.dataType === 3"
                   v-model:value="formState.caseData[`${col.filed}`]"
                   value-format="YYYY-MM-DD"
                 />
                 <a-input-number
-                  placeholder="请输入"
+                  :placeholder="col.placeholder ||('请输入 ' + col.name)"
                   v-else-if="col.dataType === 4"
                   v-model:value="formState.caseData[`${col.filed}`]"
                 />
@@ -448,7 +448,7 @@ defineExpose({ formState, formValidate });
                 </a-checkbox-group>
                 <a-select
                   ref="select"
-                  placeholder="请选择"
+                  :placeholder="col.placeholder ||('请选择 ' + col.name)"
                   v-else-if="col.dataType === 7 || col.dataType === 14"
                   class="w-100%"
                   v-model:value="formState.caseData[`${col.filed}`]"
@@ -534,7 +534,7 @@ defineExpose({ formState, formValidate });
                   </template>
                 </template>
                 <a-select
-                  placeholder="选择或输入"
+                  :placeholder="col.placeholder ||('选择或输入 ' + col.name)"
                   v-else-if="col.dataType === 13"
                   :showSearch="true"
                   v-model:value="formState.caseData[`${col.filed}`]"
@@ -547,7 +547,7 @@ defineExpose({ formState, formValidate });
                   }}</a-select-option>
                 </a-select>
                 <a-select
-                  placeholder="选择或输入"
+                  :placeholder="col.placeholder ||('选择或输入 ' + col.name)"
                   v-else-if="col.dataType === 15"
                   :showSearch="true"
                   v-model:value="formState.caseData[`${col.filed}`]"
@@ -562,7 +562,7 @@ defineExpose({ formState, formValidate });
 
                 <a-input
                   v-else
-                  placeholder="请输入"
+                  :placeholder="col.placeholder ||('请输入 ' + col.name)"
                   v-model:value="formState.caseData[`${col.filed}`]"
                 />
               </a-form-item>

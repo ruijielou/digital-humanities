@@ -28,12 +28,16 @@ const getRepositoryGroup = async () => {
   const { result } = await repositorygroup.findList();
   if (result) {
     repositoryGroup.value = [...result];
-    repositoryList.value = result.reduce((prev: any, cur: any) => {
-      return cur.repositoryList ? [...prev, ...cur.repositoryList] : [...prev];
-    }, []);
   }
+  load_repository_list();
 };
 
+const load_repository_list = async () => {
+  const { result } = await repository.myList();
+  if (result) {
+    repositoryList.value = result;
+  }
+}
 getRepositoryGroup();
 
 const createGroup = async () => {
@@ -53,7 +57,7 @@ const createGroup = async () => {
   }
 
   const res = await repository.insert({
-    authType: isOpen.value ? 1 : 3,
+    authType: isOpen.value ? 1 : 2,
     name: repositoryName.value,
     groupId: groupId.value,
     description: "",
