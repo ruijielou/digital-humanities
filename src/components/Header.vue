@@ -31,6 +31,13 @@ const openToContribute = () => {
     router.push({ name: "Contribute" });
   }
 };
+const gotoMessage = () => {
+  if (!Storage.get(TOKEN_KEY)) {
+    userStore.openLogin();
+  } else {
+    router.push({ name: "Messages" });
+  }
+};
 
 const openLoginModal = () => {
   if (!Storage.get(TOKEN_KEY)) {
@@ -40,6 +47,7 @@ const openLoginModal = () => {
     router.push({ name: "SubmissionManage" });
   }
 };
+
 watch(
   () => userStore.isOpenLogin,
   (val) => {
@@ -73,12 +81,9 @@ const goPages = (name: string) => {
       <span @click="openToContribute" class="m-l-4">
         <IconLogin class="cursor-pointer" />
       </span>
-      <span class="m-l-4" @click="router.push({ name: 'Messages' })">
+      <span class="m-l-4" @click="gotoMessage">
         <IconMessage class="cursor-pointer" />
       </span>
-      <!-- <span v-if="userStore.userInfo?.avatar">
-       
-      </span> -->
       <span
         class="m-l-4 cursor-pointer"
         @click="openLoginModal"
