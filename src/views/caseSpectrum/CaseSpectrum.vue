@@ -92,6 +92,7 @@ getCaseData();
                   class="m-r-2 m-t-2"
                   v-for="k in lab_group.opts"
                   :color="'#' + k.colorValue"
+                  v-show="lab_group.id != 22"
                 >
                   <a-checkbox class="c-#fff" :value="`${lab_group.id}_${k.id}`">
                     {{ k.title }}</a-checkbox

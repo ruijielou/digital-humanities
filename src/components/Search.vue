@@ -83,7 +83,7 @@ router.push({name: 'MoreLibrary', params: {id} });
       <double-right-outlined />
     </span>
   </div>
-  <div class="content-text-wrapper flex justify-center p-4" v-if='repository_suggest_list.length'>
+  <div class="content-text-wrapper flex justify-center p-4" v-if='repository_suggest_list && repository_suggest_list.length'>
     <div class="text-wrapper flex-col" v-for="suggest_item in repository_suggest_list">
       <span class="text cursor-pointer" @click="openRepository(suggest_item.id)">{{suggest_item.name}}</span>
     </div>

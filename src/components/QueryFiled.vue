@@ -43,7 +43,7 @@ const getName = (data: any, filed: string) => {
       <a-menu @click="changeKeys($event, item.filed)">
         <a-menu-item key=""> 清除 </a-menu-item>
         <a-menu-divider />
-        <a-menu-item v-for="opt in item.optList" :key="opt.value">
+        <a-menu-item v-for="opt in item.optList" :key="opt.text">
           {{ opt.text }}
         </a-menu-item>
       </a-menu>

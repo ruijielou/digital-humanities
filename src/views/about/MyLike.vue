@@ -106,7 +106,7 @@ const cancelFavorited = async (id: string) => {
           <div
             class="c-#5b3df2 cursor-pointer"
             @click="
-              $router.push({ name: 'CaseDetail', params: { id: record.id } })
+              $router.push({ name: 'CaseDetail', params: { id: record.caseId } })
             "
             v-if="column.dataIndex === 'caseName'"
           >

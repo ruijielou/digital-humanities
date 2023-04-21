@@ -13,14 +13,16 @@ const getPage = async () => {
   spinning.value = true;
   const { result } = await repository.findRepositoryGroupIndex();
   if (result) {
-    const firstCase = result.find((item:any) => item.title === "特选案例") || {};
-    if (firstCase) {
-      firstCase.isFirst = true;
-    }
-    cardData.value = [
-      { ...firstCase },
-      ...result.filter((item:any) => item.title !== "特选案例"),
-    ];
+    // 服务端做处理
+    // const firstCase = result.find((item:any) => item.title === "特选案例") || {};
+    // if (firstCase) {
+    //   firstCase.isFirst = true;
+    // }
+    // cardData.value = [
+    //   { ...firstCase },
+    //   ...result.filter((item:any) => item.title !== "特选案例"),
+    // ];
+    cardData.value = result;
   }
   spinning.value = false;
 };
@@ -58,12 +60,7 @@ onMounted(() => {
           <Card
             class="flex-3"
             v-if="item.repositoryList[0]"
-            @click="
-              $router.push({
-                name: 'MoreLibrary',
-                params: { id: item.repositoryList[0].id },
-              })
-            "
+            @click="$router.push({ name: 'CaseDetail', params: { id: item.repositoryList[0].id } })"
             :no-show-number="true"
             :card="{ ...item.repositoryList[0], code: 1 }"
           />
@@ -72,12 +69,7 @@ onMounted(() => {
               <Card
                 class="flex-1"
                 v-if="cardIndex != 0"
-                @click="
-                  $router.push({
-                    name: 'MoreLibrary',
-                    params: { id: card.id },
-                  })
-                "
+                @click="$router.push({ name: 'CaseDetail', params: { id: card.id } })"
                 :hoverCard="true"
                 :no-show-number="true"
                 :card="{ ...card, code: cardIndex + 1 }"
@@ -93,12 +85,7 @@ onMounted(() => {
                 v-for="(card, cardIndex) in item.repositoryList"
               >
                 <Card
-                  @click="
-                    $router.push({
-                      name: 'MoreLibrary',
-                      params: { id: card.id },
-                    })
-                  "
+                  @click="$router.push({ name: 'CaseDetail', params: { id: card.caseId } })"
                   style="width: 25vw; height: 55vh"
                   :card="card"
                 />
