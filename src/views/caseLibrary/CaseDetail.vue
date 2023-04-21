@@ -45,6 +45,7 @@ const formModel = reactive<any>({
   labList: [],
   technologyList: [],
   assPorject: [],
+  relateList: []
 });
 
 const changeCurrentKey = (key: number) => {
@@ -349,7 +350,11 @@ const goBack = () => {
                 class="p-4 bg-#f7f7f7"
               >
                 <template v-for="(item, k) in formModel.relateList">
-                  <p>{{ k + 1 }}. {{ item.text }}</p>
+                  <span v-for="(text, index) in item.textList">
+                    <a target="_blank" :href="`/#/casedetail/${text.split('_')[1]}`"> 
+                      {{ `${text.split('_')[0]}${index < item.textList.length - 1?'，': ''}` }} 
+                    </a>
+                  </span>
                 </template>
               </div>
             </div>

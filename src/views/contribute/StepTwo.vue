@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch } from "vue";
+import { ref, reactive, onMounted, watch, nextTick } from "vue";
 import { message } from "ant-design-vue";
 import { imgBaseUrl } from "@/utils/config";
 import {
@@ -15,7 +15,9 @@ const props = defineProps<{
   formModal?: any;
   formData: any;
 }>();
-
+const inputRef = ref<any>(null); //自定义标签的输入框
+const inputVisible = ref<boolean>(false);
+const inputValue = ref<string>("");
 const fileList = ref<any>([]);
 const formRef = ref<any>(null);
 const loading = ref<boolean>(false);
@@ -39,11 +41,11 @@ const initForm = () => {
 
 const formValidate = async () => {
   try {
-    return await formRef.value.validate();
+    return (await formRef.value.validate()) && formState;
   } catch (error) {
     message.warning("请检查表单的完整性");
   }
-}
+};
 /**
  * 上传图片
  */
@@ -68,6 +70,7 @@ const changeFile = (info: any, key: any) => {
   }
 };
 
+/**上传文件 */
 const customRequest = async () => {
   const formData: any = new FormData();
   formData.append("biz", "temp");
@@ -89,6 +92,23 @@ const deleteItemFile = (src: string, key: string) => {
   formState.caseData[key] = [
     ...formState.caseData[key].filter((item: any) => item != src),
   ];
+};
+const showInput = () => {
+  inputVisible.value = true;
+  nextTick(() => {
+    inputRef.value.focus();
+  });
+};
+// 自定义标签
+const handleInputConfirm = (key: string) => {
+  const tags = [...formState.caseData[key]];
+  if (inputValue.value && tags.indexOf(inputValue.value) === -1) {
+    formState.caseData[key] = [...tags, inputValue.value];
+  }
+  console.log(tags);
+
+  inputVisible.value = false;
+  inputValue.value = "";
 };
 
 watch(
@@ -184,19 +204,19 @@ defineExpose({ formState, formValidate });
               >
                 <a-textarea
                   v-if="col.dataType === 2"
-                  :placeholder="col.placeholder ||('请输入 ' + col.name)"
+                  :placeholder="col.placeholder || '请输入 ' + col.name"
                   v-model:value="formState.caseData[`form_${col.id}`]"
                   :rows="4"
                 />
                 <a-date-picker
-                  :placeholder="col.placeholder ||('请选择 ' + col.name)"
+                  :placeholder="col.placeholder || '请选择 ' + col.name"
                   class="w-100%"
                   v-else-if="col.dataType === 3"
                   v-model:value="formState.caseData[`${col.filed}`]"
                   value-format="YYYY-MM-DD"
                 />
                 <a-input-number
-                  :placeholder="col.placeholder ||('请输入 ' + col.name)"
+                  :placeholder="col.placeholder || '请输入 ' + col.name"
                   v-else-if="col.dataType === 4"
                   v-model:value="formState.caseData[`${col.filed}`]"
                 />
@@ -223,8 +243,8 @@ defineExpose({ formState, formValidate });
                 </a-checkbox-group>
                 <a-select
                   ref="select"
-                  :placeholder="col.placeholder ||('请选择 ' + col.name)"
-                  v-else-if="col.dataType === 7 || col.dataType === 14"
+                  :placeholder="col.placeholder || '请选择 ' + col.name"
+                  v-else-if="col.dataType === 7"
                   class="w-100%"
                   v-model:value="formState.caseData[`${col.filed}`]"
                 >
@@ -235,7 +255,7 @@ defineExpose({ formState, formValidate });
                   >
                 </a-select>
                 <a-select
-                  :placeholder="col.placeholder ||('选择或输入 ' + col.name)"
+                  :placeholder="col.placeholder || '选择或输入 ' + col.name"
                   v-else-if="col.dataType === 13"
                   :showSearch="true"
                   v-model:value="formState.caseData[`${col.filed}`]"
@@ -248,17 +268,19 @@ defineExpose({ formState, formValidate });
                   }}</a-select-option>
                 </a-select>
                 <a-select
-                  :placeholder="col.placeholder ||('选择或输入 ' + col.name)"
-                  v-else-if="col.dataType === 15"
+                  :placeholder="col.placeholder"
+                  v-else-if="col.dataType === 15 || col.dataType === 14"
                   :showSearch="true"
                   v-model:value="formState.caseData[`${col.filed}`]"
                   mode="multiple"
                   style="width: 100%"
                   :token-separators="[',']"
                 >
-                  <a-select-option v-for="o in col.optList" :value="o.value">{{
-                    o.text
-                  }}</a-select-option>
+                  <a-select-option
+                    v-for="o in col.optList"
+                    :value="o.value + ''"
+                    >{{ o.text }}</a-select-option
+                  >
                 </a-select>
                 <template v-else-if="col.dataType === 9">
                   <template v-if="formState.caseData[`${col.filed}`]?.length">
@@ -336,7 +358,7 @@ defineExpose({ formState, formValidate });
                 </template>
                 <a-input
                   v-else
-                  :placeholder="col.placeholder ||('请输入 ' + col.name)"
+                  :placeholder="col.placeholder || '请输入 ' + col.name"
                   v-model:value="formState.caseData[`${col.filed}`]"
                 />
               </a-form-item>
@@ -406,19 +428,19 @@ defineExpose({ formState, formValidate });
               >
                 <a-textarea
                   v-if="col.dataType === 2"
-                  :placeholder="col.placeholder ||('请输入 ' + col.name)"
+                  :placeholder="col.placeholder || '请输入 ' + col.name"
                   v-model:value="formState.caseData[`form_${col.id}`]"
                   :rows="4"
                 />
                 <a-date-picker
                   class="w-100%"
-                  :placeholder="col.placeholder ||('请选择 ' + col.name)"
+                  :placeholder="col.placeholder || '请选择 ' + col.name"
                   v-else-if="col.dataType === 3"
                   v-model:value="formState.caseData[`${col.filed}`]"
                   value-format="YYYY-MM-DD"
                 />
                 <a-input-number
-                  :placeholder="col.placeholder ||('请输入 ' + col.name)"
+                  :placeholder="col.placeholder || '请输入 ' + col.name"
                   v-else-if="col.dataType === 4"
                   v-model:value="formState.caseData[`${col.filed}`]"
                 />
@@ -448,8 +470,8 @@ defineExpose({ formState, formValidate });
                 </a-checkbox-group>
                 <a-select
                   ref="select"
-                  :placeholder="col.placeholder ||('请选择 ' + col.name)"
-                  v-else-if="col.dataType === 7 || col.dataType === 14"
+                  :placeholder="col.placeholder || '请选择 ' + col.name"
+                  v-else-if="col.dataType === 7"
                   class="w-100%"
                   v-model:value="formState.caseData[`${col.filed}`]"
                 >
@@ -534,7 +556,7 @@ defineExpose({ formState, formValidate });
                   </template>
                 </template>
                 <a-select
-                  :placeholder="col.placeholder ||('选择或输入 ' + col.name)"
+                  :placeholder="col.placeholder || '选择或输入 ' + col.name"
                   v-else-if="col.dataType === 13"
                   :showSearch="true"
                   v-model:value="formState.caseData[`${col.filed}`]"
@@ -547,25 +569,69 @@ defineExpose({ formState, formValidate });
                   }}</a-select-option>
                 </a-select>
                 <a-select
-                  :placeholder="col.placeholder ||('选择或输入 ' + col.name)"
-                  v-else-if="col.dataType === 15"
+                  :placeholder="col.placeholder"
+                  v-else-if="col.dataType === 15 || col.dataType === 14"
                   :showSearch="true"
                   v-model:value="formState.caseData[`${col.filed}`]"
                   mode="multiple"
                   style="width: 100%"
                   :token-separators="[',']"
                 >
-                  <a-select-option v-for="o in col.optList" :value="o.value">{{
-                    o.text
-                  }}</a-select-option>
+                  <a-select-option
+                    v-for="o in col.optList"
+                    :value="o.value + ''"
+                    >{{ o.text }}</a-select-option
+                  >
                 </a-select>
 
                 <a-input
                   v-else
-                  :placeholder="col.placeholder ||('请输入 ' + col.name)"
+                  :placeholder="col.placeholder || '请输入 ' + col.name"
                   v-model:value="formState.caseData[`${col.filed}`]"
                 />
               </a-form-item>
+            </template>
+            <template v-if="item.name === '标签'">
+              <template
+                v-for="(tag, index) in formState.caseData.customTag"
+                :key="tag"
+              >
+                <a-tooltip v-if="tag.length > 20" :title="tag">
+                  <a-tag
+                    class="w-30% h-32px lh-32px p-r-4 m-r-3% m-b-5 truncate"
+                    :closable="true"
+                    @close="deleteItemFile(tag, 'customTag')"
+                  >
+                    {{ `${tag.slice(0, 20)}...` }}
+                  </a-tag>
+                </a-tooltip>
+                <a-tag
+                  v-else
+                  class="w-30% h-32px lh-32px m-r-3% m-b-5 truncate"
+                  :closable="true"
+                  @close="deleteItemFile(tag, 'customTag')"
+                >
+                  {{ tag }}
+                </a-tag>
+              </template>
+              <span v-if="inputVisible" class="w-30% inline-block h-32px lh-32px m-r-3% m-b-5 truncate">
+                <a-input
+                  ref="inputRef"
+                  v-model:value="inputValue"
+                  type="text"
+                  @blur="handleInputConfirm('customTag')"
+                  @keyup.enter="handleInputConfirm('customTag')"
+                />
+              </span>
+              <a-tag
+                class="w-30% h-32px lh-32px m-r-3% m-b-5 truncate"
+                v-if="!inputVisible"
+                style="background: #fff; border-style: dashed"
+                @click="showInput"
+              >
+                <plus-outlined />
+                自定义标签
+              </a-tag>
             </template>
           </div>
         </template>
