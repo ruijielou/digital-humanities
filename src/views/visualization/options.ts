@@ -158,7 +158,22 @@ const convertData = function (data: any) {
   for (const item of data) {
     let location: { [key: string]: string } = {};
     try {
-      location = item.cityLocation && JSON.parse(item.cityLocation);
+      // debugger
+      const locations = item.cityLocation && JSON.parse(item.cityLocation);
+      if(locations){
+        let loc;
+        for(loc in locations){
+
+          if (res[loc]) {
+            res[loc].value[2] += 1;
+          } else {
+            res[loc] = {
+              name: item.city,
+              value: [locations[loc][1], locations[loc][0], 1]
+            }
+          }
+        }
+      }
     } catch (error) {
       console.log(item, '解析失败' + error);
     }

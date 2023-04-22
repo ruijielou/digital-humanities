@@ -3,6 +3,8 @@ import { nextTick, reactive, ref } from "vue";
 import { Colors } from "../../utils/type";
 import { BooleanStatus, LikeStatus } from "@/utils/type";
 import CollectionModal from "@/components/CollectionGroup.vue";
+import { Base64 } from 'js-base64';
+
 import {
   ArrowLeftOutlined,
   HeartFilled,
@@ -18,8 +20,8 @@ import { message } from "ant-design-vue";
 import { useUserStore } from "@/store/user";
 import StepTwo from "../contribute/StepTwo.vue";
 import { formatterFormInput } from "../contribute/utils";
-import { imgBaseUrl, formatterFormData } from "@/utils/config";
-// import { convert_case_data } from "@/utils/case_meta_util";
+import { imgBaseUrl, formatterFormData, format_file_url } from "@/utils/config";
+import { convert_case_data } from "@/utils/case_meta_util";
 import Knowledge from "./Knowledge.vue";
 import CaseComment from "./CaseComment.vue";
 
@@ -156,7 +158,7 @@ const goBack = () => {
 };
 const to_new_page = (url:string) => {
   console.log('url:', url);
-  if(!url.startsWith('htpp://')){
+  if(!url.startsWith('http')){
     url = 'http://' + url;
   }
   window.open(url);
@@ -280,14 +282,7 @@ const to_new_page = (url:string) => {
                     </div>
                     <div v-else-if="col.dataType === 17">
                       <div class="m-r-2" v-for="file in col.text.split(',')">
-                        <a
-                          target="_blank"
-                          rel="noopener"
-                          class="ant-upload-list-item-name w-80% overflow-hidden"
-                          :title="file"
-                          :href="imgBaseUrl + file"
-                          >{{ file }}</a
-                        >
+                        <a target="_blank" rel="noopener" class="ant-upload-list-item-name w-80% overflow-hidden" :title="file" :href="format_file_url(file)"        >{{ file }}</a>
                       </div>
                     </div>
                     <span v-else>{{ col.text }}</span>

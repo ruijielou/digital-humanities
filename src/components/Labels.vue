@@ -57,7 +57,7 @@ load_lab_group();
 
 <template>
   <div class="labels flex">
-    <div class="label-category flex flex-col p-l-3 p-r-3" v-for="group in lab_group_list">
+    <div class="label-category flex flex-col p-l-3 p-r-3" v-show="group.id != 22 && group.opts && group.opts.length > 0" v-for="group in lab_group_list">
       <span class="label-category-item text-center">
         {{ group.title }}
       </span>

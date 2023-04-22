@@ -1,3 +1,5 @@
+import { Base64 } from "js-base64";
+
 const storage = localStorage; //存在本地
 
 type AnyObject<T = any> = {
@@ -109,6 +111,20 @@ export const formatterFormData = (data: AnyObject) => {
 };
 // 【所有文件上传地址 回显 增加前缀  
 export const imgBaseUrl = '/app/common/static/'
+
+
+export const viewUrl =  import.meta.env.VITE_GLOB_ONLINE_VIEW_URL;
+export const visitUrl =  import.meta.env.VITE_VISIT_DOMAIN_URL;
+export const format_file_url = (file:string) => {
+  let file_privew_doamin = viewUrl + '?url=';
+  let f = visitUrl + imgBaseUrl + file;
+  console.log('local:', f)
+  let code = Base64.encode(f)
+  let new_url = file_privew_doamin + code;
+  console.log('prview:', new_url);
+  return new_url;
+}
+
 // https://www.tapd.cn/44529296/bugtrace/bugs/view/1144529296001000140'
 
 export const isNotEmpty = (value: number | string | null | undefined): boolean => {

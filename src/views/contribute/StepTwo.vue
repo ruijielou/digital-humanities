@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch, nextTick } from "vue";
 import { message } from "ant-design-vue";
-import { imgBaseUrl } from "@/utils/config";
+import { imgBaseUrl,format_file_url } from "@/utils/config";
 import {
   LoadingOutlined,
   PlusOutlined,
@@ -323,7 +323,7 @@ defineExpose({ formState, formValidate });
                         rel="noopener"
                         class="ant-upload-list-item-name w-80% overflow-hidden"
                         :title="imgItem"
-                        :href="imgBaseUrl + imgItem"
+                        :href="format_file_url(imgItem)"
                         >{{ imgItem }}</a
                       >
                       <span
