@@ -219,6 +219,14 @@ export const comment = {
       },
     );
   },
+  list: (id: string) => {
+    return request(
+      {
+        url: `/app/common/comment/list?contentId=${id}`,
+        method: "get",
+      },
+    );
+  },
   insert: (data: any) => {
     return request(
       {
@@ -381,7 +389,7 @@ export const caseApi = {
   findTimeReport: (id?: string) => {
     return request(
       {
-        url: `/app/common/case/findTimeReport?id=${id}`,
+        url: `/app/common/case/findTimeReport?caseId=${id}`,
         method: "get",
       },
     );
@@ -389,7 +397,7 @@ export const caseApi = {
   findCaseCharGraphDto: (id?: string) => {
     return request(
       {
-        url: `/app/common/case/findCaseCharGraphDto?id=${id}`,
+        url: `/app/common/case/findCaseCharGraphDto?caseId=${id}`,
         method: "get",
       },
     );
@@ -397,7 +405,7 @@ export const caseApi = {
   findCaseRelationCharGraphDto: (id?: string) => {
     return request(
       {
-        url: `/app/common/case/findCaseRelationCharGraphDto?id=${id}`,
+        url: `/app/common/case/findCaseRelationCharGraphDto?caseId=${id}`,
         method: "get",
       },
     );
@@ -405,7 +413,7 @@ export const caseApi = {
   findThemeCharGraph: (id?: string) => {
     return request(
       {
-        url: `/app/common/case/findThemeCharGraph?id=${id}`,
+        url: `/app/common/case/findThemeCharGraph?caseId=${id}`,
         method: "get",
       },
     );
@@ -413,7 +421,7 @@ export const caseApi = {
   findCharSankey: (id?: string) => {
     return request(
       {
-        url: `/app/common/case/findCharSankey?id=${id}`,
+        url: `/app/common/case/findCharSankey?caseId=${id}`,
         method: "get",
       },
     );

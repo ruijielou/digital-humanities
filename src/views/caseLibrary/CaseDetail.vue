@@ -154,6 +154,13 @@ const goBack = () => {
     router.push("/");
   }
 };
+const to_new_page = (url:string) => {
+  console.log('url:', url);
+  if(!url.startsWith('htpp://')){
+    url = 'http://' + url;
+  }
+  window.open(url);
+}
 </script>
 <template>
   <div class="h-screen overflow-auto">
@@ -213,7 +220,7 @@ const goBack = () => {
           >
             发布
           </a-button>
-          <a-button v-if="!isEdit" @click="changeEdit"> 修改 </a-button>
+          <a-button v-if="!isEdit && formModel.caseinfo.status != 2" @click="changeEdit"> 修改 </a-button>
         </div>
       </div>
       <div v-if="isEdit" style="min-height: 400px">
@@ -288,6 +295,7 @@ const goBack = () => {
                   <a-button
                     style="padding: 0px"
                     type="link"
+                    target="_blank" @click="to_new_page(col.text)"
                     v-if="col.dataType == 12"
                     >{{ col.text }}</a-button
                   >
@@ -325,18 +333,11 @@ const goBack = () => {
                 class="p-4 bg-#f7f7f7"
               >
                 <template v-for="(item, k) in formModel.relateList">
-                  <span v-for="(text, index) in item.textList">
-                    <a
-                      target="_blank"
-                      :href="`/#/casedetail/${item.extList[index]}`"
-                    >
-                      {{
-                        `${text}${
-                          index < item.textList.length - 1 ? "，" : ""
-                        }`
-                      }}
+                  <p v-for="(text, index) in item.textList">
+                    <a target="_blank" :href="`/#/casedetail/${item.extList[index]}`">
+                      {{ index + 1 }}. {{ text }}
                     </a>
-                  </span>
+                  </p>
                 </template>
               </div>
             </div>

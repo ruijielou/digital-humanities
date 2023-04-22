@@ -40,14 +40,12 @@ const getCommentList = async () => {
 };
 
 const replay = (commentItem: any) => {
-  // placeholderText.value = `回复${commentItem.username}`
-  
   replayUser.data = {...commentItem}
   textareaRef.value && textareaRef.value.focus()
 }
 const removeReplay = () => {
-  replayUser.data = null
-  // placeholderText.value = `回复${commentItem.username}`
+  replayUser.data = null;
+  caseComment.value = "";
 }
 getCommentList();
 </script>
@@ -78,7 +76,7 @@ getCommentList();
           />
         </div>
         <div class="text-right p-t-2">
-          <a-button size="small" class="m-r-3" type="info" v-if="replayUser.data" @click="replayUser.data = null"
+          <a-button size="small" class="m-r-3" type="info" v-if="replayUser.data" @click="removeReplay"
             >取消回复</a-button
           >
           <a-button size="small" type="primary" @click="publishComment"
