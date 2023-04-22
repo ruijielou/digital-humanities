@@ -67,7 +67,7 @@ const stepTwoData = reactive<any>({
   formModal: null,
 });
 
-const gotoNext = async () => {
+const gotoNext = async (status?: number) => {
   if (currentStep.value === 1 && caseType.value === CaseType.Custom) {
     const caseData: AnyObject = await customCaseRef.value?.formValidate();
     if (!caseData.case) return;
@@ -81,7 +81,8 @@ const gotoNext = async () => {
     stepData.value[currentStep.value + 1] &&
     stepData.value[currentStep.value + 1]["name"] === "StepTwo"
   ) {
-    await getTwoFormInput();
+    const isNext = await getTwoFormInput();
+    if (!isNext) return;
   }
 
   //最后一步处理内容 提交表单内容
@@ -93,8 +94,7 @@ const gotoNext = async () => {
     //TODO authType(1:公开 2:私有) 和 status(1:暂存, 2:待审核) 需要改成选项
     const submitData = {
       ...formatterFormData({ ...formState.caseData }),
-      authType: 1,
-      status: 2,
+      status: status || 2,
       repositoryIds: idList.join(","),
     };
 
@@ -111,7 +111,7 @@ const getTwoFormInput = async () => {
       title: () => "提示",
       content: () => "请选择案例",
     });
-    return;
+    return false;
   }
   const { result } = await meta.findFormListGroup(idList.join(","));
 
@@ -120,6 +120,7 @@ const getTwoFormInput = async () => {
     stepTwoData.formModal = { ...formModal };
     stepTwoData.data = [...result];
   }
+  return true;
 };
 
 // 获取第一步的标签列表
@@ -141,31 +142,65 @@ onMounted(() => {
 <template>
   <div class="h-screen overflow-auto">
     <Header title="追踪研究线索" bg-name="bg1" class="contribute-header" />
-    <a-layout-content style="padding-top: 20px; padding-bottom: 20px" class="flex flex-col">
+    <a-layout-content
+      style="padding-top: 20px; padding-bottom: 20px"
+      class="flex flex-col"
+    >
       <LogoText text="案例投稿" />
       <div class="p-l-100 p-r-100 p-t-5 p-b-5">
         <a-steps :current="currentStep" size="small" @change="changeStep">
-          <a-step :disabled="true" :title="item.label" :key="item.name"
-            v-for="item in stepData" />
+          <a-step
+            :disabled="true"
+            :title="item.label"
+            :key="item.name"
+            v-for="item in stepData"
+          />
         </a-steps>
       </div>
-      <custom-case :selected-tag="selectedTag" ref="customCaseRef"
-        v-show="currentStep === 1 && caseType === CaseType.Custom" />
-      <StepTwo :selected-tag="selectedTag" ref="stepTwoRef" :form-modal="stepTwoData.formModal"
-        :form-data="stepTwoData.data" v-show="getCurrentTypeTemplate() == 'StepTwo'" />
+      <custom-case
+        :selected-tag="selectedTag"
+        ref="customCaseRef"
+        v-show="currentStep === 1 && caseType === CaseType.Custom"
+      />
+      <StepTwo
+        :selected-tag="selectedTag"
+        ref="stepTwoRef"
+        :form-modal="stepTwoData.formModal"
+        :form-data="stepTwoData.data"
+        v-show="getCurrentTypeTemplate() == 'StepTwo'"
+      />
       <div v-for="(item, index) in stepData">
-        <setp-one :selected-tag="selectedTag" :case-type="caseType" :group-data="groupData" @choose-tag="chooseTag"
-          @choose-custom-tag="chooseCustomTag" v-if="currentStep === index && item.name === 'setp-one'"></setp-one>
+        <setp-one
+          :selected-tag="selectedTag"
+          :case-type="caseType"
+          :group-data="groupData"
+          @choose-tag="chooseTag"
+          @choose-custom-tag="chooseCustomTag"
+          v-if="currentStep === index && item.name === 'setp-one'"
+        ></setp-one>
 
-        <div v-if="currentStep === index && item.name === 'finished'" class="step-3 text-center">
+        <div
+          v-if="currentStep === index && item.name === 'finished'"
+          class="step-3 text-center"
+        >
           <img class="p-t-6" src="../../assets/image/no-content.png" alt="" />
           <div class="text-5 p-t-4">已完成，等待审核中…</div>
         </div>
       </div>
 
       <div class="text-center p-t-10">
-        <a-button v-if="currentStep === stepData.length - 1" @click="reloadPage" type="primary">完成</a-button>
-        <a-button v-else @click="gotoNext" type="primary">下一步</a-button>
+        <a-button
+          v-if="currentStep === stepData.length - 1"
+          @click="reloadPage"
+          type="primary"
+          >完成</a-button
+        >
+        <template v-else-if="getCurrentTypeTemplate() == 'StepTwo'">
+          <a-button @click="gotoNext(1)" class="m-r-8" type="info">暂存</a-button>
+          <a-button @click="gotoNext()" type="primary">提交</a-button>
+        </template>
+        <a-button v-else @click="gotoNext()" type="primary">下一步</a-button>
+        <!-- 1:暂存, 2:待审核) -->
       </div>
     </a-layout-content>
   </div>
@@ -173,9 +208,5 @@ onMounted(() => {
 <style lang="less">
 .group-container {
   padding: 20px 120px;
-
-
-
-  
 }
 </style>

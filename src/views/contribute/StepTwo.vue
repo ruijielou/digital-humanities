@@ -96,7 +96,7 @@ const deleteItemFile = (src: string, key: string) => {
 const showInput = () => {
   inputVisible.value = true;
   nextTick(() => {
-    inputRef.value.focus();
+    inputRef.value && inputRef.value[0] && inputRef.value[0].focus();
   });
 };
 // 自定义标签
@@ -105,7 +105,6 @@ const handleInputConfirm = (key: string) => {
   if (inputValue.value && tags.indexOf(inputValue.value) === -1) {
     formState.caseData[key] = [...tags, inputValue.value];
   }
-  console.log(tags);
 
   inputVisible.value = false;
   inputValue.value = "";
@@ -143,14 +142,17 @@ defineExpose({ formState, formValidate });
       ref="formRef"
       :model="formState"
     >
-     
+
       <div
         class="form-container flex-1"
         style="padding-left: 3em"
         v-if="formData"
       >
         <template v-for="(item, key) in formData">
-          <div class="group-item" :class="{'left-item': key == 0,'right-item': key != 0}">
+          <div
+            class="group-item"
+            :class="{ 'left-item': key == 0, 'right-item': key != 0 }"
+          >
             <div class="group-item-title">
               <span class="line-title">
                 <span>
@@ -392,11 +394,15 @@ defineExpose({ formState, formValidate });
                   {{ tag }}
                 </a-tag>
               </template>
-              <span v-if="inputVisible" class="w-30% inline-block h-32px lh-32px m-r-3% m-b-5 truncate">
+              <span
+                v-if="inputVisible"
+                class="w-30% inline-block h-32px lh-32px m-r-3% m-b-5 truncate"
+              >
                 <a-input
                   ref="inputRef"
                   v-model:value="inputValue"
                   type="text"
+                  autofocus
                   @blur="handleInputConfirm('customTag')"
                   @keyup.enter="handleInputConfirm('customTag')"
                 />
@@ -413,6 +419,25 @@ defineExpose({ formState, formValidate });
             </template>
           </div>
         </template>
+        <div class="group-item right-item">
+          <a-form-item
+            :colon="false"
+            label="开放权限"
+            :name="['caseData', 'authType']"
+            :rules="[
+              {
+                required: true,
+                message: '权限不能为空',
+                trigger: ['change', 'blur'],
+              },
+            ]"
+          >
+            <a-radio-group v-model:value="formState.caseData.authType">
+              <a-radio :value="1">公开</a-radio>
+              <a-radio :value="2">仅自己看</a-radio>
+            </a-radio-group>
+          </a-form-item>
+        </div>
       </div>
     </a-form>
   </div>
@@ -422,17 +447,17 @@ defineExpose({ formState, formValidate });
   position: relative;
   overflow: hidden;
   .left-item {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 48%;
-}
-.right-item {
-  position: relative;
-  margin-left: 52%;
-  margin-top: 10px;
-  width: 48%;
-}
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 48%;
+  }
+  .right-item {
+    position: relative;
+    margin-left: 52%;
+    margin-top: 10px;
+    width: 48%;
+  }
 }
 .custom-img-card {
   display: inline-block;

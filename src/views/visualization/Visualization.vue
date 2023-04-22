@@ -12,7 +12,6 @@ import { getOption } from "./options";
 import { componentMap } from "./type";
 import { seriesData } from "./mock";
 import { caseLocation, caseApi } from "@/api";
-import { useRoute, useRouter } from "vue-router";
 
 interface ChartTypeMap {
   key: componentMap;
@@ -20,8 +19,6 @@ interface ChartTypeMap {
   id: number;
 }
 
-const route = useRoute();
-const router = useRouter();
 const currentType = ref<componentMap>(componentMap.Distribution);
 const chartType = ref<ChartTypeMap[]>([
   {
@@ -110,6 +107,7 @@ const initChart = async (type: componentMap) => {
     resultData = seriesData[type];
   }
   const options: any = getOption(type, resultData);
+  
   if (!options) return;
   if (chartInit.value) {
     chartInit.value.clear();

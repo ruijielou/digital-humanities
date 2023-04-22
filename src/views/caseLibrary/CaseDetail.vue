@@ -11,26 +11,25 @@ import {
   PlusSquareOutlined,
   StarFilled,
   StarOutlined,
-  UserOutlined,
 } from "@ant-design/icons-vue";
 import { useRoute, useRouter } from "vue-router";
-import { caseApi, comment, favorite, meta } from "@/api";
+import { caseApi, favorite, meta } from "@/api";
 import { message } from "ant-design-vue";
 import { useUserStore } from "@/store/user";
 import StepTwo from "../contribute/StepTwo.vue";
 import { formatterFormInput } from "../contribute/utils";
 import { imgBaseUrl, formatterFormData } from "@/utils/config";
-import { convert_case_data } from "@/utils/case_meta_util";
+// import { convert_case_data } from "@/utils/case_meta_util";
 import Knowledge from "./Knowledge.vue";
+import CaseComment from "./CaseComment.vue";
 
 const { userInfo, openLogin } = useUserStore();
 
 const showDetailKey = ref<number[]>([0]);
 const loading = ref<boolean>(false);
-const caseComment = ref<string>("");
+
 const CollectionRef = ref<any>(null);
 const isEdit = ref<boolean>(false);
-const commentList = ref<any>([]);
 const route = useRoute();
 const router = useRouter();
 const repositoryList = ref([]);
@@ -45,7 +44,7 @@ const formModel = reactive<any>({
   labList: [],
   technologyList: [],
   assPorject: [],
-  relateList: []
+  relateList: [],
 });
 
 const changeCurrentKey = (key: number) => {
@@ -69,34 +68,9 @@ const getDetail = async () => {
   formModel.relateList = result.relateList ? [...result.relateList] : [];
   formModel.caseinfo = result.caseinfo ? { ...result.caseinfo } : {};
   formModel.metaGroupList[0] && changeCurrentKey(formModel.metaGroupList[0].id);
-
   getFavoriteStatus();
 };
-
 getDetail();
-
-const publishComment = async () => {
-  if (!caseComment.value) {
-    message.error("评论内容不能为空");
-    return;
-  }
-  const params = {
-    contentId: route.params.id,
-    remark: caseComment.value,
-  };
-  const res = await comment.insert(params);
-  if (res.success) {
-    message.success("评论成功");
-    caseComment.value = "";
-    getCommentList();
-  }
-};
-const getCommentList = async () => {
-  const { result } = await comment.page(route.params.id as string);
-  if (result) {
-    commentList.value = [...result.records];
-  }
-};
 
 const getFavoriteStatus = async () => {
   const id = route.params.id;
@@ -124,8 +98,6 @@ const getTwoFormInput = async () => {
     repositoryList.value = formResult.result?.repositoryList;
   }
 };
-
-getCommentList();
 
 const changeEdit = () => {
   isEdit.value = !isEdit.value;
@@ -155,11 +127,14 @@ const publish_case = async (status: number) => {
     id: route.params?.id,
     status: status,
     repositoryIds: formModel.caseinfo.repositoryIds,
-    authType: formModel.caseinfo.authType,
+    // authType: formModel.caseinfo.authType,
   };
   const response = await caseApi.add(submitData);
-  isEdit.value = false;
-  getDetail();
+  if (response.success) {
+    message.success(response.message);
+    isEdit.value = false;
+    getDetail();
+  }
 };
 const starFavorited = (isFavorite: any) => {
   if (!userInfo.id) {
@@ -351,63 +326,21 @@ const goBack = () => {
               >
                 <template v-for="(item, k) in formModel.relateList">
                   <span v-for="(text, index) in item.textList">
-                    <a target="_blank" :href="`/#/casedetail/${text.split('_')[1]}`"> 
-                      {{ `${text.split('_')[0]}${index < item.textList.length - 1?'，': ''}` }} 
+                    <a
+                      target="_blank"
+                      :href="`/#/casedetail/${item.extList[index]}`"
+                    >
+                      {{
+                        `${text}${
+                          index < item.textList.length - 1 ? "，" : ""
+                        }`
+                      }}
                     </a>
                   </span>
                 </template>
               </div>
             </div>
-            <div class="m-b-10">
-              <div>评论：</div>
-              <div class="p-4 comment-list">
-                <div>
-                  <div class="comment-input flex">
-                    <a-avatar
-                      shape="circle"
-                      :size="24"
-                      class="m-r-2 w-24px"
-                      title="person"
-                      :src="imgBaseUrl + userInfo.avatar"
-                    >
-                      <template #icon>
-                        <UserOutlined />
-                      </template>
-                    </a-avatar>
-
-                    <a-textarea
-                      class="flex-1"
-                      v-model:value="caseComment"
-                      placeholder="请输入"
-                      :rows="4"
-                    />
-                  </div>
-                  <div class="text-right p-t-2">
-                    <a-button size="small" type="info" @click="publishComment"
-                      >发布</a-button
-                    >
-                  </div>
-                </div>
-                <div class="flex" v-for="item in commentList">
-                  <a-avatar
-                    shape="circle"
-                    :size="24"
-                    class="m-r-2"
-                    title="person"
-                    :src="imgBaseUrl + item.userAvatar"
-                  >
-                    <template #icon>
-                      <UserOutlined />
-                    </template>
-                  </a-avatar>
-                  <div class="comment-detail">
-                    <div>{{ item.username }}</div>
-                    <div>{{ item.remark }}</div>
-                    <p class="c-#999">{{ item.createTime }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <CaseComment />
           </div>
         </div>
       </div>

@@ -153,32 +153,27 @@ const getCooperate = (chartData: any) => {
   }
 }
 
-const addNodes = (arry: any, cell: any) => {
-  if (
-    arry.some(function (res: any) {
-      return res.id == cell.id;
-    })
-  ) {
-    return;
-  }
-  arry.push(cell);
-}
-
 const convertData = function (data: any) {
   const res: any = {};
   for (const item of data) {
+    let location: { [key: string]: string } = {};
     try {
-      const location = item.cityLocation && JSON.parse(item.cityLocation);
-      if (res[item.city]) {
-        res[item.city].value[2] += 1;
-      } else {
-        res[item.city] = {
-          name: item.city,
-          value: [location[item.city][1], location[item.city][0], 1]
-        }
-      }
+      location = item.cityLocation && JSON.parse(item.cityLocation);
     } catch (error) {
       console.log(item, '解析失败' + error);
+    }
+    if (location) {
+      Object.keys(location).forEach(key => {
+        if (res[key]) {
+          res[key].value[2] += 1;
+        } else {
+          res[key] = {
+            name: key,
+            value: [location[key][1], location[key][0], 1]
+            // value: [...location[key], 1]
+          }
+        }
+      })
     }
   }
   return Object.values(res);
@@ -238,12 +233,10 @@ const getDistribution = (chartData: any) => {
       // roam: true,
       mapStyle: styleJson,
       label: {
-        // normal: {
         show: false, // 是否显示对应地名
         textStyle: {
           color: 'rgba(0,0,0,0.4)'
         }
-        // }
       },
       emphasis: {
         label: {
@@ -277,10 +270,10 @@ const getDistribution = (chartData: any) => {
         coordinateSystem: 'geo',
         data: convertData(chartData),
         symbolSize: (val: any) => {
-          return val[2] * 10;
+          return val[2] * 6;
         },
 
-        // colorBy: 'data',
+        colorBy: 'data',
         encode: {
           value: 2
         },
@@ -306,8 +299,6 @@ const getDistribution = (chartData: any) => {
   };
 }
 
-// const list: any = [];
-// const links: any = [];
 const KnowledgeColor = [
   {
     c1: '#7643DF',
@@ -345,7 +336,6 @@ function getLists(arr: any) {
         symbolSize = 40;
         break;
       default:
-        // symbolSize = 20;
         break;
     }
 
@@ -441,7 +431,6 @@ function getLists(arr: any) {
         borderType: [110 / (item.level + 1), 5],
       };
     }
-    //可以改变来实现节点发光效果，但体验不好
     itemStyle = Object.assign(itemStyle, {
       shadowColor: "rgba(255, 255, 255, 0.5)",
       shadowBlur: 0,
@@ -485,7 +474,7 @@ function getLinks(arr: any) {
         show: true,
         fontSize: 10,
         color: '#fff',
-        formatter: function (params:any) {
+        formatter: function (params: any) {
           return params.data.name
         }
       },
@@ -627,13 +616,6 @@ const getTheme = (chartData: any) => {
   };
 }
 export const getOption = (type: componentMap, chartData: any) => {
-  // const optionsMap = {
-  //   [componentMap.Time]: { ...getTime(chartData) },
-  //   [componentMap.Theme]: { ...getDistribution(chartData) },
-  //   [componentMap.Cooperate]: null,
-  //   [componentMap.Distribution]: null,
-  //   [componentMap.Knowledge]: null,
-  // }
   let options = null;
   switch (type) {
     case componentMap.Time:
@@ -644,8 +626,6 @@ export const getOption = (type: componentMap, chartData: any) => {
       break;
     case componentMap.Knowledge:
       options = { ...getKnowledge(chartData) }
-      console.log(options);
-
       break;
     case componentMap.Distribution:
       options = { ...getDistribution(chartData) }
