@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { caseApi, repositorygroup, repository } from "@/api";
 import { Modal, message } from "ant-design-vue";
 import { useRoute, useRouter } from "vue-router";
+import { AuthType } from "@/utils/type";
 
 const route = useRoute();
 const router = useRouter();
@@ -101,7 +102,7 @@ defineExpose({ caseMoveModal,caseIds });
     <a-radio-group v-model:value="checkedFolder" class="w-100%">
       <div v-if="repositoryList.length" class="repository-group">
         <div class="p-2" v-for="item in repositoryList">
-          <a-radio :value="item.id">{{ item.name }}</a-radio>
+          <a-radio :value="item.id">{{ `${item.name}` }}<label class="c-#999 text-12px">{{ `(${AuthType[item.authType].name})` }}</label></a-radio>
         </div>
       </div>
       <div class="p-2">
@@ -119,7 +120,7 @@ defineExpose({ caseMoveModal,caseIds });
             v-model:value="repositoryName"
             placeholder="案例库名称"
           ></a-input>
-          <a-switch v-model:checked="isOpen">公开</a-switch>
+          <a-switch v-model:checked="isOpen" checked-children="公开" un-checked-children="私有"></a-switch>
         </div>
       </div>
     </a-radio-group>

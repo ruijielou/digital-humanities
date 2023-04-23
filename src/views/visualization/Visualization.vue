@@ -19,6 +19,7 @@ interface ChartTypeMap {
   id: number;
 }
 
+const legendData = ["所属机构", "合作机构", "资助机构", "项目案例"];
 const currentType = ref<componentMap>(componentMap.Distribution);
 const chartType = ref<ChartTypeMap[]>([
   {
@@ -56,7 +57,7 @@ const searchInfo = ref<string>("");
 
 const toggleChartType = (type: componentMap) => {
   if (type === currentType.value) return;
-  currentType.value = type;
+
   const clickindex = chartType.value.findIndex((item) => item.key === type);
   const reloadIndex = clickindex - 2;
   chartType.value = [
@@ -64,11 +65,9 @@ const toggleChartType = (type: componentMap) => {
     ...chartType.value,
   ];
 
+  currentType.value = type;
   spinning.value = true;
-  setTimeout(() => {
-    initChart(type);
-    spinning.value = false;
-  }, 1000);
+  initChart(type);
 };
 
 const spinning = ref<boolean>(false); //加载中的样式
@@ -83,7 +82,7 @@ const initChart = async (type: componentMap) => {
   const id: string = currentId.value;
   if (type === componentMap.Distribution) {
     const { result } = await caseLocation.list();
-    resultData = id ? result.filter((a:any) => a.id == id) : [...result];
+    resultData = id ? result.filter((a: any) => a.id == id) : [...result];
   } else if (type === componentMap.Time) {
     const { result } = await caseApi.findTimeReport(id);
     resultData = [...result];
@@ -107,7 +106,7 @@ const initChart = async (type: componentMap) => {
     resultData = seriesData[type];
   }
   const options: any = getOption(type, resultData);
-  
+
   if (!options) return;
   if (chartInit.value) {
     chartInit.value.clear();
@@ -119,14 +118,14 @@ const initChart = async (type: componentMap) => {
   }
   chartInit.value = echarts.init(myChart.value);
   chartInit.value.setOption(options);
-
+  spinning.value = false;
   window.addEventListener("resize", () => {
     chartInit.value.resize();
   });
 };
 
 const changeView = (id: string) => {
-  currentId.value = currentId.value == id ? '' : id;
+  currentId.value = currentId.value == id ? "" : id;
 };
 watch(
   currentId,
@@ -157,15 +156,26 @@ load_case_location();
       title="对人文学科重绘廓型"
     />
 
-    <a-layout-content class="visualization-content flex">
+    <a-layout-content class="visualization-content flex position-relative">
       <div class="chart-box flex-1 relative">
         <a-spin
           v-if="spinning"
           :spinning="spinning"
           class="position-center"
         ></a-spin>
-        <!-- <Map v-show="currentType === componentMap.Distribution" /> -->
-        <!-- v-show="currentType !== componentMap.Distribution" -->
+        <div
+          class="legend-box flex w-86% m-l-5% position-absolute p-t-20px"
+          v-if="currentType === componentMap.Cooperate"
+        >
+          <div class="flex-1 flex justify-center" v-for="item in legendData">
+            <a-tag
+              color="#292B61"
+              class="border-color-#6960BA p-4px p-l-25px p-r-25px"
+            >
+              {{ item }}</a-tag
+            >
+          </div>
+        </div>
         <div class="w-100% h-100%" ref="myChart"></div>
       </div>
       <div class="right-slider w-300px">

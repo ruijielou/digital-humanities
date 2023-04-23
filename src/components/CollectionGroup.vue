@@ -3,8 +3,7 @@ import { ref } from "vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 import { favoritegroup, favorite } from "@/api";
 import { Modal, message } from "ant-design-vue";
-import { LikeStatus } from "@/utils/type";
-import {AuthType} from "@/utils/type"
+import { LikeStatus, AuthType } from "@/utils/type";
 
 const modalVisibility = ref<boolean>(false);
 const isOpen = ref<boolean>(false); //是否为公开
@@ -74,7 +73,9 @@ defineExpose({ modalVisibility });
     <a-radio-group v-model:value="checkedFolder" class="w-100%">
       <div v-if="collectionGroup.length" class="collection-group">
         <div class="p-2" v-for="item in collectionGroup">
-          <a-radio :value="item.id">{{ `${item.title}-${AuthType[item.authType].name}`}}</a-radio>
+          <a-radio :value="item.id">{{ `${item.title}`}}
+          <label class="c-#999 text-12px">{{ `(${AuthType[item.authType].name})` }}</label>
+          </a-radio>
         </div>
       </div>
       <div class="p-3 flex items-center">
@@ -85,11 +86,7 @@ defineExpose({ modalVisibility });
             placeholder="案例库名称"
           ></a-input>
         </a-radio>
-       
-        <a-switch v-model:checked="isOpen"></a-switch>
-        <span class="text-2 m-l-2">
-          {{AuthType[isOpen? 1 : 2].name}}
-        </span>
+        <a-switch v-model:checked="isOpen" checked-children="公开" un-checked-children="私有"></a-switch>
       </div>
     </a-radio-group>
     <template #footer>

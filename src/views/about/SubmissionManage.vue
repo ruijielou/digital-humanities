@@ -59,7 +59,7 @@ getCaseData();
           <div class="case-group m-t-2">
             <Carousel class="arrowTop">
               <template #cards>
-                <div class="h-100%" v-for="card in item.repositoryList">
+                <div class="h-100% submission-card" v-for="card in item.repositoryList">
                   <Card
                     @click="
                       $router.push({
@@ -94,6 +94,11 @@ getCaseData();
     overflow: hidden;
     .case-group {
       width: 100%;
+    }
+  }
+  .submission-card {
+    .card-image {
+      height: 67% !important;
     }
   }
 }

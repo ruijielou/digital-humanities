@@ -139,6 +139,7 @@ const getCooperate = (chartData: any) => {
         nodeAlign: 'left',
         data: chartData.nodes || [],
         links: chartData.links || [],
+        top: 70,
         left: '15%',
         nodeWidth: 5,
         lineStyle: {
@@ -156,14 +157,11 @@ const getCooperate = (chartData: any) => {
 const convertData = function (data: any) {
   const res: any = {};
   for (const item of data) {
-    let location: { [key: string]: string } = {};
     try {
-      // debugger
       const locations = item.cityLocation && JSON.parse(item.cityLocation);
       if(locations){
         let loc;
         for(loc in locations){
-
           if (res[loc]) {
             res[loc].value[2] += 1;
           } else {
@@ -176,19 +174,6 @@ const convertData = function (data: any) {
       }
     } catch (error) {
       console.log(item, '解析失败' + error);
-    }
-    if (location) {
-      Object.keys(location).forEach(key => {
-        if (res[key]) {
-          res[key].value[2] += 1;
-        } else {
-          res[key] = {
-            name: key,
-            value: [location[key][1], location[key][0], 1]
-            // value: [...location[key], 1]
-          }
-        }
-      })
     }
   }
   return Object.values(res);
