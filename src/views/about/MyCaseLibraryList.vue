@@ -232,7 +232,8 @@ getLibraryList();
             "
             v-if="column.dataIndex === 'name'"
           >
-            {{ text }}
+            {{ `${((pagination.current -1 ) * pagination.pageSize) + index + 1}` }}
+            <span class="m-l-1">{{ text }}</span>
           </div>
         </template>
       </a-table>

@@ -51,6 +51,7 @@ const getComment = async () => {
     `pageNo=${pagination.current}&pageSize=${pagination.pageSize}`
   );
   dataSource.value = result?.records;
+  pagination.total = result.total;
 };
 getComment();
 </script>
@@ -81,8 +82,8 @@ getComment();
             "
             v-if="column.dataIndex === 'caseName'"
           >
-            {{ `${index + 1}` }}
-            <span class="m-l-6">{{ text }}</span>
+            {{ `${((pagination.current -1 ) * pagination.pageSize) + index + 1}` }}
+            <span class="m-l-1">{{ text }}</span>
           </div>
           <div v-if="column.dataIndex === 'operation'">
             <a-popconfirm

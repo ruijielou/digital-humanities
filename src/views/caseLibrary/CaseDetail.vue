@@ -299,7 +299,7 @@ const to_new_page = (url:string) => {
             </div>
           </div>
           <div style="width: 360px" class="p-5 detail-right">
-            <div class="labels-container m-b-10">
+            <div class="labels-container m-b-10" v-if="formModel.labList && formModel.labList.length > 0">
               <div>标签：</div>
               <div>
                 <template v-for="(item, k) in formModel.labList">
@@ -311,7 +311,7 @@ const to_new_page = (url:string) => {
                 </template>
               </div>
             </div>
-            <div class="m-b-10">
+            <div class="m-b-10" v-if="formModel.technologyList && formModel.technologyList.length > 0">
               <div>应用技术：</div>
               <div v-if="formModel.technologyList">
                 <template v-for="(item, k) in formModel.technologyList">
@@ -321,7 +321,7 @@ const to_new_page = (url:string) => {
                 </template>
               </div>
             </div>
-            <div class="m-b-10">
+            <div class="m-b-10" v-if=" formModel.relateList && formModel.relateList.length > 0">
               <div>关联项目：</div>
               <div
                 v-if="formModel.relateList && formModel.relateList.length > 0"

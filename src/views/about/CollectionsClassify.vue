@@ -140,9 +140,16 @@ const cancelFavorited = async (id: string) => {
         @change="handleTableChange"
       >
         <template #bodyCell="{ column, text, index, record }">
-          <template v-if="column.dataIndex === 'name'"
-            >{{ index }} {{ text }}</template
+          <div
+            class="c-#5b3df2 cursor-pointer"
+            @click="
+              $router.push({ name: 'CaseDetail', params: { id: record.caseId } })
+            "
+            v-if="column.dataIndex === 'caseName'"
           >
+            {{ `${((pagination.current -1 ) * pagination.pageSize) + index + 1}` }}
+            <span class="m-l-1">{{ text }}</span>
+          </div>
           <div v-if="column.dataIndex === 'operation'">
             <a-popconfirm
               title="确定要删除吗?"

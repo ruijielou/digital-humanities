@@ -44,6 +44,7 @@ const do_search = () => {
         </a-input>
       </div>
     </div>
+<!--    <div class="copyright text-center c-white text-2">Copyright © 2019-2013 | 北京立鹏文采科技有限公司 | <a style="color: white" href="https://beian.miit.gov.cn/#/Integrated/index">京ICP备19054905号</a></div>-->
     <div class="copyright text-center c-white text-2">Copyright © 2023</div>
   </div>
 </template>

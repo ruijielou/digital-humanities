@@ -11,13 +11,13 @@ enum CaseType {
   NotApproved,
 }
 const CaseTypeMap = [
+  { type: CaseType.Approved, name: "Approved", label: "已发布" },
+  { type: CaseType.PendingReview, name: "PendingReview", label: "进行中" },
   { type: CaseType.Staging, label: "暂存", name: "Staging" },
-  { type: CaseType.PendingReview, name: "PendingReview", label: "待审核" },
-  { type: CaseType.Approved, name: "Approved", label: "审核通过" },
   { type: CaseType.NotApproved, name: "NotApproved", label: "未通过" },
 ];
 
-const tableCaseType = ref<CaseType>(CaseType.Staging);
+const tableCaseType = ref<CaseType>(CaseType.Approved);
 const loading = ref<boolean>(false);
 const dataSource = ref<{ [key: string]: string }[]>([]);
 const columns = [
@@ -96,7 +96,7 @@ const handleTableChange = async (newpager: any) => {
         :loading="loading"
         @change="handleTableChange"
       >
-        <template #bodyCell="{ column, record, text }">
+        <template #bodyCell="{ column, record, text, index }">
           <div
             class="c-#5b3df2 cursor-pointer"
             @click="
@@ -104,7 +104,14 @@ const handleTableChange = async (newpager: any) => {
             "
             v-if="column.dataIndex === 'name'"
           >
-            {{ text }}
+            {{ `${((pagination.current -1 ) * pagination.pageSize) + index + 1}` }}
+
+
+            <span class="m-l-1">{{ text }}</span>
+            <a-tooltip v-if="record.status == 4">
+              <template #title>{{record.verifyText}}</template>
+              <span style="color: #F56785" class="m-l-6">未通过原因</span>
+            </a-tooltip>
           </div>
         </template>
       </a-table>

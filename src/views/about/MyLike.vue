@@ -102,7 +102,7 @@ const cancelFavorited = async (id: string) => {
         :loading="loading"
         @change="handleTableChange"
       >
-        <template #bodyCell="{ column, text, record }">
+        <template #bodyCell="{ column, text, index, record }">
           <div
             class="c-#5b3df2 cursor-pointer"
             @click="
@@ -110,11 +110,12 @@ const cancelFavorited = async (id: string) => {
             "
             v-if="column.dataIndex === 'caseName'"
           >
-            {{ text }}
+            {{ `${((pagination.current -1 ) * pagination.pageSize) + index + 1}` }}
+            <span class="m-l-1">{{ text }}</span>
           </div>
           <template v-else-if="column.dataIndex === 'operation'">
             <a-popconfirm
-              title="确定要取消吗?"
+              title="确定要取消收藏吗?"
               ok-text="确定"
               cancel-text="取消"
               @confirm="cancelFavorited(record.contentId)"

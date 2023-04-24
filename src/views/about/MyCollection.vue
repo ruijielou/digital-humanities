@@ -31,7 +31,7 @@ getCollectionData();
 const cancelFavorited: any = async (id: number) => {
   if (!id) return;
   Modal.confirm({
-    content: "确定要取消收藏吗？",
+    content: "确定要删除收藏夹吗？",
     icon: createVNode(ExclamationCircleOutlined),
     onOk: async () => {
       const res = await favoritegroup.del({ id });
