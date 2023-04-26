@@ -12,6 +12,7 @@ import { getOption } from "./options";
 import { componentMap } from "./type";
 import { seriesData } from "./mock";
 import { caseLocation, caseApi } from "@/api";
+import { imgBaseUrl } from "@/utils/config";
 
 interface ChartTypeMap {
   key: componentMap;
@@ -202,7 +203,7 @@ load_case_location();
           >
             <div
               class="h-120px w-100% item-bg"
-              style="background-image: url('/src/assets/image/card.png')"
+              :style="{backgroundImage: `url(${case_location.cover ? (imgBaseUrl + case_location.cover) : '/src/assets/image/card.png'})`}"
             ></div>
             <div class="p-4 library-bottom-desc flex-1">
               <div class="line-clamp-2">

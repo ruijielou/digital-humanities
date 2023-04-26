@@ -130,6 +130,9 @@ const getTime = (chartData: any) => {
 };
 
 const getCooperate = (chartData: any) => {
+ const nodes = chartData.nodes && chartData.nodes.filter((item, index, self) => {
+  return index === self.findIndex((t) => t.name === item.name);
+});
   return {
     color: colors.map(item => item[0]),
     tooltip,
@@ -137,7 +140,7 @@ const getCooperate = (chartData: any) => {
       {
         type: 'sankey',
         nodeAlign: 'left',
-        data: chartData.nodes || [],
+        data: nodes || [],
         links: chartData.links || [],
         top: 70,
         left: '15%',
@@ -166,7 +169,7 @@ const convertData = function (data: any) {
             res[loc].value[2] += 1;
           } else {
             res[loc] = {
-              name: item.city,
+              name: loc,
               value: [locations[loc][1], locations[loc][0], 1]
             }
           }
@@ -176,6 +179,7 @@ const convertData = function (data: any) {
       console.log(item, '解析失败' + error);
     }
   }
+  
   return Object.values(res);
 };
 
