@@ -92,6 +92,7 @@ const gotoNext = async (status?: number) => {
     if (!formState) return;
     const idList: number[] = selectedTag.value.map((item) => item.id);
     //TODO authType(1:公开 2:私有) 和 status(1:暂存, 2:待审核) 需要改成选项
+    console.log('formState.caseData:', formState.caseData);
     const submitData = {
       ...formatterFormData({ ...formState.caseData }),
       status: status || 2,

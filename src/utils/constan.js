@@ -312,6 +312,17 @@ var MetaGroupConstant = {
   ORG: new Constant(10, "组织机构"),
   /** 朝代时间  */
   TIME_LINE: new Constant(11, "朝代时间"),
+  /** 附件  */
+  ATTA_FILE: new Constant(12, "附件"),
+  /** 封面  */
+  COVER_IMG: new Constant(13, "封面"),
+
+  /** 项目名称 元数据id  */
+  MATE_NAME_ID: new Constant(329, "form_329"),
+  /** 关联项目 元数据id  */
+  MATE_RELATION_ID: new Constant(346, "form_346"),
+  /** 所属城市 元数据id  */
+  MATE_CITY_ID: new Constant(334, "form_334"),
 };
 
 export default {

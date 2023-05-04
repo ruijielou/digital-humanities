@@ -3,6 +3,7 @@ export const formatterFormInput = (props: any,sourceData?:any) => {
     if (!props.result) return { formModal: null }
     //初始化custom tag
     const data: any = {
+        city_334: sourceData && sourceData['city_334'] ? sourceData['city_334'] : '',
         customTag: sourceData && sourceData['customTag'] ? sourceData['customTag'].split(',') : [],
         authType: sourceData && sourceData['authType'] ? sourceData['authType'] : 1,
     };
