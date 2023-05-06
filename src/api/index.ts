@@ -177,7 +177,7 @@ export const announcement = {
   myPage: (type?: MessageType) => {
     return request(
       {
-        url: `/app/user/announcement/myPage?type=${type}&column=createTime&order=desc`,
+        url: `/app/user/announcement/myPage?${type}&column=createTime&order=desc`,
         method: "get",
       },
     );

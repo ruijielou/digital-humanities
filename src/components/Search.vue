@@ -10,6 +10,7 @@ const emit = defineEmits(['closeSearch'])
 const route = useRoute();
 const searchFields = ref<string>("");
 const showLabels = ref<boolean>(false);
+const showFiledError = ref<boolean>(false);
 const searchType = ref<number>(0);
 const repository_suggest_list = ref<any[]>([]);
 
@@ -20,7 +21,8 @@ const do_search = () => {
     emit('closeSearch');
     router.push({ name: "SearchResult",query:{keywords:keywords} });
   }else {
-    message.warning("请输入关键字");
+    // message.warning("请输入关键字");
+    showFiledError.value = true;
   }
 }
 
@@ -42,6 +44,12 @@ onMounted(() => {
   }
 })
 
+const changeSearchText = () => {
+  if(searchFields) {
+    showFiledError.value = false;
+  }
+}
+
 const goAdvanceSearch = () => {
   localStorage.removeItem('formstate');
   route.name === 'AdvancedSearch' ? location.reload() : router.push({name: 'AdvancedSearch'})
@@ -60,10 +68,11 @@ router.push({name: 'MoreLibrary', params: {id} });
       size="large"
       v-model:value="searchFields"
       style="width: 50%"
+      @change="changeSearchText"
     >
       <template #addonBefore>
         <div class="cursor-pointer">
-          <a-select v-model:value="searchType">
+          <a-select v-model:value="searchType" @change="changeSearchText">
             <a-select-option :value="0">全部</a-select-option>
             <a-select-option :value="1">关键词</a-select-option>
             <a-select-option :value="2">标签</a-select-option>
@@ -83,6 +92,7 @@ router.push({name: 'MoreLibrary', params: {id} });
       <double-right-outlined />
     </span>
   </div>
+  <div v-if="showFiledError" class="c-#f243d9 w-50% flex items-center justify-center">请输入关键字</div>
   <div class="content-text-wrapper flex justify-center p-4" v-if='repository_suggest_list && repository_suggest_list.length'>
     <div class="text-wrapper flex-col" v-for="suggest_item in repository_suggest_list">
       <span class="text cursor-pointer" @click="openRepository(suggest_item.id)">{{suggest_item.name}}</span>

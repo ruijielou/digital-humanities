@@ -6,6 +6,7 @@ import { message } from "ant-design-vue";
 import { ref } from "vue";
 
 const searchFields = ref<string>("");
+const showFiledError = ref<boolean>(false);
 
 const router = useRouter();
 const do_search = () => {
@@ -13,9 +14,15 @@ const do_search = () => {
   if (keywords) {
     router.push({ name: "SearchResult", query: { keywords: keywords } });
   } else {
-    message.warning("请输入关键字");
+    // message.warning("请输入关键字");
+    showFiledError.value = true;
   }
 };
+const changeSearchText = () => {
+  if(searchFields) {
+    showFiledError.value = false;
+  }
+}
 </script>
 <template>
   <div class="footer">
@@ -37,11 +44,12 @@ const do_search = () => {
         </div>
       </div>
       <div class="flex-2 footer-search p-t-20">
-        <a-input v-model:value="searchFields">
+        <a-input v-model:value="searchFields" @change="changeSearchText">
           <template #suffix>
             <SearchOutlined @click="do_search()" />
           </template>
         </a-input>
+        <div v-if="showFiledError" class="c-#f243d9">请输入关键字</div>
       </div>
     </div>
 <!--    <div class="copyright text-center c-white text-2">Copyright © 2019-2013 | 北京立鹏文采科技有限公司 | <a style="color: white" href="https://beian.miit.gov.cn/#/Integrated/index">京ICP备19054905号</a></div>-->
