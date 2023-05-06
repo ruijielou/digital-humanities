@@ -72,11 +72,11 @@ router.push({name: 'MoreLibrary', params: {id} });
     >
       <template #addonBefore>
         <div class="cursor-pointer">
-          <a-select v-model:value="searchType" @change="changeSearchText">
-            <a-select-option :value="0">全部</a-select-option>
-            <a-select-option :value="1">关键词</a-select-option>
+          <a-select v-model:value="searchType">
+            <a-select-option :value="0">全文</a-select-option>
+<!--            <a-select-option :value="1">关键词</a-select-option>-->
             <a-select-option :value="2">标签</a-select-option>
-            <a-select-option :value="3">全文</a-select-option>
+<!--            <a-select-option :value="3">全文</a-select-option>-->
           </a-select>
         </div>
       </template>
