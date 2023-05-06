@@ -58,6 +58,7 @@ const groupData = ref<any>([]);
 const chooseCustomTag = () => {
   caseType.value = CaseType.Custom;
   selectedTag.value = [];
+  currentStep.value = currentStep.value + 1;//选择自定义案例库直接进入下一步
 };
 
 const customCaseRef = ref<any>(null);
