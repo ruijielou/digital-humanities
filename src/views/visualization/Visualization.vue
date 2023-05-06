@@ -123,6 +123,10 @@ const initChart = async (type: componentMap) => {
   window.addEventListener("resize", () => {
     chartInit.value.resize();
   });
+  // chartInit.value.on("click", "series", (params:any) => {
+  //   currentId.value = params.data?.value;
+  //   initChart(currentType.value);
+  // });
 };
 
 const changeView = (id: string) => {
@@ -203,7 +207,13 @@ load_case_location();
           >
             <div
               class="h-120px w-100% item-bg"
-              :style="{backgroundImage: `url(${case_location.cover ? (imgBaseUrl + case_location.cover) : '/src/assets/image/card.png'})`}"
+              :style="{
+                backgroundImage: `url(${
+                  case_location.cover
+                    ? imgBaseUrl + case_location.cover
+                    : '/src/assets/image/card.png'
+                })`,
+              }"
             ></div>
             <div class="p-4 library-bottom-desc flex-1">
               <div class="line-clamp-2">

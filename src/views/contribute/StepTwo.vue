@@ -3,7 +3,7 @@ import { nextTick, reactive, ref, watch } from "vue";
 import { message } from "ant-design-vue";
 import { format_file_url, imgBaseUrl } from "@/utils/config";
 // import { MetaGroupConstant } from "@/utils/constan";
-import { CloseCircleOutlined, DeleteOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons-vue";
+import { CloseCircleOutlined, DeleteOutlined, LoadingOutlined, PlusOutlined,  InboxOutlined } from "@ant-design/icons-vue";
 import { commonUpload } from "@/api";
 
 const props = defineProps<{
