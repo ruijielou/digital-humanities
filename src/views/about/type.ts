@@ -11,6 +11,7 @@ export interface MessageItemType {
     createTime: string;
     content: string;
     isRead?: BooleanStatus;
+    title: string;
   }
 export interface CommentItemType {
     username: string;

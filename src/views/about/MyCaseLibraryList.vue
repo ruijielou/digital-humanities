@@ -10,6 +10,7 @@ import { caseinfo, repository, caseApi, repositorygroup } from "@/api";
 import { useRoute, useRouter } from "vue-router";
 import { message, Modal } from "ant-design-vue";
 import Migrate from "./components/Migrate.vue";
+import LogoText from "../../components/LogoText.vue";
 
 type Key = string | number;
 const route = useRoute();

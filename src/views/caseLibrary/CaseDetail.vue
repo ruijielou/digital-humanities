@@ -3,7 +3,6 @@ import { nextTick, reactive, ref } from "vue";
 import { Colors } from "../../utils/type";
 import { BooleanStatus, LikeStatus } from "@/utils/type";
 import CollectionModal from "@/components/CollectionGroup.vue";
-import { Base64 } from 'js-base64';
 
 import {
   ArrowLeftOutlined,
@@ -69,7 +68,11 @@ const getDetail = async () => {
     : [];
   formModel.relateList = result.relateList ? [...result.relateList] : [];
   formModel.caseinfo = result.caseinfo ? { ...result.caseinfo } : {};
-  formModel.metaGroupList[0] && changeCurrentKey(formModel.metaGroupList[0].id);
+  if(formModel.metaGroupList && formModel.metaGroupList.length){
+    formModel.metaGroupList.forEach((item:any) => {
+      changeCurrentKey(item.id)
+    });
+  };
   getFavoriteStatus();
 };
 getDetail();
