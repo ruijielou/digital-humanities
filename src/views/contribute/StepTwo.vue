@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { nextTick, reactive, ref, watch } from "vue";
 import { message } from "ant-design-vue";
-import { format_file_url, imgBaseUrl } from "@/utils/config";
+import { format_file_url, imgBaseUrl, dateFormatMap } from "@/utils/config";
 // import { MetaGroupConstant } from "@/utils/constan";
 import {
   CloseCircleOutlined,
@@ -11,11 +11,6 @@ import {
   InboxOutlined,
 } from "@ant-design/icons-vue";
 import { commonUpload } from "@/api";
-const dateFormatMap = {
-  date: "YYYY-MM-DD",
-  month: "YYYY-MM",
-  year: "YYYY",
-};
 
 const props = defineProps<{
   selectedTag: any[] | null;

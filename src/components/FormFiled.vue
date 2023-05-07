@@ -1,27 +1,33 @@
 <script setup lang="ts">
 import { reactive, watch, ref, nextTick, defineExpose } from "vue";
-import { useRoute } from "vue-router";
-
+import { dateFormatMap } from "@/utils/config";
 // 声明 $route 变量类型
 
 const props = defineProps<{
   formModal?: any;
   formData: any;
   layout: any;
+  dateInstant: any;
 }>();
 
-const route = useRoute();
-// const $route: Ref<RouteLocationNormalized> = $route
 const formRef = ref<any>(null);
 const formState = reactive<any>({
   formFiledData: {},
+  dateInstant: {},
 });
 const initForm = () => {
   if (props.formModal) {
     formState.formFiledData = { ...props.formModal };
-    setData();
+  }
+  if (props.dateInstant) {
+    formState.dateInstant = { ...props.dateInstant };
   }
 };
+
+const changeDataFormater = (key) => {
+  formState.formFiledData[key] = "";
+};
+
 watch(
   () => props.formModal,
   (val) => {
@@ -30,34 +36,8 @@ watch(
   { immediate: true }
 );
 
-// watch(
-//   route,
-//   (to, from) => {
-//     if (from?.name === "CaseDetail" || !from) {
-//       setData();
-//     }
-//   },
-//   { immediate: true } // 如果要立即执行一次，请添加此选项
-// );
-
 const formValidate = async () => {
   return await formRef.value.validate();
-};
-const setData = () => {
-  const localData =
-    localStorage.formstate && JSON.parse(localStorage.formstate);
-  if (localData) {
-    //如果有缓存的数据就添加进去，记住搜索
-    const copyFormModel = { ...formState.formFiledData };
-    Object.keys(localData).forEach((key) => {
-      if (localData[key] && copyFormModel[key] != undefined) {
-        copyFormModel[key] = localData[key];
-      }
-    });
-    nextTick(() => {
-      formState.formFiledData = { ...copyFormModel };
-    });
-  }
 };
 
 defineExpose({ formState, formValidate });
@@ -88,13 +68,40 @@ defineExpose({ formState, formValidate });
           v-model:value="formState.formFiledData[`form_${col.id}`]"
           :rows="4"
         />
-        <a-date-picker
+        <!-- <a-date-picker
         placeholder="请选择"
         class="w-100%"
           v-else-if="col.dataType === 3"
           v-model:value="formState.formFiledData[`${col.filed}`]"
           value-format="YYYY-MM-DD"
-        />
+        /> -->
+        <a-date-picker
+          class="w-100%"
+          v-model:value="formState.formFiledData[`${col.filed}`]"
+          :placeholder="col.placeholder || '请选择' + col.name"
+          :picker="
+            formState.dateInstant[col.filed]
+              ? formState.dateInstant[col.filed]
+              : 'date'
+          "
+          :value-format="
+            formState.dateInstant[col.filed]
+              ? dateFormatMap[formState.dateInstant[col.filed]]
+              : dateFormatMap.date
+          "
+          v-else-if="col.dataType === 3"
+        >
+          <template #renderExtraFooter>
+            <a-select
+              v-model:value="formState.dateInstant[col.filed]"
+              @change="changeDataFormater(col.filed)"
+            >
+              <a-select-option value="date">年-月-日</a-select-option>
+              <a-select-option value="month">年-月</a-select-option>
+              <a-select-option value="year">年</a-select-option>
+            </a-select>
+          </template>
+        </a-date-picker>
         <a-input-number
           placeholder="请输入"
           v-else-if="col.dataType === 4"
