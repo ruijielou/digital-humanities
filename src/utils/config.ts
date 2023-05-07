@@ -111,11 +111,6 @@ export const formatterFormInput = (props: any, sourceData?: any) => {
   const dateInstant: any = {}; //初始化日期格式的类型
   for (const item of props.result) {
     // 1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接 13:选择输入框(推荐文本) 14:数据库选项  多选 15:数据库多选 16:标签 多选
-    // if ([6, 9, 13, 14, 15, 16, 17].includes(item.dataType)) {
-    //   data[item.filed] = []; //初始化多选值
-    // } else {
-    //   data[item.filed] = "";
-    // }
     if ([6, 9, 13, 14, 15, 16, 17].includes(item.dataType)) {
       data[item.filed] = sourceData && sourceData[item.filed] ? sourceData[item.filed] : [];
     } else {
@@ -125,7 +120,6 @@ export const formatterFormInput = (props: any, sourceData?: any) => {
       dateInstant[item.filed] = getDateFormatter(sourceData && sourceData[item.filed])
     }
   }
-  debugger
   //  1:单行文本, 2:多行文本, 3:日期时间, 4:数字, 5:单选, 6:多选, 7:下拉框, 8:地址, 9:图片, 10:手机号, 11:邮箱, 12:链接
   return { formModal: data, dateInstant }
 }
