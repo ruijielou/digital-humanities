@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import CardFooter from "./CardFooter.vue";
 import type { CardType } from "./type";
+import { imgBaseUrl } from "@/utils/config";
+
 const emit = defineEmits(["cancelFavorited"]);
 const props = withDefaults(
   defineProps<{
@@ -23,12 +25,12 @@ const favorited = (id: number) => {
   <div
     class="w-100% flex flex-col card-item"
     :class="{ hoverCard: hoverCard }"
-    :style="{ backgroundImage: hoverCard ? `url(${card?.lastCover})` : '' }"
+    :style="{ backgroundImage: hoverCard && card.lastCover ? `url(${imgBaseUrl + card.lastCover})` : '' }"
   >
     <div
       class="card-image"
       :style="{
-        backgroundImage: `url(${card.cover || '/src/assets/image/card.png'})`,
+        backgroundImage: `url(${card.cover ? (imgBaseUrl + card.cover ): '/src/assets/image/card.png'})`,
         opacity: hoverCard ? 0 : 1,
       }"
     ></div>

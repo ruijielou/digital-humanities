@@ -38,6 +38,7 @@ const stepTwoRef = ref<any>(null);
 const stepTwoData = reactive<any>({
   data: null,
   formModal: null,
+  dateInstant: {}
 });
 const formModel = reactive<any>({
   caseinfo: {},
@@ -96,9 +97,10 @@ const getTwoFormInput = async () => {
     //方法未对表单的值进行全部初始化，暂时不用
     // case_data_info = convert_case_data(case_data_info, result);
 
-    const { formModal } = formatterFormInput({ result }, case_data_info);
+    const { formModal,dateInstant } = formatterFormInput({ result }, case_data_info);
     stepTwoData.formModal = { ...formModal };
     stepTwoData.data = [...result];
+    stepTwoData.dateInstant = {...dateInstant};
     loading.value = false;
     repositoryList.value = formResult.result?.repositoryList;
   }
@@ -240,6 +242,7 @@ const to_new_page = (url:string) => {
           :selected-tag="repositoryList"
           :form-modal="stepTwoData.formModal"
           :form-data="stepTwoData.data"
+          :dateInstant="stepTwoData.dateInstant"
         />
       </div>
       <div v-else class="detail-content">

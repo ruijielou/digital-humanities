@@ -3,13 +3,25 @@ import { nextTick, reactive, ref, watch } from "vue";
 import { message } from "ant-design-vue";
 import { format_file_url, imgBaseUrl } from "@/utils/config";
 // import { MetaGroupConstant } from "@/utils/constan";
-import { CloseCircleOutlined, DeleteOutlined, LoadingOutlined, PlusOutlined,  InboxOutlined } from "@ant-design/icons-vue";
+import {
+  CloseCircleOutlined,
+  DeleteOutlined,
+  LoadingOutlined,
+  PlusOutlined,
+  InboxOutlined,
+} from "@ant-design/icons-vue";
 import { commonUpload } from "@/api";
+const dateFormatMap = {
+  date: "YYYY-MM-DD",
+  month: "YYYY-MM",
+  year: "YYYY",
+};
 
 const props = defineProps<{
   selectedTag: any[] | null;
   formModal?: any;
-  formData: any;
+  dateInstant?: any;
+  formData: any
 }>();
 const inputRef = ref<any>(null); //自定义标签的输入框
 const inputVisible = ref<boolean>(false);
@@ -19,8 +31,8 @@ const formRef = ref<any>(null);
 const loading = ref<boolean>(false);
 const formState = reactive<any>({
   caseData: {},
+  dateInstant: {}
 });
-
 
 const sugget_city_latlng_map = ref<any>({});
 const city_latlng_map = ref<any>({});
@@ -36,37 +48,40 @@ const layout = {
 const initForm = () => {
   if (props.formModal) {
     formState.caseData = { ...props.formModal };
-    console.log('props.formData:', props.formData)
+    formState.dateInstant = {...props.dateInstant}
+    
     init_sugget_city_latlng_map(props.formData);
     load_city_latlng_map(props.formModal);
   }
 };
 
-function load_city_latlng_map(res:any){
-  for(let field in res){
-    if(field.startsWith('city_')){
-      console.log('i:', field);
-      if(res[field]){
+function load_city_latlng_map(res: any) {
+  for (let field in res) {
+    if (field.startsWith("city_")) {
+      console.log("i:", field);
+      if (res[field]) {
         city_latlng_map.value[field] = JSON.parse(res[field]);
       }
     }
-    console.log('city_latlng_map:', city_latlng_map.value)
+    console.log("city_latlng_map:", city_latlng_map.value);
   }
-
 }
 
 const formValidate = async () => {
   try {
-    console.log('city_latlng_map:', JSON.parse(JSON.stringify(city_latlng_map.value)));
-    let values = await formRef.value.validate()
-    let city_latlng_values:any = {};
-    for(let i in city_latlng_map.value){
+    console.log(
+      "city_latlng_map:",
+      JSON.parse(JSON.stringify(city_latlng_map.value))
+    );
+    let values = await formRef.value.validate();
+    let city_latlng_values: any = {};
+    for (let i in city_latlng_map.value) {
       let lats = city_latlng_map.value[i];
-      console.log('field:', i, ', type:', typeof lats, ', value:', lats)
-      if(typeof lats == 'string'){
+      console.log("field:", i, ", type:", typeof lats, ", value:", lats);
+      if (typeof lats == "string") {
         city_latlng_values[i] = lats;
-      }else {
-        city_latlng_values[i] = JSON.stringify(lats)
+      } else {
+        city_latlng_values[i] = JSON.stringify(lats);
       }
     }
 
@@ -74,14 +89,13 @@ const formValidate = async () => {
     // Object.assign(values.caseData, city_latlng_values);
     // console.log('values.caseData:', values.caseData);
     Object.assign(formState.caseData, city_latlng_values);
-    console.log('formState.caseData:', formState.caseData);
+    console.log("formState.caseData:", formState.caseData);
 
-    return (values) && formState;
+    return values && formState;
   } catch (error) {
     message.warning("请检查表单的完整性");
   }
 };
-
 
 /**
  * 上传图片
@@ -147,18 +161,17 @@ const handleInputConfirm = (key: string) => {
   inputValue.value = "";
 };
 
-
-const init_sugget_city_latlng_map = (formData:any) => {
-  console.log('formData:', formData);
-  for(let i in formData){
+const init_sugget_city_latlng_map = (formData: any) => {
+  console.log("formData:", formData);
+  for (let i in formData) {
     let group = formData[i];
-    if(group.metaList){
-      for(let j in group.metaList){
+    if (group.metaList) {
+      for (let j in group.metaList) {
         let mata = group.metaList[j];
-        if(mata.id == 334){
+        if (mata.id == 334) {
           let optList = mata.optList;
-          if(optList && optList.length > 0){
-            for(let i in optList){
+          if (optList && optList.length > 0) {
+            for (let i in optList) {
               let opt = optList[i];
               sugget_city_latlng_map.value[opt.text] = opt.ext;
             }
@@ -167,28 +180,34 @@ const init_sugget_city_latlng_map = (formData:any) => {
       }
     }
   }
-  console.log('sugget_city_latlng_map.value:', sugget_city_latlng_map.value);
-}
+  console.log("sugget_city_latlng_map.value:", sugget_city_latlng_map.value);
+};
 
-function chang_select(vals:any[], field:string){
-  console.log('field:', field, ', vals:', vals);
-  if(field == ('form_' + 334)){
-    if(vals){
+function chang_select(vals: any[], field: string) {
+  console.log("field:", field, ", vals:", vals);
+  if (field == "form_" + 334) {
+    if (vals) {
       let citys = vals;
-      let select_latlngs:any = {}
-      for(let i in citys){
+      let select_latlngs: any = {};
+      for (let i in citys) {
         let city = citys[i];
-        let latlng = sugget_city_latlng_map.value[city] || city_latlng_map.value[field.replace('form_', 'city_')]['city_' + city];
-        if(latlng){
-          select_latlngs['city_' + city] = latlng;
+        let latlng =
+          sugget_city_latlng_map.value[city] ||
+          city_latlng_map.value[field.replace("form_", "city_")][
+            "city_" + city
+          ];
+        if (latlng) {
+          select_latlngs["city_" + city] = latlng;
         }
       }
-      city_latlng_map.value[field.replace('form_', 'city_')] = select_latlngs;
-      console.log('city_latlng_map.value:', city_latlng_map.value);
+      city_latlng_map.value[field.replace("form_", "city_")] = select_latlngs;
+      console.log("city_latlng_map.value:", city_latlng_map.value);
     }
   }
 }
-
+const changeDataFormater = (key) => {
+  formState.caseData[key] = ""
+}
 watch(
   () => props.formData,
   (val) => {
@@ -221,7 +240,7 @@ defineExpose({ formState, formValidate });
       ref="formRef"
       :model="formState"
     >
-
+    
       <div
         class="form-container flex-1"
         style="padding-left: 3em"
@@ -291,13 +310,29 @@ defineExpose({ formState, formValidate });
                   v-model:value="formState.caseData[`form_${col.id}`]"
                   :rows="4"
                 />
-                <a-date-picker
+                <!-- <a-date-picker
                   class="w-100%"
                   :placeholder="col.placeholder || '请选择 ' + col.name"
                   v-else-if="col.dataType === 3"
                   v-model:value="formState.caseData[`${col.filed}`]"
                   value-format="YYYY-MM-DD"
-                />
+                /> -->
+                <a-date-picker
+                  class="w-100%"
+                  v-model:value="formState.caseData[`${col.filed}`]"
+                  :placeholder="col.placeholder || '请选择' + col.name"
+                  :picker="formState.dateInstant[col.filed] ? formState.dateInstant[col.filed] : 'date'"
+                  :value-format='formState.dateInstant[col.filed] ? dateFormatMap[formState.dateInstant[col.filed]] : dateFormatMap.date'
+                  v-else-if="col.dataType === 3"
+                >
+                  <template #renderExtraFooter>
+                    <a-select v-model:value="formState.dateInstant[col.filed]" @change="changeDataFormater(col.filed)">
+                      <a-select-option value="date">年-月-日</a-select-option>
+                      <a-select-option value="month">年-月</a-select-option>
+                      <a-select-option value="year">年</a-select-option>
+                    </a-select>
+                  </template>
+                </a-date-picker>
                 <a-input-number
                   :placeholder="col.placeholder || '请输入 ' + col.name"
                   v-else-if="col.dataType === 4"
@@ -420,7 +455,7 @@ defineExpose({ formState, formValidate });
                   :showSearch="true"
                   v-model:value="formState.caseData[`${col.filed}`]"
                   mode="tags"
-                  @change="value => chang_select(value, col.filed)"
+                  @change="(value) => chang_select(value, col.filed)"
                   style="width: 100%"
                   :token-separators="[',']"
                 >

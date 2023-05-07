@@ -28,7 +28,7 @@ const changeKeys = ($event: any, filed: string) => {
 };
 const getName = (data: any, filed: string) => {
   const filterData = data.find(
-    (item: any) => item.value === optionsData.formState[filed]
+    (item: any) => item.text === optionsData.formState[filed]
   );
   return filterData?.text || "";
 };

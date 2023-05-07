@@ -1,14 +1,17 @@
 <script lang="ts" setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, watch } from "vue";
 import type { PageinationType } from "../../utils/type";
 import { caseinfo } from "@/api";
+import { useRoute, useRouter } from "vue-router";
+const route = useRoute();
+const router = useRouter();
 // case/myPage
 enum CaseType {
   // status 1: 暂存 2:待审核, 3:审核通过 4:未通过
-  Staging = 1,
-  PendingReview,
-  Approved,
-  NotApproved,
+  Staging = '1',
+  PendingReview = '2',
+  Approved = '3',
+  NotApproved = '4',
 }
 const CaseTypeMap = [
   { type: CaseType.Approved, name: "Approved", label: "已发布" },
@@ -56,14 +59,23 @@ const getCaseData = async () => {
   }
 };
 
-getCaseData();
+// getCaseData();
 
 const changeType = (type: CaseType) => {
-  tableCaseType.value = type;
-  pagination.current = 1;
-  getCaseData();
+  router.push({ name: route.name, query: { ...route.query, type } });
+  // tableCaseType.value = type;
+  // pagination.current = 1;
+  // getCaseData();
 };
-
+watch(
+  route,
+  (to, from) => {
+    tableCaseType.value = to.query.type ? to.query.type as CaseType : CaseType.Approved;
+    pagination.current = 1;
+    getCaseData();
+  },
+  { immediate: true } // 如果要立即执行一次，请添加此选项
+);
 const handleTableChange = async (newpager: any) => {
   pagination.total = newpager.total;
   pagination.current = newpager.current;
@@ -104,13 +116,14 @@ const handleTableChange = async (newpager: any) => {
             "
             v-if="column.dataIndex === 'name'"
           >
-            {{ `${((pagination.current -1 ) * pagination.pageSize) + index + 1}` }}
-
+            {{
+              `${(pagination.current - 1) * pagination.pageSize + index + 1}`
+            }}
 
             <span class="m-l-1">{{ text }}</span>
             <a-tooltip v-if="record.status == 4">
-              <template #title>{{record.verifyText}}</template>
-              <span style="color: #F56785" class="m-l-6">未通过原因</span>
+              <template #title>{{ record.verifyText }}</template>
+              <span style="color: #f56785" class="m-l-6">未通过原因</span>
             </a-tooltip>
           </div>
         </template>

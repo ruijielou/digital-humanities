@@ -66,6 +66,7 @@ const stepTwoRef = ref<any>(null);
 const stepTwoData = reactive<any>({
   data: null,
   formModal: null,
+  dateInstant: {}
 });
 
 const gotoNext = async (status?: number) => {
@@ -118,9 +119,10 @@ const getTwoFormInput = async () => {
   const { result } = await meta.findFormListGroup(idList.join(","));
 
   if (result) {
-    const { formModal } = formatterFormInput({ result });
+    const { formModal,dateInstant } = formatterFormInput({ result });
     stepTwoData.formModal = { ...formModal };
     stepTwoData.data = [...result];
+    stepTwoData.dateInstant = {...dateInstant};
   }
   return true;
 };
@@ -169,6 +171,7 @@ onMounted(() => {
         ref="stepTwoRef"
         :form-modal="stepTwoData.formModal"
         :form-data="stepTwoData.data"
+        :dateInstant="stepTwoData.dateInstant"
         v-show="getCurrentTypeTemplate() == 'StepTwo'"
       />
       <div v-for="(item, index) in stepData">
