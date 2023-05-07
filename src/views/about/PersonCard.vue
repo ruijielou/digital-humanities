@@ -7,6 +7,8 @@ import {
 import { useUserStore } from "@/store/user";
 import { Modal } from "ant-design-vue";
 import { imgBaseUrl } from "@/utils/config";
+import {useRouter} from "vue-router"
+const router = useRouter()
 
 const { userInfo, logout } = useUserStore();
 const myMenus = [
@@ -44,7 +46,8 @@ const logoutCallback = () => {
     cancelText: "取消",
     onOk: () => {
       logout();
-      location.reload();
+      router.push({name:"home"})
+      // location.reload();
     },
   });
 };

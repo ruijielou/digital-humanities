@@ -7,13 +7,11 @@ import {
   SortDescendingOutlined,
 } from "@ant-design/icons-vue";
 import { caseinfo, repository, repositorygroup } from "@/api";
-import { useRoute } from "vue-router";
-import QueryFiled from "@/components/QueryFiled.vue"
+import { useRoute, useRouter } from "vue-router";
+import QueryFiled from "@/components/QueryFiled.vue";
 
 const route = useRoute();
-
-const selectContry = ref<string>("中国");
-const selectFiled = ref<string>("项目时间");
+const router = useRouter();
 const loading = ref<boolean>(false);
 const sliderData = ref<any>([]);
 
@@ -66,10 +64,10 @@ const pagination = reactive<PageinationType>({
   column: "name",
   order: "asc",
 });
-const queryParams = reactive<any>({data: {}})
-const getLibraryList = async (params?:any) => {
-  if(params) {
-    queryParams.data = {...params}
+const queryParams = reactive<any>({ data: {} });
+const getLibraryList = async (params?: any) => {
+  if (params) {
+    queryParams.data = { ...params };
   }
   const { result } = await caseinfo.page({
     repositoryId: repository_id.value,
@@ -77,7 +75,7 @@ const getLibraryList = async (params?:any) => {
     pageSize: pagination.pageSize,
     column: pagination.column,
     order: pagination.order,
-    ...queryParams.data
+    ...queryParams.data,
   });
   if (result) {
     dataSource.value = [...result.records];
@@ -103,19 +101,22 @@ const getSlider = async () => {
     const firstData = sliderData.value.find(
       (item: any) => item.repositoryList.length > 0
     );
-    if (firstData && !repository_id.value) {
+
+    if (firstData && (!repository_id.value || repository_id.value === "-1")) {
       repository_id.value = firstData.repositoryList[0].id;
     }
   }
 };
 
+const checkRepositoryId = (id:string) => {
+  router.push({ name: route.name, params: { id } });
+};
 const reset_repository = (id: any) => {
   repository_id.value = id;
-  if(id != -1){
+  if (id != -1) {
     getRepositoryDetail();
     getLibraryList();
-  }else{
-
+  } else {
   }
 };
 const initPage = async () => {
@@ -125,10 +126,10 @@ const initPage = async () => {
 };
 watch(
   route,
-  (to, from) => {
+  (to) => {
     reset_repository(to.params.id);
   },
-  { immediate: true } // 如果要立即执行一次，请添加此选项
+  // { immediate: true } // 如果要立即执行一次，请添加此选项
 );
 initPage();
 </script>
@@ -152,7 +153,7 @@ initPage();
             :class="{ active: repository_item.id == repository_id }"
             v-for="repository_item in item.repositoryList"
           >
-            <span @click="reset_repository(repository_item.id)">{{
+            <span @click="checkRepositoryId(repository_item.id)">{{
               repository_item.name
             }}</span>
           </div>

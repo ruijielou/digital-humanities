@@ -17,7 +17,7 @@ export function createRouterGuards(router: any, whiteNameList: string[]) {
      */
     if (!token && (to.path.includes('/about') || to.name === 'Contribute')) {
       userStore.openLogin();
-      next(false);
+      next();
     } else {
       if (token) {
         const [err] = await _to(userStore.afterLogin());

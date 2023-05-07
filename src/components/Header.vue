@@ -40,12 +40,7 @@ const openLoginModal = () => {
     router.push({ name: "SubmissionManage" });
   }
 };
-watch(
-  () => userStore.isOpenLogin,
-  (val) => {
-    val && openLoginModal();
-  }
-);
+
 const visible = ref<boolean>(false);
 const changeVisibile = () => {
   visible.value = !visible.value;
@@ -76,9 +71,6 @@ const goPages = (name: string) => {
       <span class="m-l-4" @click="router.push({ name: 'Messages' })">
         <IconMessage class="cursor-pointer" />
       </span>
-      <!-- <span v-if="userStore.userInfo?.avatar">
-       
-      </span> -->
       <span
         class="m-l-4 cursor-pointer"
         @click="openLoginModal"
@@ -94,7 +86,6 @@ const goPages = (name: string) => {
         >
         </a-avatar>
         <IconUser v-else />
-        <!-- {{ userStore.userInfo?.username  }} -->
       </span>
     </div>
     <a-modal

@@ -139,7 +139,13 @@ const setNewPassword = async (params: LoginState) => {
     changeLoginType(LoginTypeMap.Password)
   }
 };
-
+watch(
+  () => userStore.isOpenLogin,
+  (val) => {
+    val && (visible.value = true);
+  },
+  {immediate: true}
+);
 defineExpose({ visible, changeLoginType });
 </script>
 
