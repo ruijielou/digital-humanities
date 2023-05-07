@@ -75,33 +75,33 @@ defineExpose({ formState, formValidate });
           v-model:value="formState.formFiledData[`${col.filed}`]"
           value-format="YYYY-MM-DD"
         /> -->
-        <a-date-picker
-          class="w-100%"
-          v-model:value="formState.formFiledData[`${col.filed}`]"
-          :placeholder="col.placeholder || '请选择' + col.name"
-          :picker="
-            formState.dateInstant[col.filed]
-              ? formState.dateInstant[col.filed]
-              : 'date'
-          "
-          :value-format="
-            formState.dateInstant[col.filed]
-              ? dateFormatMap[formState.dateInstant[col.filed]]
-              : dateFormatMap.date
-          "
-          v-else-if="col.dataType === 3"
-        >
-          <template #renderExtraFooter>
-            <a-select
-              v-model:value="formState.dateInstant[col.filed]"
-              @change="changeDataFormater(col.filed)"
-            >
-              <a-select-option value="date">年-月-日</a-select-option>
-              <a-select-option value="month">年-月</a-select-option>
-              <a-select-option value="year">年</a-select-option>
-            </a-select>
-          </template>
-        </a-date-picker>
+        <div class="flex" v-else-if="col.dataType === 3">
+          <a-date-picker
+            class="w-70%"
+            v-model:value="formState.formFiledData[`${col.filed}`]"
+            :placeholder="col.placeholder || '请选择' + col.name"
+            :picker="
+              formState.dateInstant[col.filed]
+                ? formState.dateInstant[col.filed]
+                : 'date'
+            "
+            :value-format="
+              formState.dateInstant[col.filed]
+                ? dateFormatMap[formState.dateInstant[col.filed]]
+                : dateFormatMap.date
+            "
+          >
+          </a-date-picker>
+          <a-select
+          class="flex-1 m-l-5px"
+            v-model:value="formState.dateInstant[col.filed]"
+            @change="changeDataFormater(col.filed)"
+          >
+            <a-select-option value="date">年-月-日</a-select-option>
+            <a-select-option value="month">年-月</a-select-option>
+            <a-select-option value="year">年</a-select-option>
+          </a-select>
+        </div>
         <a-input-number
           placeholder="请输入"
           v-else-if="col.dataType === 4"

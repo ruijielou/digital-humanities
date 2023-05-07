@@ -16,7 +16,7 @@ const props = defineProps<{
   selectedTag: any[] | null;
   formModal?: any;
   dateInstant?: any;
-  formData: any
+  formData: any;
 }>();
 const inputRef = ref<any>(null); //自定义标签的输入框
 const inputVisible = ref<boolean>(false);
@@ -26,7 +26,7 @@ const formRef = ref<any>(null);
 const loading = ref<boolean>(false);
 const formState = reactive<any>({
   caseData: {},
-  dateInstant: {}
+  dateInstant: {},
 });
 
 const sugget_city_latlng_map = ref<any>({});
@@ -43,8 +43,8 @@ const layout = {
 const initForm = () => {
   if (props.formModal) {
     formState.caseData = { ...props.formModal };
-    formState.dateInstant = {...props.dateInstant}
-    
+    formState.dateInstant = { ...props.dateInstant };
+
     init_sugget_city_latlng_map(props.formData);
     load_city_latlng_map(props.formModal);
   }
@@ -79,7 +79,6 @@ const formValidate = async () => {
         city_latlng_values[i] = JSON.stringify(lats);
       }
     }
-
 
     // Object.assign(values.caseData, city_latlng_values);
     // console.log('values.caseData:', values.caseData);
@@ -200,9 +199,9 @@ function chang_select(vals: any[], field: string) {
     }
   }
 }
-const changeDataFormater = (key:string) => {
-  formState.caseData[key] = ""
-}
+const changeDataFormater = (key: string) => {
+  formState.caseData[key] = "";
+};
 watch(
   () => props.formData,
   (val) => {
@@ -235,7 +234,6 @@ defineExpose({ formState, formValidate });
       ref="formRef"
       :model="formState"
     >
-    
       <div
         class="form-container flex-1"
         style="padding-left: 3em"
@@ -312,22 +310,34 @@ defineExpose({ formState, formValidate });
                   v-model:value="formState.caseData[`${col.filed}`]"
                   value-format="YYYY-MM-DD"
                 /> -->
-                <a-date-picker
-                  class="w-100%"
-                  v-model:value="formState.caseData[`${col.filed}`]"
-                  :placeholder="col.placeholder || '请选择' + col.name"
-                  :picker="formState.dateInstant[col.filed] ? formState.dateInstant[col.filed] : 'date'"
-                  :value-format='formState.dateInstant[col.filed] ? dateFormatMap[formState.dateInstant[col.filed]] : dateFormatMap.date'
-                  v-else-if="col.dataType === 3"
-                >
-                  <template #renderExtraFooter>
-                    <a-select v-model:value="formState.dateInstant[col.filed]" @change="changeDataFormater(col.filed)">
+                <div class="flex" v-else-if="col.dataType === 3">
+                  <a-date-picker
+                    class="w-70%"
+                    v-model:value="formState.caseData[`${col.filed}`]"
+                    :placeholder="col.placeholder || '请选择' + col.name"
+                    :picker="
+                      formState.dateInstant[col.filed]
+                        ? formState.dateInstant[col.filed]
+                        : 'date'
+                    "
+                    :value-format="
+                      formState.dateInstant[col.filed]
+                        ? dateFormatMap[formState.dateInstant[col.filed]]
+                        : dateFormatMap.date
+                    "
+                  >
+                  </a-date-picker>
+                    <a-select
+                    class="flex-1 m-l-5px"
+                      v-model:value="formState.dateInstant[col.filed]"
+                      @change="changeDataFormater(col.filed)"
+                    >
                       <a-select-option value="date">年-月-日</a-select-option>
                       <a-select-option value="month">年-月</a-select-option>
                       <a-select-option value="year">年</a-select-option>
                     </a-select>
-                  </template>
-                </a-date-picker>
+                </div>
+
                 <a-input-number
                   :placeholder="col.placeholder || '请输入 ' + col.name"
                   v-else-if="col.dataType === 4"
@@ -482,33 +492,33 @@ defineExpose({ formState, formValidate });
               </a-form-item>
             </template>
             <template v-if="item.name === '标签'">
-              <template
+              <div
+                class="w-33% inline-block p-r-10px"
                 v-for="(tag, index) in formState.caseData.customTag"
                 :key="tag"
               >
-                <a-tooltip v-if="tag.length > 20" :title="tag">
+                <a-tooltip :title="tag">
                   <a-tag
-                    class="w-30% h-32px lh-32px p-r-4 m-r-3% m-b-5 truncate"
+                    class="p-t-5px p-b-5px w-100%"
                     :closable="true"
+                    :title="tag"
                     @close="deleteItemFile(tag, 'customTag')"
                   >
-                    {{ `${tag.slice(0, 20)}...` }}
+                    <!-- class="w-30% h-32px lh-32px m-r-3% m-b-5 truncate" -->
+                    <span
+                      class="truncate inline-block w-86%"
+                      style="vertical-align: middle"
+                    >
+                      {{ tag }}</span
+                    >
                   </a-tag>
                 </a-tooltip>
-                <a-tag
-                  v-else
-                  class="w-30% h-32px lh-32px m-r-3% m-b-5 truncate"
-                  :closable="true"
-                  @close="deleteItemFile(tag, 'customTag')"
-                >
-                  {{ tag }}
-                </a-tag>
-              </template>
-              <span
-                v-if="inputVisible"
-                class="w-30% inline-block h-32px lh-32px m-r-3% m-b-5 truncate"
-              >
+              </div>
+              <div class="w-33% inline-block p-r-10px">
+                <!-- <span v-if="!inputVisible" class="truncate p-t-5px p-b-5px w-100%"> -->
                 <a-input
+                  v-if="inputVisible"
+                  class="p-t-5px p-b-5px w-100%"
                   ref="inputRef"
                   v-model:value="inputValue"
                   type="text"
@@ -516,16 +526,17 @@ defineExpose({ formState, formValidate });
                   @blur="handleInputConfirm('customTag')"
                   @keyup.enter="handleInputConfirm('customTag')"
                 />
-              </span>
-              <a-tag
-                class="w-30% h-32px lh-32px m-r-3% m-b-5 truncate"
-                v-if="!inputVisible"
-                style="background: #fff; border-style: dashed"
-                @click="showInput"
-              >
-                <plus-outlined />
-                自定义标签
-              </a-tag>
+                <!-- </span> -->
+                <a-tag
+                  class="p-t-5px p-b-5px w-100%"
+                  v-if="!inputVisible"
+                  style="background: #fff; border-style: dashed"
+                  @click="showInput"
+                >
+                  <plus-outlined />
+                  自定义标签
+                </a-tag>
+              </div>
             </template>
           </div>
         </template>
