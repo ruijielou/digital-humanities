@@ -95,7 +95,7 @@ onMounted(() => {
         </div>
       </div>
       <div class="more-container">
-        <span class="border-btn" @click="$router.push({ name: 'MoreLibrary', params: { id: cardData[0].repositoryList[0].id} })"
+        <span class="border-btn" @click="$router.push({ name: 'MoreLibrary', params: { id: -1} })"
           >更多</span
         >
       </div>

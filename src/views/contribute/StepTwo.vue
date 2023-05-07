@@ -119,7 +119,7 @@ const changeFile = (info: any, key: any) => {
 /**上传文件 */
 const customRequest = async () => {
   const formData: any = new FormData();
-  formData.append("biz", "temp");
+  formData.append("biz", "szrw");
   formData.append("file", uploadFile.originFileObj);
   const res = await commonUpload(formData);
 

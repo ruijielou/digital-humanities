@@ -216,7 +216,7 @@ const to_new_page = (url:string) => {
           </a-button>
         </div>
         <div class="tool-group" v-else>
-          <a-button v-if="isEdit" class="m-l-4" @click="publish_case(1)">
+          <a-button v-if="isEdit" class="m-l-4" v-show="formModel.caseinfo.status != 2" @click="publish_case(1)">
             暂存
           </a-button>
           <a-button
@@ -227,7 +227,7 @@ const to_new_page = (url:string) => {
           >
             发布
           </a-button>
-          <a-button v-if="!isEdit && formModel.caseinfo.status != 2" @click="changeEdit"> 修改 </a-button>
+          <a-button v-if="!isEdit" @click="changeEdit"> 修改 </a-button>
         </div>
       </div>
       <div v-if="isEdit" style="min-height: 400px">
