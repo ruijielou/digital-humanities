@@ -111,8 +111,12 @@ const getSlider = async () => {
 
 const reset_repository = (id: any) => {
   repository_id.value = id;
-  getRepositoryDetail();
-  getLibraryList();
+  if(id != -1){
+    getRepositoryDetail();
+    getLibraryList();
+  }else{
+
+  }
 };
 const initPage = async () => {
   await getSlider();

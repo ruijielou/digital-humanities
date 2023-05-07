@@ -54,11 +54,11 @@ const logoutCallback = () => {
     <div class="person-detail text-center c-#fff">
       <a-avatar
         shape="circle"
-        v-if="userInfo.avatar"
+        v-if="userInfo && userInfo.avatar"
         :src="`${imgBaseUrl}${userInfo.avatar}`"
         :size="54"
         class="m-t-10"
-        :title="userInfo.username"
+        :title="userInfo && userInfo.username"
       >
         <template #icon>
           <UserOutlined />
@@ -69,14 +69,14 @@ const logoutCallback = () => {
         v-else
         :size="54"
         class="m-t-10"
-        :title="userInfo.username"
+        :title="userInfo && userInfo.username"
       >
         <template #icon>
           <UserOutlined />
         </template>
       </a-avatar>
-      <div class="m-t-2 m-b-2">{{ userInfo.username }}</div>
-      <div>ID:{{ userInfo.code }}</div>
+      <div class="m-t-2 m-b-2">{{ userInfo && userInfo.username }}</div>
+      <div>ID:{{ userInfo && userInfo.code }}</div>
       <div class="flex justify-around items-center m-t-10 p-b-5">
         <span
           class="flex-1 cursor-pointer"

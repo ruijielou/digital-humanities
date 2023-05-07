@@ -115,7 +115,7 @@ const handleOk = () => {
     });
     file.uid = Date.now();
     debugger
-    formData.append("biz", "temp");
+    formData.append("biz", "szrw");
     formData.append("file", file);
 
     const res = await commonUpload(formData);

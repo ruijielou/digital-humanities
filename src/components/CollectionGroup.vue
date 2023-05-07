@@ -20,7 +20,7 @@ const props = defineProps<{
 
 const getCollectionData = async () => {
   const { result } = await favoritegroup.myPage({
-    searchInfo: searchInfo.value,
+    titleFuzzy: searchInfo.value,
   });
   collectionGroup.value = result?.records || [];
 };
@@ -29,7 +29,7 @@ const createGroup = async () => {
   if (!collectionFolderName.value) {
     Modal.error({
       title: "提示",
-      content: "案例名称不能为空",
+      content: "收藏夹名称不能为空",
     });
     return;
   }
@@ -83,7 +83,7 @@ defineExpose({ modalVisibility });
           <a-input
             class="flex-1 m-r-3"
             v-model:value="collectionFolderName"
-            placeholder="案例库名称"
+            placeholder="收藏夹名称"
           ></a-input>
         </a-radio>
         <a-switch v-model:checked="isOpen" checked-children="公开" un-checked-children="私有"></a-switch>
