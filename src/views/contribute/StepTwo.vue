@@ -200,7 +200,7 @@ function chang_select(vals: any[], field: string) {
     }
   }
 }
-const changeDataFormater = (key) => {
+const changeDataFormater = (key:string) => {
   formState.caseData[key] = ""
 }
 watch(

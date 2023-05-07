@@ -1,4 +1,4 @@
-import {getDateFormatter} from "@/utils/comfig"
+import {getDateFormatter} from "@/utils/config"
 
 // 初始化数据结构 案例的编辑和提交
 export const formatterFormInput = (props: any,sourceData?:any) => {

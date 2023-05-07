@@ -23,7 +23,7 @@ getCaseData();
 
 const checkCaseType = (type: CaseType) => {
   // currentType.value = type;
-  router.push({name: route.name, query: {tab: type}})
+  router.push({name: route.name as string, query: {tab: type}})
 }
 
 onMounted(() => {
