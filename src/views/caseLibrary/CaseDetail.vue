@@ -291,7 +291,7 @@ const to_new_page = (url:string) => {
                         <a target="_blank" rel="noopener" class="ant-upload-list-item-name w-80% overflow-hidden" :title="file" :href="format_file_url(file)"        >{{ file }}</a>
                       </div>
                     </div>
-                    <span v-else>{{ col.text }}</span>
+                    <span v-else><div v-html="col.text"></div></span>
                   </template>
                   <a-button
                     style="padding: 0px"
