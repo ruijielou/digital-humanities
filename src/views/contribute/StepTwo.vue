@@ -27,6 +27,7 @@ const loading = ref<boolean>(false);
 const formState = reactive<any>({
   caseData: {},
   dateInstant: {},
+  validateData: {},
 });
 
 const sugget_city_latlng_map = ref<any>({});
@@ -62,6 +63,25 @@ function load_city_latlng_map(res: any) {
   }
 }
 
+/**
+ * 检查敏感词
+ */
+const check_sensitivity = (_rule, value, col) => {
+  const field = _rule["field"].split(".")[1];
+  let sen_rules = formState.validateData[field];
+  if ((!value || value === "" || value.length == 0) && _rule.required) {
+    return Promise.reject(col.name + "不能为空");
+  } else if (sen_rules) {
+    for (let i in sen_rules) {
+      let msg = sen_rules[i];
+      if (value.indexOf(i) >= 0) {
+        return Promise.reject(msg);
+      }
+    }
+  }
+  return Promise.resolve();
+};
+
 const formValidate = async () => {
   try {
     console.log(
@@ -86,9 +106,11 @@ const formValidate = async () => {
     //   }
     // }
     //TODO 增加逻辑, 接口返回的敏感词,
-    let sensitivity_filed = response.result;
-    console.log('sensitivity_filed:', sensitivity_filed);
-
+    formState.validateData = { ...response.result };
+    if (response.result && Object.keys(response.result).length > 0) {
+      await formRef.value.validate(); //如果返回的有不合格的校验，触发一次表单校验
+      return false;
+    }
     let city_latlng_values: any = {};
     for (let i in city_latlng_map.value) {
       let lats = city_latlng_map.value[i];
@@ -107,7 +129,7 @@ const formValidate = async () => {
 
     return values && formState;
   } catch (error) {
-    message.warning("请检查表单的完整性");
+    message.warning("请检查表单");
   }
 };
 
@@ -312,8 +334,9 @@ defineExpose({ formState, formValidate });
                 :rules="[
                   {
                     required: col.isRequired == 1 ? true : false,
-                    message: col.name + '不能为空',
                     trigger: ['change', 'blur'],
+                    validator: (rule, value) =>
+                      check_sensitivity(rule, value, col),
                   },
                 ]"
               >
@@ -347,15 +370,15 @@ defineExpose({ formState, formValidate });
                     "
                   >
                   </a-date-picker>
-                    <a-select
+                  <a-select
                     class="flex-1 m-l-5px"
-                      v-model:value="formState.dateInstant[col.filed]"
-                      @change="changeDataFormater(col.filed)"
-                    >
-                      <a-select-option value="date">年-月-日</a-select-option>
-                      <a-select-option value="month">年-月</a-select-option>
-                      <a-select-option value="year">年</a-select-option>
-                    </a-select>
+                    v-model:value="formState.dateInstant[col.filed]"
+                    @change="changeDataFormater(col.filed)"
+                  >
+                    <a-select-option value="date">年-月-日</a-select-option>
+                    <a-select-option value="month">年-月</a-select-option>
+                    <a-select-option value="year">年</a-select-option>
+                  </a-select>
                 </div>
 
                 <a-input-number
