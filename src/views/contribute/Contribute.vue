@@ -102,6 +102,14 @@ const gotoNext = async (status?: number) => {
     };
 
     const response = await caseApi.add(submitData);
+    console.log('response:', response);
+    if(response.code !== 200) {
+      Modal.error({
+        title: () => "提示",
+        content: () => response.message,
+      });
+      return;
+    }
     if (!response) return;
   }
   currentStep.value = currentStep.value + 1;

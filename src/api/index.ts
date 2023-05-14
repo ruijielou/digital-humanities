@@ -362,6 +362,15 @@ export const caseApi = {
       },
     );
   },
+  validSensitivity: (data: any) => {
+    return request(
+      {
+        url: `/app/user/case/validSensitivity`,
+        method: "post",
+        data
+      },
+    );
+  },
   myPage: () => {
     return request(
       {

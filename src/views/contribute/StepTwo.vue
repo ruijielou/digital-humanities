@@ -10,7 +10,7 @@ import {
   PlusOutlined,
   InboxOutlined,
 } from "@ant-design/icons-vue";
-import { commonUpload } from "@/api";
+import { caseApi, commonUpload } from "@/api";
 
 const props = defineProps<{
   selectedTag: any[] | null;
@@ -69,6 +69,26 @@ const formValidate = async () => {
       JSON.parse(JSON.stringify(city_latlng_map.value))
     );
     let values = await formRef.value.validate();
+
+    // 校验敏感词
+    const response = await caseApi.validSensitivity(values.caseData);
+    // {
+    //   "id":null,
+    //   "code":200,
+    //   "message":"操作成功!",
+    //   "success":true,
+    //   "timestamp":1684036264848,
+    //   "result":{
+    //      "form_335":{  //字段名称
+    //        "法论功":"存在政治敏感不合规【法论功】", //key:敏感词, value:提示文本
+    //       "法轮大法":"存在百度官方默认违禁词库不合规【法轮大法】"
+    //      }
+    //   }
+    // }
+    //TODO 增加逻辑, 接口返回的敏感词,
+    let sensitivity_filed = response.result;
+    console.log('sensitivity_filed:', sensitivity_filed);
+
     let city_latlng_values: any = {};
     for (let i in city_latlng_map.value) {
       let lats = city_latlng_map.value[i];
