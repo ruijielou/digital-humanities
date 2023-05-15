@@ -44,7 +44,7 @@ const getCheckListId = () => {
   const tagFields: any = {};
   for (const item of checkedList.value) {
     const sliceTag = item.split("_");
-    const key = `tag_${sliceTag[0]}`
+    const key = `tag_${sliceTag[0]}`;
     if (tagFields[key]) {
       tagFields[key] += `,${sliceTag[1]}`;
     } else {
@@ -55,12 +55,12 @@ const getCheckListId = () => {
 };
 
 const checkLetter = (letter: string) => {
-  nameLetter.value = nameLetter.value === letter ?'': letter;
+  nameLetter.value = nameLetter.value === letter ? "" : letter;
   getCaseData();
 };
 watch(
   () => checkedList.value,
-  (val:any) => {
+  (val: any) => {
     getCaseData();
   }
 );
@@ -115,9 +115,13 @@ getCaseData();
           </span>
         </div>
         <div class="spectrum-list p-t-5">
-          <div class="spectrun-items cursor-pointer" v-for="item in dataSource" @click="
+          <div
+            class="spectrun-items cursor-pointer"
+            v-for="item in dataSource"
+            @click="
               $router.push({ name: 'CaseDetail', params: { id: item.id } })
-            ">
+            "
+          >
             {{ `${item.name}${item.code ? "(" + item.code + ")" : ""}` }}
           </div>
           <p
@@ -140,10 +144,12 @@ getCaseData();
     .ant-checkbox-inner {
       background-color: transparent;
     }
-    &:hover .ant-checkbox-inner,
-    &.ant-checkbox-checked .ant-checkbox-inner {
-      border-color: #fff !important;
-    }
+  }
+  .ant-checkbox-inner {
+    border-color: #fff !important;
+  }
+  .ant-checkbox-wrapper:hover .ant-checkbox-inner, .ant-checkbox-checked::after {
+    border-color: #ccc !important;
   }
   .letters {
     span {
