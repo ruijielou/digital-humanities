@@ -154,7 +154,7 @@ defineExpose({ visible, changeLoginType });
     wrapClassName="digital-modal"
     v-model:visible="visible"
     :afterClose="afterClose"
-    :width="510"
+    :width="420"
     :footer="null"
     :closable="false"
     :centered="true"
@@ -198,36 +198,37 @@ defineExpose({ visible, changeLoginType });
       <a-form
         :model="formState"
         name="basic"
-        :label-col="{ span: 4 }"
-        :wrapper-col="{ span: 18 }"
+        :label-col="{ span: loginType === LoginTypeMap.Password ? 4 : 5 }"
+        labelAlign="left"
+        :wrapper-col="{ span: loginType === LoginTypeMap.Password ? 20 : 19 }"
         autocomplete="off"
         @finish="onFinish"
         @finishFailed="onFinishFailed"
       >
         <template v-if="loginType === LoginTypeMap.Password">
-          <a-form-item label="账号" name="phone">
-            <a-input v-model:value="formState.phone" />
+          <a-form-item label="账号" name="phone" :colon="false">
+            <a-input v-model:value="formState.phone" placeholder="请输入" />
           </a-form-item>
-          <a-form-item label="密码" name="password">
-            <a-input-password v-model:value="formState.password" />
-            <div class="flex justify-end p-t-3">
-              <span @click="changeLoginType(LoginTypeMap.NewPassword)" class="c-#f243d9">忘记密码?</span>
+          <a-form-item label="密码" name="password" :colon="false">
+            <a-input-password v-model:value="formState.password" placeholder="请输入" />
+            <div class="flex justify-end p-t-12px">
+              <span @click="changeLoginType(LoginTypeMap.NewPassword)" class="c-#f243d9 text-12px">忘记密码?</span>
             </div>
           </a-form-item>
         </template>
         <template v-else>
           <!-- 验证码登录 -->
-          <a-form-item label="手机号码" name="phone">
-            <a-input v-model:value="formState.phone" />
+          <a-form-item label="手机号码" name="phone" :colon="false">
+            <a-input v-model:value="formState.phone" placeholder="请输入" />
           </a-form-item>
-          <a-form-item label="验证码" name="code">
-            <a-input v-model:value="formState.code">
+          <a-form-item label="验证码" name="code" :colon="false">
+            <a-input v-model:value="formState.code" placeholder="请输入">
               <template #suffix>
                 <div v-if="countDown !== 0">{{ countDown }}秒后重新获取</div>
                 <div
                   v-else
                   @click="getValidCode()"
-                  class="c-#5B3DF2 cursor-pointer"
+                  class="c-#5B3DF2 cursor-pointer text-12px"
                 >
                   获取验证码
                 </div>
@@ -235,23 +236,23 @@ defineExpose({ visible, changeLoginType });
             </a-input>
           </a-form-item>
           <a-form-item
-            style="margin-bottom: 2px"
             v-if="loginType === LoginTypeMap.Logon || loginType === LoginTypeMap.NewPassword"
             :label="loginType === LoginTypeMap.NewPassword ? '新密码' : '密码'"
+           
             name="password"
           >
-            <a-input-password v-model:value="formState.password" />
+            <a-input-password  placeholder="至少8位以上（含字母、数字、大小写）" v-model:value="formState.password" />
           </a-form-item>
           <div
             v-if="loginType === LoginTypeMap.Code"
-            style="height: 34px"
+            style="height: 10px"
           ></div>
         </template>
         <a-form-item
-          :wrapper-col="{ offset: 4, span: 18 }"
-          style="margin-bottom: 0"
+          :wrapper-col="{ offset: 0, span: 24 }"
+          style="margin-bottom: 0;margin-top: 2em"
         >
-          <div class="text-center p-t10">
+          <div class="text-center">
             <a-button
               v-if="loginType !== LoginTypeMap.Logon"
               type="primary"
@@ -272,9 +273,9 @@ defineExpose({ visible, changeLoginType });
               "
               >注册</a-button
             >
-            <div class="text-center m-t-2">
+            <div class="inline-block m-l-2 m-t-2 text-12px c-#999999" v-if="loginType === LoginTypeMap.Logon || loginType === LoginTypeMap.NewPassword">
+              已有账号
               <span
-                v-if="loginType === LoginTypeMap.Logon || loginType === LoginTypeMap.NewPassword"
                 class="cursor-pointer c-#5B3DF2"
                 @click="changeLoginType(LoginTypeMap.Password)"
                 >去登录</span
@@ -282,11 +283,11 @@ defineExpose({ visible, changeLoginType });
             </div>
           </div>
 
-          <div class="text-center p-t-3">
+          <div class="text-center p-t-3 text-12px c-#999999">
             <span class="">登录则代表你同意</span>
-            <span class="primary-color cursor-pointer">用户协议</span>
+            <span class="primary-color cursor-pointer"  @click="$router.push({name: 'UserAgreement'})">用户协议</span>
             <span class="">与</span>
-            <span class="primary-color cursor-pointer">隐私政策</span>
+            <span class="primary-color cursor-pointer" @click="$router.push({name: 'PrivacyPolicy'})">隐私政策</span>
           </div>
         </a-form-item>
       </a-form>
@@ -295,10 +296,19 @@ defineExpose({ visible, changeLoginType });
 </template>
 <style lang="less">
 .login {
+  padding: 0 10px;
   .ant-input-affix-wrapper,
   .ant-input {
     background-color: #f5f5f5;
+    font-size: 12px;
+    line-height: 2.17;
   }
+  .ant-btn {
+    height: 40px;
+  }
+  // .ant-input,.ant-form-item-label > label {
+  //   height: 36px;
+  // }
 }
 .login-title {
   div {

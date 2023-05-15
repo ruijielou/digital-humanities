@@ -15,7 +15,7 @@ export function createRouterGuards(router: any, whiteNameList: string[]) {
     /**
      * 如果包含了关于我的页面，未登录就打开login
      */
-    if (!token && (to.path.includes('/about') || to.name === 'Contribute')) {
+    if (!token && (to.path.includes('/mine') || to.name === 'Contribute')) {
       userStore.openLogin();
       next();
     } else {

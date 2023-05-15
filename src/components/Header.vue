@@ -112,6 +112,7 @@ const goPages = (name: string) => {
         >
           <div
             class="category-item cursor-pointer"
+            :class="{active: $route.name === item.name}"
             v-for="item in categoryList"
             :key="item.name"
             @click="goPages(item.name)"

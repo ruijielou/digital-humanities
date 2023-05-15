@@ -6,8 +6,8 @@ import {Modal} from "ant-design-vue"
 
 const { userInfo } = useUserStore();
 const layout = {
-  labelCol: { span: 2, offset: 6 },
-  wrapperCol: { span: 8 },
+  labelCol: { span: 4, },
+  wrapperCol: { span: 20 },
 };
 enum CardType {
   IdCard=0,
@@ -88,7 +88,7 @@ const onFinish = async (values: any) => {
         <h2 class="m-0">实名认证</h2>
       </div>
     </div>
-    <div class="p-t-4">
+    <div class="p-t-4 p-l-28% p-r-28%">
       <a-form
         :model="formState"
         v-bind="layout"
@@ -144,9 +144,11 @@ const onFinish = async (values: any) => {
         </a-form-item>
         <a-form-item
           :colon="false"
-          :wrapper-col="{ ...layout.wrapperCol, offset: 12 }"
+          :wrapper-col="{ span: 24 }"
         >
+         <div class="text-center">
           <a-button type="primary" html-type="submit">完成</a-button>
+         </div>
         </a-form-item>
       </a-form>
     </div>

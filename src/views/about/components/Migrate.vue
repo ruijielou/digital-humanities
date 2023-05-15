@@ -81,7 +81,7 @@ const submitCollection = async () => {
   caseMoveModal.value = false;
   if(!caseIds.value) {
     
-    router.push({ path: '/about/myCaseLibraryList/' + checkedFolder.value});
+    router.push({ path: '/mine/myCaseLibraryList/' + checkedFolder.value});
    
     setTimeout(() => {
       location.reload()

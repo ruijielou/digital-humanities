@@ -18,6 +18,21 @@ export default [
     component: () => import("../views/contribute/Contribute.vue"),
   },
   {
+    path: "/policy",
+    name: "PrivacyPolicy",
+    component: () => import("../views/PrivacyPolicy.vue"),
+  },
+  {
+    path: "/about",
+    name: "About",
+    component: () => import("../views/About.vue"),
+  },
+  {
+    path: "/agreement",
+    name: "UserAgreement",
+    component: () => import("../views/UserAgreement.vue"),
+  },
+  {
     path: "/caselibrary",
     name: "CaseLibrary",
     component: () => import("../views/caseLibrary/CaseLibrary.vue"),
@@ -63,8 +78,8 @@ export default [
     component: () => import("../views/advancedSearch/SearchResult.vue"),
   },
   {
-    path: "/about",
-    name: "About",
+    path: "/mine",
+    name: "Mine",
     redirect: {name: 'SubmissionManage'},
     component: () => import("../views/about/AboutView.vue"),
     children: [

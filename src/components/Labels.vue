@@ -75,7 +75,7 @@ load_lab_group();
 <style lang="less">
 .labels {
   width: 70vw;
-  overflow: scroll;
+  overflow: auto;
   white-space: nowrap;
   height: 250px;
   background: @liner-color;

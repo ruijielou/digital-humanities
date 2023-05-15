@@ -91,15 +91,15 @@ getInputMeta();
           <span class="p-l-2">首页</span>
         </div>
         <LogoText text="高级检索" />
-        <div class="result-container p-t-5 p-l-35 p-r-35">
+        <div class="result-container p-t-5 p-l-25% p-r-25%">
           <FormFiled
             ref="filedFromRef"
             :form-modal="formFiled.formModal"
             :form-data="formFiled.data"
             :dateInstant="formFiled.dateInstant"
             :layout="{
-              labelCol: { span: 3, offset: 2 },
-              wrapperCol: { span: 15 },
+              labelCol: { span: 5 },
+              wrapperCol: { span: 19 },
             }"
           />
           <div class="text-center">

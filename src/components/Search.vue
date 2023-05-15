@@ -141,7 +141,9 @@ router.push({name: 'MoreLibrary', params: {id} });
   padding-left: 16px;
   margin: 20px;
   cursor: pointer;
-
+  &:hover span {
+    color: #ccc
+  }
   &:before {
     content: "";
     width: 4px;

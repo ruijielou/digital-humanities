@@ -21,7 +21,8 @@ export default defineConfig({
         `,
         modifyVars: {
           'primary-color': '#5B3DF2',
-          'error-color': '#F243D9'
+          'error-color': '#F243D9',
+          'border-radius-base': '0'
         },
       },
     },

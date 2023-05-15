@@ -16,8 +16,8 @@ import { imgBaseUrl } from "@/utils/config";
 const userStore = useUserStore();
 
 const layout = {
-  labelCol: { span: 2, offset: 6 },
-  wrapperCol: { span: 8 },
+  labelCol: { span: 4 },
+  wrapperCol: { span: 20 },
 };
 const optional = ["学生", "教师", "研究者"];
 const formState = reactive({
@@ -135,19 +135,19 @@ const openModal = () => {
 </script>
 <template>
   <a-layout-content
-    style="padding: 20px 0; margin: 0 auto; width: 80%; position: relative"
+    style="padding: 20px 0; margin: 0 auto; width: 80%; min-width: 710px; position: relative"
     class="flex flex-col"
   >
     <div
       class="return-prev-page cursor-pointer absolute z-2"
-      @click="$router.push({ name: 'About' })"
+      @click="$router.push({ name: 'Mine' })"
     >
       <arrow-left-outlined />
       <span class="p-l-2">个人中心</span>
     </div>
     <LogoText style="margin-top -5px;" text="修改信息" />
     <div class="userinfo-container">
-      <div class="p-t-4">
+      <div class="p-t-4 p-l-25% p-r-25%">
         <a-form
           :model="formState"
           v-bind="layout"
@@ -157,8 +157,9 @@ const openModal = () => {
         >
           <a-form-item
             :colon="false"
-            :wrapper-col="{ ...layout.wrapperCol, offset: 11 }"
+            :wrapper-col="{ span: 24 }"
           >
+           <div class="text-center">
             <a-avatar
               shape="circle"
               @click="openModal"
@@ -175,6 +176,7 @@ const openModal = () => {
                 <UserOutlined v-else />
               </template>
             </a-avatar>
+           </div>
           </a-form-item>
           <a-form-item
             style="display: none"
@@ -222,9 +224,11 @@ const openModal = () => {
           </a-form-item>
           <a-form-item
             :colon="false"
-            :wrapper-col="{ ...layout.wrapperCol, offset: 12 }"
+            :wrapper-col="{ span: 24 }"
           >
-            <a-button type="primary" html-type="submit">完成</a-button>
+            <div class="text-center">
+              <a-button type="primary" html-type="submit">完成</a-button>
+            </div>
           </a-form-item>
         </a-form>
       </div>

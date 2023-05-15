@@ -34,7 +34,7 @@ defineProps<{
     <div class="flex-1 p-l-4 p-r-4">
       <div class="content c-#666">
         <strong>{{message.type === MessageType.Announ?`【${message.title || '公告'}】`:'【审核】'}}</strong>
-        <div v-html="message.content"></div>
+        <div v-html="message.content" class="content-html"></div>
       </div>
       <div class="c-#999 p-t-2">{{message.createTime}}</div>
     </div>
@@ -47,11 +47,9 @@ defineProps<{
   </div>
 </template>
 <style lang="less">
-.left-icon {
-  // width: 40px;
-  // height: 40px;
-  // border-radius: 50%;
-  // background-color: #5b3df2;
-  // line-height: 40px;
+.content-html {
+  img {
+    max-width: 100%;
+  }
 }
 </style>
