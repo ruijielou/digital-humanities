@@ -95,7 +95,13 @@ const changeLoginType = (type: LoginTypeMap) => {
 const getValidCode = async () => {
   // 1为验证码登录
   // 4为重置密码的获取验证码
-
+  if(!formState.phone) {
+    Modal.warning({
+      title: () => "提示",
+      content: () => "手机号码不能为空",
+    });
+    return
+  }
   const type = loginType.value === LoginTypeMap.NewPassword ? 4 : 1;
   await dhuvalidcode({ username: formState.phone, type });
   codeTimerStart();
