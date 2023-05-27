@@ -8,7 +8,7 @@ import Knowledge from "../../components/icons/Knowledge.vue";
 import Time from "../../components/icons/Time.vue";
 import Cooperate from "../../components/icons/Cooperate.vue";
 // import worldGeo from "./geo.json";
-// import * as echarts from "echarts";
+import * as echarts from "echarts";
 import { getOption } from "./options";
 import { componentMap, chartList } from "@/utils/type";
 import { caseLocation, caseApi } from "@/api";
@@ -16,7 +16,7 @@ import { imgBaseUrl } from "@/utils/config";
 
 let worldGeo = null;
 
-declare const echarts: any;
+// declare const echarts: any;
 interface ChartTypeMap {
   key: componentMap;
   name: string;

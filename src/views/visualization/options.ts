@@ -1,4 +1,4 @@
-declare const echarts: any;
+import * as echarts from 'echarts';
 import { componentMap } from "@/utils/type";
 import { styleJson } from "./map"
 

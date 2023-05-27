@@ -3,6 +3,8 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import Unocss from 'unocss/vite';
+import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
+
 // vite.config.js
 // import { splitVendorChunkPlugin } from 'vite'
 // export default defineConfig({
@@ -13,8 +15,40 @@ import Unocss from 'unocss/vite';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), Unocss(),
-    //  splitVendorChunkPlugin()
+  //  splitVendorChunkPlugin()
+
+  importToCDN({
+
+    modules: [
+      // autoComplete('vue'), // vue2 use autoComplete('vue2')
+      // autoComplete('@vueuse/shared'),
+      // autoComplete('@vueuse/core'),
+      // 　　{
+      //   name:'vue',
+      //   var:'Vue',
+      //   path:'https://cdn.jsdelivr.net/npm/vue@3.2.47'
+      // },
+      // {
+      //   name: 'ant-design-vue',
+      //   var: "antd",
+      //   path: "https://cdn.jsdelivr.net/npm/ant-design-vue@3.2.15/dist/antd.min.js",
+      //   // https://cdn.jsdelivr.net/npm/ant-design-vue@2.3.0/dist/antd.min.js
+      //   css: "https://cdn.jsdelivr.net/npm/ant-design-vue@3.2.15/dist/antd.min.css"
+  
+      // },
+      // {
+      //   name: 'dayjs',
+      //   var: "dayjs",
+      //   path: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.7'
+      // },
+      {
+        name: 'echarts',
+        var: "echarts",
+        path: 'https://cdn.jsdelivr.net/npm/echarts@5.4.2'
+      }
     ],
+  }),
+  ],
   build: {
     minify: 'terser',
     terserOptions: {
@@ -42,11 +76,11 @@ export default defineConfig({
       //   }
       // }
 
-        external: Object.keys({
-          // "ant-design-vue": "^3.2.15",
-          "echarts": "^5.4.2",
-        }),
-      
+      external: Object.keys({
+        // "ant-design-vue": "^3.2.15",
+        "echarts": "^5.4.2",
+      }),
+
     }
   },
   resolve: {
