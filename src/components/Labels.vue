@@ -80,7 +80,7 @@ load_lab_group();
   max-width: 55vw;
   overflow: auto;
   white-space: nowrap;
-  height: 250px;
+  min-height: 250px;
   background: @liner-color;
   margin: 0 auto;
   margin-left: 22.5%;
