@@ -3,8 +3,8 @@ import { ref, onMounted } from "vue";
 import { DoubleRightOutlined, RightOutlined, SearchOutlined } from "@ant-design/icons-vue";
 import Labels from "./Labels.vue";
 import { useRouter,useRoute } from "vue-router";
-import { message } from "ant-design-vue";
 import { repository } from "@/api";
+import { componentMap, chartList } from "@/utils/type";
 
 const emit = defineEmits(['closeSearch'])
 const route = useRoute();
@@ -33,9 +33,9 @@ const load_repository_suggest = async () => {
 
 load_repository_suggest();
 
-const gotoVisuali = () => {
+const gotoVisuali = (type:componentMap) => {
   emit('closeSearch');
-  router.push({name: 'Visualization'});
+  router.push({name: 'Visualization', query: {type}});
 }
 onMounted(() => {
   const {query} = route;
@@ -105,20 +105,8 @@ router.push({name: 'MoreLibrary', params: {id} });
   </div>
   <Labels v-if="searchType == 2" @setSearch="(val: string) => searchFields = val" />
   <div class="flex justify-center flex-1 items-end">
-    <div class="class-item">
-      <span class="c-white" @click="gotoVisuali">分布谱</span>
-    </div>
-    <div class="class-item">
-      <span class="c-white" @click="gotoVisuali"> 时间谱</span>
-    </div>
-    <div class="class-item">
-      <span class="c-white" @click="gotoVisuali">合作谱</span>
-    </div>
-    <div class="class-item">
-      <span class="c-white" @click="gotoVisuali">知识图谱</span>
-    </div>
-    <div class="class-item">
-      <span class="c-white" @click="gotoVisuali">主题词谱</span>
+    <div class="class-item" v-for="item in chartList">
+      <span class="c-white" @click="gotoVisuali(item.key)">{{item.name}}</span>
     </div>
   </div>
 </template>

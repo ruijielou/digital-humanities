@@ -16,6 +16,49 @@ export interface CategoryItem {
   type: number;
 }
 
+/**
+ * chart的类型
+ */
+export enum componentMap {
+  Theme = 'Theme',
+  Cooperate = 'Cooperate',
+  Distribution = 'Distribution',
+  Time = 'Time',
+  Knowledge = 'Knowledge',
+}
+
+export const chartList = [
+  {
+    // key: "Theme",
+    key: componentMap.Theme,
+    name: "主题谱",
+    id: 1,
+  },
+  {
+    // key: "Cooperate",
+    key: componentMap.Cooperate,
+    name: "合作谱",
+    id: 2,
+  },
+  {
+    // key: "Distribution",
+    key: componentMap.Distribution,
+    name: "分布谱",
+    id: 3,
+  },
+  {
+    // key: "Time",
+    key: componentMap.Time,
+    name: "时间谱",
+    id: 4,
+  },
+  {
+    // key: "Knowledge",
+    key: componentMap.Knowledge,
+    name: "知识谱",
+    id: 5,
+  },
+]
 export enum BooleanStatus {
   True = 1,
   False = 2

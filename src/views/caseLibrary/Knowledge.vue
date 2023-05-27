@@ -2,7 +2,7 @@
 import { ref, shallowRef, onMounted, onUnmounted } from "vue";
 import * as echarts from "echarts";
 import { getOption } from "../visualization/options";
-import { componentMap } from "../visualization/type";
+import { componentMap } from "@/utils/type";
 import { caseApi } from "@/api";
 
 const props = defineProps<{

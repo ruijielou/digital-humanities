@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, shallowRef, watch } from "vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
+import { useRoute, useRouter } from "vue-router";
 import Distribution from "../../components/icons/Distribution.vue";
 import Theme from "../../components/icons/Theme.vue";
 import Knowledge from "../../components/icons/Knowledge.vue";
@@ -9,7 +10,7 @@ import Cooperate from "../../components/icons/Cooperate.vue";
 import worldGeo from "./geo.json";
 import * as echarts from "echarts";
 import { getOption } from "./options";
-import { componentMap } from "./type";
+import { componentMap, chartList } from "@/utils/type";
 import { seriesData } from "./mock";
 import { caseLocation, caseApi } from "@/api";
 import { imgBaseUrl } from "@/utils/config";
@@ -20,45 +21,15 @@ interface ChartTypeMap {
   id: number;
 }
 
+const route = useRoute();
+const router = useRouter();
 const legendData = ["所属机构", "合作机构", "资助机构", "项目案例"];
 const currentType = ref<componentMap>(componentMap.Distribution);
-const chartType = ref<ChartTypeMap[]>([
-  {
-    // key: "Theme",
-    key: componentMap.Theme,
-    name: "主题谱",
-    id: 1,
-  },
-  {
-    // key: "Cooperate",
-    key: componentMap.Cooperate,
-    name: "合作谱",
-    id: 2,
-  },
-  {
-    // key: "Distribution",
-    key: componentMap.Distribution,
-    name: "分布谱",
-    id: 3,
-  },
-  {
-    // key: "Time",
-    key: componentMap.Time,
-    name: "时间谱",
-    id: 4,
-  },
-  {
-    // key: "Knowledge",
-    key: componentMap.Knowledge,
-    name: "知识谱",
-    id: 5,
-  },
-]);
+const chartType = ref<ChartTypeMap[]>([...chartList]);
 const searchInfo = ref<string>("");
 
 const toggleChartType = (type: componentMap) => {
   if (type === currentType.value) return;
-
   const clickindex = chartType.value.findIndex((item) => item.key === type);
   const reloadIndex = clickindex - 2;
   chartType.value = [
@@ -68,7 +39,9 @@ const toggleChartType = (type: componentMap) => {
 
   currentType.value = type;
   spinning.value = true;
-  initChart(type);
+  // route.query.type = type;
+  router.push({ name: route.name, query: { type } });
+  // initChart(type);
 };
 
 const spinning = ref<boolean>(false); //加载中的样式
@@ -137,12 +110,30 @@ watch(
   (val) => {
     chartInit.value && chartInit.value.dispose();
     initChart(currentType.value);
+    spinning.value = false;
   },
   { immediate: true } // 如果要立即执行一次，请添加此选项
 );
-onMounted(() => {
-  initChart(currentType.value);
-});
+watch(
+  route,
+  (newRoute, oldRoute) => {
+    const type = newRoute.query?.type as componentMap || currentType.value;
+    chartInit.value && chartInit.value.dispose();
+    initChart(type);
+    toggleChartType(type);
+    spinning.value = false;
+
+  },
+  { immediate: true } // 如果要立即执行一次，请添加此选项
+);
+// onMounted(() => {
+//   const type = route.query?.type as componentMap;
+//   if(type) {
+//     currentType.value = type;
+//     toggleChartType(currentType.value);
+//   }
+//   initChart(currentType.value);
+// });
 onUnmounted(() => {
   chartInit.value && chartInit.value.dispose();
 });

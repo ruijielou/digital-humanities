@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, reactive, watch } from "vue";
 import { ArrowLeftOutlined } from "@ant-design/icons-vue";
 </script>
 <template>

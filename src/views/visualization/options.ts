@@ -1,5 +1,5 @@
 import * as echarts from 'echarts';
-import { componentMap } from "./type";
+import { componentMap } from "@/utils/type";
 import { styleJson } from "./map"
 
 const colors = [
