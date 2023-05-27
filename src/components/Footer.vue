@@ -31,7 +31,7 @@ const changeSearchText = () => {
         <img @click="$router.push({ path: '/' })" width="90" src="../assets/image/logo-white.png" alt="" />
         <p class="text-20px c-white m-b-0">数字人文多媒体案例资源库</p>
       </div>
-      <div class="flex-2">
+      <div class="flex-2 min-w-100px">
         <div
           class="cursor-pointer footer-ment-item"
           v-for="item in categoryList"
