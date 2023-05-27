@@ -82,13 +82,13 @@ const onFinish = async (values: any) => {
 
 </script>
 <template>
-  <div class="p-8 w-100% authentication">
+  <div class="p-8 p-r-0 w-100% authentication">
     <div class="lines-purple flex justify-between">
       <div class="flex items-center m-b-2">
         <h2 class="m-0">实名认证</h2>
       </div>
     </div>
-    <div class="p-t-4 p-l-28% p-r-28%">
+    <div class="p-t-51px p-l-28% p-r-28%">
       <a-form
         :model="formState"
         v-bind="layout"

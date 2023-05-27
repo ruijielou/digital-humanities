@@ -94,7 +94,7 @@ onMounted(() => {
 <template>
   <div>
     <a-layout-content
-      style="padding: 20px 0; margin: 0 auto; width: 80%; position: relative"
+      style="padding: 20px 120px; margin: 0 auto; width: 100%; position: relative"
       class="flex flex-col"
     >
       <div
@@ -124,7 +124,7 @@ onMounted(() => {
             </div>
           </div>
         </div>
-        <div class="flex-1 p-20 p-t-0" v-if="menuType === 'message'">
+        <div class="flex-1 p-l-62px p-t-0" v-if="menuType === 'message'">
           <div class="message-tab">
             <span
               class="text-4.5 cursor-pointer m-4 m-l-0"
@@ -165,7 +165,7 @@ onMounted(() => {
             <p class="text-center" v-else>没有更多了</p>
           </div>
         </div>
-        <div class="comments flex-1 p-20 p-t-0" v-if="menuType === 'comment'">
+        <div class="comments flex-1 p-l-62px p-t-0" v-if="menuType === 'comment'">
           <CommentItem
             @openView="openView"
             v-for="item in commentData"

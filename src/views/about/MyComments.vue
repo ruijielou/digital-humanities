@@ -57,7 +57,7 @@ getComment();
 </script>
 <template>
   <a-layout-content
-    style="padding: 20px; margin: 0 auto; width: 100%"
+    style="padding: 20px;padding-right: 0; margin: 0 auto; width: 100%"
     class="flex flex-col"
   >
     <div class="lines-purple flex justify-between">
@@ -65,7 +65,7 @@ getComment();
         <h2 class="m-0">我的评论</h2>
       </div>
     </div>
-    <div class="result-container p-t-8">
+    <div class="result-container p-t-8 p-r-120px">
       <a-table
         :columns="columns"
         :row-key="(record:any) => record.id"

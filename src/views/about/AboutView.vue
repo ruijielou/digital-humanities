@@ -12,7 +12,7 @@ const noShowPersonCardPages = ['CollectionsClassify', 'MyCaseList', 'Messages', 
     <PersonCard v-if="!noShowPersonCardPages.includes(($route.name) as string)" />
     <a-layout-content
       class="flex bg-#f7f7f7"
-      :style="{minHeight: 'calc(100% - 20vh)',paddingLeft: noShowPersonCardPages.includes(($route.name) as string) ? 0:'360px'}"
+      :style="{minHeight: 'calc(100% - 20vh)',paddingLeft: noShowPersonCardPages.includes(($route.name) as string) ? 0:'320px'}"
     >
       <div class="flex-1 bg-#fff w-100%" >
         <router-view></router-view>

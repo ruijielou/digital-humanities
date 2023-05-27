@@ -159,7 +159,7 @@ initPage();
           </div>
         </div>
       </div>
-      <div class="flex-1 h-100% p-l-20 p-r-20">
+      <div class="flex-1 h-100% p-l-120px p-r-120px">
         <div class="p-t-5 lines-purple">
           <h2>{{ repository_info.name }}</h2>
         </div>

@@ -55,7 +55,7 @@ const cancelFavorited: any = async (id: number) => {
         <h2 class="m-0">我的收藏夹</h2>
       </div>
     </div>
-    <div class="p-t-4">
+    <div class="p-t-4 p-r-120px">
       <div class="case-group flex flex-wrap">
         <Card
           v-for="item in collectionData"
@@ -75,7 +75,8 @@ const cancelFavorited: any = async (id: number) => {
   </div>
 </template>
 <style lang="less">
-.submission-manage {
+.mycollection-manage {
   padding-bottom: 5em;
+  padding-right: 0;
 }
 </style>

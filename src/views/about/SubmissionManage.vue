@@ -66,7 +66,7 @@ watch(
         <h2 class="m-0">我的案例</h2>
       </div>
     </div>
-    <div v-if="currentType === CaseType.MyCase">
+    <div v-if="currentType === CaseType.MyCase" class="p-r-120px">
       <MyCaseList />
     </div>
     <template v-else>
@@ -104,6 +104,7 @@ watch(
 <style lang="less">
 .submission-manage {
   padding-bottom: 5em;
+  padding-right: 0;
   .lines-purple {
     &.left100 {
       &:before {
@@ -114,6 +115,7 @@ watch(
   .case-container {
     height: 460px;
     overflow: hidden;
+    padding-right: 120px;
     .case-group {
       width: 100%;
     }

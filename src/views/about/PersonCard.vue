@@ -115,7 +115,7 @@ const logoutCallback = () => {
   width: 180px;
   top: 0;
   z-index: 1;
-  left: 150px;
+  left: 120px;
   .person-detail {
     background-color: #5b3df2;
     padding-top: 20vh;

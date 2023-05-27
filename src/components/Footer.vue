@@ -27,13 +27,13 @@ const changeSearchText = () => {
 <template>
   <div class="footer">
     <div class="flex">
-      <div class="flex-1 text-center">
+      <div class="m-r-85px flex flex-col justify-between items-center">
         <img @click="$router.push({ path: '/' })" width="90" src="../assets/image/logo-white.png" alt="" />
-        <p class="text-4 c-white p-t-10">数字人文多媒体案例资源库</p>
+        <p class="text-20px c-white m-b-0">数字人文多媒体案例资源库</p>
       </div>
-      <div class="flex-1 flex flex-col p-b-10">
+      <div class="flex-2">
         <div
-          class="cursor-pointer flex-1"
+          class="cursor-pointer footer-ment-item"
           v-for="item in categoryList"
           :key="item.name"
           @click="$router.push({ name: item.name })"
@@ -43,7 +43,8 @@ const changeSearchText = () => {
           </span>
         </div>
       </div>
-      <div class="flex-2 footer-search p-t-20">
+
+      <div class="w-50% footer-search p-t-20">
         <a-input v-model:value="searchFields" @change="changeSearchText">
           <template #suffix>
             <SearchOutlined @click="do_search()" />
@@ -59,10 +60,14 @@ const changeSearchText = () => {
 <style lang="less">
 .footer {
   width: 100%;
-  height: 292px;
+  // height: 292px;
   background: #5b3df2;
-  padding: 0 10%;
-  padding-top: 4em;
+  padding: 60px 120px;
+  position: relative;
+  font-size: 16px;
+  .footer-ment-item + .footer-ment-item {
+    margin-top: 19px;
+  }
   .footer-search .ant-input-affix-wrapper,
   .footer-search .ant-input {
     background-color: transparent;
@@ -72,6 +77,13 @@ const changeSearchText = () => {
     border-left: none;
     border-top: none;
     border-right: none;
+  }
+  .copyright {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    text-align: center;
+    transform: translateX(-50%);
   }
 }
 </style>

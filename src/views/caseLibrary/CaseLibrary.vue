@@ -109,8 +109,9 @@ onMounted(() => {
   background-position: center center;
   padding: 2em 0;
   & > .case-group {
-    width: 80%;
+    width: 100%;
     height: 58vh;
+    padding-left: 120px;padding-right: 120px;
   }
 }
 .more-container {

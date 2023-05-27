@@ -181,7 +181,7 @@ const to_new_page = (url: string) => {
       :bg-name="$route.name === 'MyCaseDetail' ? 'about-bg' : 'caselibrary-bg'"
     />
     <a-layout-content
-      style="padding: 20px 0; margin: 0 auto; width: 80%"
+      style="padding: 20px 120px;"
       class="flex flex-col"
     >
       <div class="return-prev-page cursor-pointer" @click="goBack">
