@@ -38,7 +38,7 @@ const stepTwoRef = ref<any>(null);
 const stepTwoData = reactive<any>({
   data: null,
   formModal: null,
-  dateInstant: {}
+  dateInstant: {},
 });
 const formModel = reactive<any>({
   caseinfo: {},
@@ -61,7 +61,7 @@ const getDetail = async () => {
   if (!result) return;
   showDetailKey.value = [0];
   formModel.metaGroupList = result.metaGroupList
-    ? [...result.metaGroupList]
+    ? [...result.metaGroupList.filter((a) => a.title !== "封面")]
     : [];
   formModel.labList = result.labList && [...result.labList];
   formModel.technologyList = result.technologyList
@@ -69,11 +69,11 @@ const getDetail = async () => {
     : [];
   formModel.relateList = result.relateList ? [...result.relateList] : [];
   formModel.caseinfo = result.caseinfo ? { ...result.caseinfo } : {};
-  if(formModel.metaGroupList && formModel.metaGroupList.length){
-    formModel.metaGroupList.forEach((item:any) => {
-      changeCurrentKey(item.id)
+  if (formModel.metaGroupList && formModel.metaGroupList.length) {
+    formModel.metaGroupList.forEach((item: any) => {
+      changeCurrentKey(item.id);
     });
-  };
+  }
   getFavoriteStatus();
 };
 getDetail();
@@ -97,10 +97,13 @@ const getTwoFormInput = async () => {
     //方法未对表单的值进行全部初始化，暂时不用
     // case_data_info = convert_case_data(case_data_info, result);
 
-    const { formModal,dateInstant } = formatterFormInput({ result }, case_data_info);
+    const { formModal, dateInstant } = formatterFormInput(
+      { result },
+      case_data_info
+    );
     stepTwoData.formModal = { ...formModal };
     stepTwoData.data = [...result];
-    stepTwoData.dateInstant = {...dateInstant};
+    stepTwoData.dateInstant = { ...dateInstant };
     loading.value = false;
     repositoryList.value = formResult.result?.repositoryList;
   }
@@ -161,13 +164,13 @@ const goBack = () => {
     router.push("/");
   }
 };
-const to_new_page = (url:string) => {
-  console.log('url:', url);
-  if(!url.startsWith('http')){
-    url = 'http://' + url;
+const to_new_page = (url: string) => {
+  console.log("url:", url);
+  if (!url.startsWith("http")) {
+    url = "http://" + url;
   }
   window.open(url);
-}
+};
 </script>
 <template>
   <div class="h-screen overflow-auto">
@@ -216,7 +219,12 @@ const to_new_page = (url:string) => {
           </a-button>
         </div>
         <div class="tool-group" v-else>
-          <a-button v-if="isEdit" class="m-l-4" v-show="formModel.caseinfo.status != 2" @click="publish_case(1)">
+          <a-button
+            v-if="isEdit"
+            class="m-l-4"
+            v-show="formModel.caseinfo.status != 2"
+            @click="publish_case(1)"
+          >
             暂存
           </a-button>
           <a-button
@@ -288,7 +296,14 @@ const to_new_page = (url:string) => {
                     </div>
                     <div v-else-if="col.dataType === 17">
                       <div class="m-r-2" v-for="file in col.text.split(',')">
-                        <a target="_blank" rel="noopener" class="ant-upload-list-item-name w-80% overflow-hidden" :title="file" :href="format_file_url(file)"        >{{ file }}</a>
+                        <a
+                          target="_blank"
+                          rel="noopener"
+                          class="ant-upload-list-item-name w-80% overflow-hidden"
+                          :title="file"
+                          :href="format_file_url(file)"
+                          >{{ file }}</a
+                        >
                       </div>
                     </div>
                     <span v-else><div v-html="col.text"></div></span>
@@ -296,7 +311,8 @@ const to_new_page = (url:string) => {
                   <a-button
                     style="padding: 0px"
                     type="link"
-                    target="_blank" @click="to_new_page(col.text)"
+                    target="_blank"
+                    @click="to_new_page(col.text)"
                     v-if="col.dataType == 12"
                     >{{ col.text }}</a-button
                   >
@@ -305,19 +321,30 @@ const to_new_page = (url:string) => {
             </div>
           </div>
           <div style="width: 360px" class="p-5 detail-right">
-            <div class="labels-container m-b-10" v-if="formModel.labList && formModel.labList.length > 0">
+            <div
+              class="labels-container m-b-10"
+              v-if="formModel.labList && formModel.labList.length > 0"
+            >
               <div>标签：</div>
               <div>
                 <template v-for="(item, k) in formModel.labList">
-                  <a-tag
-                    :color="`#${item.extList[lab_i]}`"
+                  <a-tooltip
                     v-for="(lab_item, lab_i) in item.textList"
-                    >{{ lab_item }}</a-tag
+                    :title="lab_item"
                   >
+                    <a-tag class="max-w-100px truncate" :color="`#${item.extList[lab_i]}`">{{
+                      lab_item
+                    }}</a-tag>
+                  </a-tooltip>
                 </template>
               </div>
             </div>
-            <div class="m-b-10" v-if="formModel.technologyList && formModel.technologyList.length > 0">
+            <div
+              class="m-b-10"
+              v-if="
+                formModel.technologyList && formModel.technologyList.length > 0
+              "
+            >
               <div>应用技术：</div>
               <div v-if="formModel.technologyList">
                 <template v-for="(item, k) in formModel.technologyList">
@@ -327,7 +354,10 @@ const to_new_page = (url:string) => {
                 </template>
               </div>
             </div>
-            <div class="m-b-10" v-if=" formModel.relateList && formModel.relateList.length > 0">
+            <div
+              class="m-b-10"
+              v-if="formModel.relateList && formModel.relateList.length > 0"
+            >
               <div>关联项目：</div>
               <div
                 v-if="formModel.relateList && formModel.relateList.length > 0"
@@ -335,7 +365,10 @@ const to_new_page = (url:string) => {
               >
                 <template v-for="(item, k) in formModel.relateList">
                   <p v-for="(text, index) in item.textList">
-                    <a target="_blank" :href="`/#/casedetail/${item.extList[index]}`">
+                    <a
+                      target="_blank"
+                      :href="`/#/casedetail/${item.extList[index]}`"
+                    >
                       {{ index + 1 }}. {{ text }}
                     </a>
                   </p>

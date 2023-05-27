@@ -74,7 +74,7 @@ getCaseData();
       title="案例谱"
     />
     <a-layout-content class="flex">
-      <div class="w-40% bg-#f7f7f7 p-t-10 p-b-10">
+      <div class="w-35% bg-#f7f7f7 p-t-10 p-b-10">
         <div class="labels-container m-b-10 p-l-20">
           <!-- <div>标签：</div> -->
           <div class="flex justify-between p-r-4">
@@ -122,7 +122,7 @@ getCaseData();
             {{ String.fromCharCode(64 + i) }}
           </span>
         </div>
-        <div class="spectrum-list p-t-5" style="max-height: 65vh;overflow:auto;">
+        <div class="spectrum-list p-t-5" style="min-height: 26vh;max-height: 65vh;overflow:auto;">
           <div
             class="spectrun-items cursor-pointer"
             v-for="item in dataSource"
