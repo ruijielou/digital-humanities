@@ -20,7 +20,7 @@ import { useUserStore } from "@/store/user";
 import StepTwo from "../contribute/StepTwo.vue";
 import { formatterFormInput } from "../contribute/utils";
 import { imgBaseUrl, formatterFormData, format_file_url } from "@/utils/config";
-import { convert_case_data } from "@/utils/case_meta_util";
+// import { convert_case_data } from "@/utils/case_meta_util";
 import Knowledge from "./Knowledge.vue";
 import CaseComment from "./CaseComment.vue";
 

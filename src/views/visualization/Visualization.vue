@@ -7,14 +7,16 @@ import Theme from "../../components/icons/Theme.vue";
 import Knowledge from "../../components/icons/Knowledge.vue";
 import Time from "../../components/icons/Time.vue";
 import Cooperate from "../../components/icons/Cooperate.vue";
-import worldGeo from "./geo.json";
-import * as echarts from "echarts";
+// import worldGeo from "./geo.json";
+// import * as echarts from "echarts";
 import { getOption } from "./options";
 import { componentMap, chartList } from "@/utils/type";
-import { seriesData } from "./mock";
 import { caseLocation, caseApi } from "@/api";
 import { imgBaseUrl } from "@/utils/config";
 
+let worldGeo = null;
+
+declare const echarts: any;
 interface ChartTypeMap {
   key: componentMap;
   name: string;
@@ -76,9 +78,9 @@ const initChart = async (type: componentMap) => {
     resultData = result;
   }
   //其他图形在这儿添加else if
-  else {
-    resultData = seriesData[type];
-  }
+  // else {
+  //   resultData = seriesData[type];
+  // }
   const options: any = getOption(type, resultData);
 
   if (!options) return;
@@ -88,6 +90,11 @@ const initChart = async (type: componentMap) => {
   }
 
   if (type === componentMap.Distribution) {
+    if(!worldGeo) {
+      const res =  await fetch('/geo.json');
+      worldGeo = await res.json();
+    }
+    
     echarts.registerMap("world", { geoJSON: worldGeo } as any);
   }
   chartInit.value = echarts.init(myChart.value);

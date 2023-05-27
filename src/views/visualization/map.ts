@@ -1,22 +1,3 @@
-// export function loadBMap(ak: string) {
-//   return new Promise(function (resolve, reject) {
-//     if (typeof BMapGL !== 'undefined') {
-//       resolve(BMapGL);
-//       return true
-//     }
-//     window.onBMapCallback = () => {
-//       resolve(BMapGL);
-//     }
-//     let script = document.createElement('script');
-//     script.type = 'text/javascript';
-//     script.src =
-//       // 'https://map.qq.com/api/gljs?v=1.exp&key='+ ak + '&__ec_v__=20190126&callback=onBMapCallback'
-//       'https://api.map.baidu.com/api?type=webgl&v=1.0&ak=' + ak + '&callback=onBMapCallback'
-//       // 'https://api.map.baidu.com/api?&v=3.0&ak=' + ak + '&callback=onBMapCallback'
-//     script.onerror = reject
-//     document.head.appendChild(script);
-//   })
-// }
 
 export const styleJson = [{
   "featureType": "land",
@@ -1182,40 +1163,3 @@ export const styleJson = [{
     "color": "#0f0101ff"
   }
 }]
-
-
-export function initMap(options) {
-  options = Object.assign({
-    tilt: 60,
-    heading: 0
-  }, options);
-  var map = new BMapGL.Map(options.map_container, {
-    restrictCenter: false,
-    style: { styleJson: options.style || styleJson }
-  });
-  map.enableKeyboard();
-  map.enableScrollWheelZoom();
-  map.enableInertialDragging();
-  map.enableContinuousZoom();
-
-  map.setDisplayOptions(options.displayOptions || {
-    indoor: false,
-    poi: true,
-    skyColors: options.skyColors || [
-      'rgba(5, 5, 30, 0.01)',
-      'rgba(5, 5, 30, 1.0)'
-    ]
-  });
-  if (options.center && options.zoom) {
-    let center = options.center;
-    if (center instanceof Array) {
-      center = new BMapGL.Point(options.center[0], options.center[1])
-    }
-    map.centerAndZoom(center, options.zoom);
-  }
-
-  map.setTilt(options.tilt);
-  map.setHeading(options.heading);
-  return map;
-}
-
