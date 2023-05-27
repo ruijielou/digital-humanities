@@ -5,6 +5,7 @@ import { categoryList } from "../../utils/type";
 
 <template>
   <a-layout class="home-container h-screen">
+    <div class="home-bg"></div>
     <Header />
     <a-layout-content style="padding-top: 20px" class="flex flex-col">
       <div class="home-content">

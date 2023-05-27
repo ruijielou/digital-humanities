@@ -1,7 +1,40 @@
 .home-container {
-  background: url(../../assets/image/bg1920.gif) no-repeat;
-  background-size: cover;
-  background-position: center center;
+  // background: url(../../assets/image/bg_1920.png) no-repeat;
+  // background-size: cover;
+  // background-position: center center;
+  background-color: rgba(0,0,0,0);
+  position: relative;
+  .home-bg {
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    z-index: -1;
+    background-image: url('../../assets/image/bg_1920.png');
+    background-position: center center; /* 调整背景图像的位置 */
+    background-repeat: no-repeat; /* 控制背景图像的重复方式 */
+    background-size: cover; /* 控制背景图像的大小 */
+ 
+    &:after,  &:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background-image: url('../../assets/image/yuanpan.gif');
+      background-position: center center; /* 调整背景图像的位置 */
+      background-repeat: no-repeat; /* 控制背景图像的重复方式 */
+      background-size: cover; /* 控制背景图像的大小 */
+      opacity: 0.06;
+    }
+    &:before {
+      background-image: url('../../assets/image/line.gif');
+    }
+  }
+
   .home-content {
     text-align: center;
     display: flex;
