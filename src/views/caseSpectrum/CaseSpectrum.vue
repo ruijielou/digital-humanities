@@ -86,7 +86,7 @@ getCaseData();
             </span>
           </div>
           <div class="p-t-3">
-            <a-checkbox-group v-model:value="checkedList" style="max-height: 70vh;overflow:auto;">
+            <a-checkbox-group v-model:value="checkedList" style="width: 100%;max-height: 70vh;overflow:auto;">
               <div v-for="lab_group in lab_group_list">
                 <template v-for="k in lab_group.opts">
                   <a-tooltip :title="k.title" v-show="lab_group.id != 22">
