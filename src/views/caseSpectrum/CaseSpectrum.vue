@@ -74,7 +74,7 @@ getCaseData();
       title="案例谱"
     />
     <a-layout-content class="flex">
-      <div class="w-360px bg-#f7f7f7 p-t-10 p-b-10">
+      <div class="w-40% bg-#f7f7f7 p-t-10 p-b-10">
         <div class="labels-container m-b-10 p-l-20">
           <!-- <div>标签：</div> -->
           <div class="flex justify-between p-r-4">
@@ -86,18 +86,26 @@ getCaseData();
             </span>
           </div>
           <div class="p-t-3">
-            <a-checkbox-group v-model:value="checkedList">
+            <a-checkbox-group v-model:value="checkedList" style="max-height: 70vh;overflow:auto;">
               <div v-for="lab_group in lab_group_list">
-                <a-tag
-                  class="m-r-2 m-t-2"
-                  v-for="k in lab_group.opts"
-                  :color="'#' + k.colorValue"
-                  v-show="lab_group.id != 22"
-                >
-                  <a-checkbox class="c-#fff" :value="`${lab_group.id}_${k.id}`">
-                    {{ k.title }}</a-checkbox
-                  >
-                </a-tag>
+                <template v-for="k in lab_group.opts">
+                  <a-tooltip :title="k.title" v-show="lab_group.id != 22">
+                    <a-tag
+                      class="m-r-2 m-t-2 tag-item"
+                      :color="'#' + (k.colorValue || '5b3df2')"
+                      v-show="lab_group.id != 22"
+                    >
+                      <a-checkbox
+                        class="c-#fff"
+                        :value="`${lab_group.id}_${k.id}`"
+                      >
+                        <span class="tag-item-label">
+                          {{ k.title }}
+                        </span>
+                      </a-checkbox>
+                    </a-tag>
+                  </a-tooltip>
+                </template>
               </div>
             </a-checkbox-group>
           </div>
@@ -114,7 +122,7 @@ getCaseData();
             {{ String.fromCharCode(64 + i) }}
           </span>
         </div>
-        <div class="spectrum-list p-t-5">
+        <div class="spectrum-list p-t-5" style="max-height: 65vh;overflow:auto;">
           <div
             class="spectrun-items cursor-pointer"
             v-for="item in dataSource"
@@ -141,6 +149,7 @@ getCaseData();
 <style lang="less">
 .casespectrum-container {
   .ant-checkbox {
+    top: 0;
     .ant-checkbox-inner {
       background-color: transparent;
     }
@@ -148,8 +157,13 @@ getCaseData();
   .ant-checkbox-inner {
     border-color: #fff !important;
   }
-  .ant-checkbox-wrapper:hover .ant-checkbox-inner, .ant-checkbox-checked::after {
+  .ant-checkbox-wrapper:hover .ant-checkbox-inner,
+  .ant-checkbox-checked::after {
     border-color: #ccc !important;
+  }
+  .ant-checkbox-wrapper span:nth-last-child(1) {
+    display: inline-block;
+    vertical-align: middle;
   }
   .letters {
     span {
@@ -169,6 +183,13 @@ getCaseData();
         color: #fff;
       }
     }
+  }
+  .tag-item-label {
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .spectrun-items {
     position: relative;

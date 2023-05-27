@@ -50,14 +50,17 @@ const lab_group_list = ref<any>([]);
 const load_lab_group = async () => {
   const { result } = await labgroup.loadList();
   lab_group_list.value = result;
-
 };
 load_lab_group();
 </script>
 
 <template>
   <div class="labels flex">
-    <div class="label-category flex flex-col p-l-3 p-r-3" v-show="group.id != 22 && group.opts && group.opts.length > 0" v-for="group in lab_group_list">
+    <div
+      class="label-category flex flex-col p-l-3 p-r-3"
+      v-show="group.id != 22 && group.opts && group.opts.length > 0"
+      v-for="group in lab_group_list"
+    >
       <span class="label-category-item text-center">
         {{ group.title }}
       </span>
@@ -74,15 +77,16 @@ load_lab_group();
 </template>
 <style lang="less">
 .labels {
-  width: 70vw;
+  max-width: 55vw;
   overflow: auto;
   white-space: nowrap;
   height: 250px;
   background: @liner-color;
   margin: 0 auto;
+  margin-left: 22.5%;
   padding: 15px;
   text-align: left;
-
+  transform: translateY(-70px);
   .label-category-item {
     width: 84px;
     height: 32px;
@@ -92,11 +96,11 @@ load_lab_group();
     display: inline-block;
     color: #fff;
     margin: 5px;
-    
+
     &.no-bg {
       cursor: pointer;
       background-color: transparent;
-      transition: all .2s linear;
+      transition: all 0.2s linear;
       &:hover {
         // background-color: rgba(255, 255, 255, 0.1);
         // text-shadow: 2px 2px 2px #fff;
