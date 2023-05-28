@@ -68,6 +68,9 @@ const changeSearchText = () => {
   .footer-ment-item + .footer-ment-item {
     margin-top: 19px;
   }
+  .footer-ment-item span:hover {
+    color: #ccc;
+  }
   .footer-search .ant-input-affix-wrapper,
   .footer-search .ant-input {
     background-color: transparent;

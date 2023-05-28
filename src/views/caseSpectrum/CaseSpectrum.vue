@@ -74,8 +74,8 @@ getCaseData();
       title="案例谱"
     />
     <a-layout-content class="flex min-h-50vh">
-      <div class="w-33% bg-#f7f7f7 p-t-10 p-b-10">
-        <div class="labels-container m-b-10 p-l-20">
+      <div class="w-33% bg-#f7f7f7 p-t-10 p-b-10  p-l-120px">
+        <div class="labels-container m-b-10">
           <!-- <div>标签：</div> -->
           <div class="flex justify-between p-r-4">
             <span class="line-title text-4.5 truncate">
