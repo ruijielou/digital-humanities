@@ -90,11 +90,11 @@ const initChart = async (type: componentMap) => {
   }
 
   if (type === componentMap.Distribution) {
-    if(!worldGeo) {
-      const res =  await fetch('/geo.json');
+    if (!worldGeo) {
+      const res = await fetch("/geo.json");
       worldGeo = await res.json();
     }
-    
+
     echarts.registerMap("world", { geoJSON: worldGeo } as any);
   }
   chartInit.value = echarts.init(myChart.value);
@@ -115,21 +115,22 @@ const changeView = (id: string) => {
 watch(
   currentId,
   (val) => {
-    chartInit.value && chartInit.value.dispose();
-    initChart(currentType.value);
-    spinning.value = false;
+    if (val) {
+      chartInit.value && chartInit.value.dispose();
+      initChart(currentType.value);
+      spinning.value = false;
+    }
   },
   { immediate: true } // 如果要立即执行一次，请添加此选项
 );
 watch(
   route,
   (newRoute, oldRoute) => {
-    const type = newRoute.query?.type as componentMap || currentType.value;
+    const type = (newRoute.query?.type as componentMap) || currentType.value;
     chartInit.value && chartInit.value.dispose();
     initChart(type);
     toggleChartType(type);
     spinning.value = false;
-
   },
   { immediate: true } // 如果要立即执行一次，请添加此选项
 );
