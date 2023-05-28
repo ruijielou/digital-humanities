@@ -74,7 +74,7 @@ getCaseData();
       title="案例谱"
     />
     <a-layout-content class="flex">
-      <div class="w-35% bg-#f7f7f7 p-t-10 p-b-10">
+      <div class="w-33% bg-#f7f7f7 p-t-10 p-b-10">
         <div class="labels-container m-b-10 p-l-20">
           <!-- <div>标签：</div> -->
           <div class="flex justify-between p-r-4">
@@ -86,7 +86,7 @@ getCaseData();
             </span>
           </div>
           <div class="p-t-3">
-            <a-checkbox-group v-model:value="checkedList" style="width: 100%;max-height: 70vh;overflow:auto;">
+            <a-checkbox-group v-model:value="checkedList" style="width: 100%;">
               <div v-for="lab_group in lab_group_list">
                 <template v-for="k in lab_group.opts">
                   <a-tooltip :title="k.title" v-show="lab_group.id != 22">
@@ -111,8 +111,8 @@ getCaseData();
           </div>
         </div>
       </div>
-      <div class="flex-1 p-r-20 p-l-10">
-        <div class="letters lines-purple">
+      <div class="flex-1 p-l-49px">
+        <div class="letters lines-purple p-r-120px">
           <span
             :class="{ active: nameLetter == String.fromCharCode(64 + i) }"
             v-for="i in 26"
@@ -122,7 +122,7 @@ getCaseData();
             {{ String.fromCharCode(64 + i) }}
           </span>
         </div>
-        <div class="spectrum-list p-t-5" style="min-height: 26vh;max-height: 65vh;overflow:auto;">
+        <div class="spectrum-list p-t-5 p-r-120px">
           <div
             class="spectrun-items cursor-pointer"
             v-for="item in dataSource"
