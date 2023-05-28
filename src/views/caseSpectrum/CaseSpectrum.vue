@@ -73,7 +73,7 @@ getCaseData();
       bg-name="casespectrum-bg"
       title="案例谱"
     />
-    <a-layout-content class="flex">
+    <a-layout-content class="flex min-h-50vh">
       <div class="w-33% bg-#f7f7f7 p-t-10 p-b-10">
         <div class="labels-container m-b-10 p-l-20">
           <!-- <div>标签：</div> -->
