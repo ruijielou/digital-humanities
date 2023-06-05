@@ -14,7 +14,7 @@ import { componentMap, chartList } from "@/utils/type";
 import { caseLocation, caseApi } from "@/api";
 import { imgBaseUrl } from "@/utils/config";
 
-let worldGeo = null;
+let worldGeo:any = null;
 
 // declare const echarts: any;
 interface ChartTypeMap {

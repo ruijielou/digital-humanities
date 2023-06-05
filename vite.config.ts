@@ -14,6 +14,7 @@ import importToCDN, { autoComplete } from 'vite-plugin-cdn-import'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // base: "./",
   plugins: [vue(), Unocss(),
   //  splitVendorChunkPlugin()
 
@@ -41,11 +42,11 @@ export default defineConfig({
       //   var: "dayjs",
       //   path: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.7'
       // },
-      {
-        name: 'echarts',
-        var: "echarts",
-        path: 'https://cdn.jsdelivr.net/npm/echarts@5.4.2'
-      }
+      // {
+      //   name: 'echarts',
+      //   var: "echarts",
+      //   path: './echarts.js'
+      // }
     ],
   }),
   ],
@@ -63,25 +64,38 @@ export default defineConfig({
       }
     },
     // rollup 配置
+    // rollupOptions: {
+    //   // output: {
+    //   //   manualChunks(id: any) {
+    //   //     if (id.includes("node_modules")) {
+    //   //       return id
+    //   //         .toString()
+    //   //         .split("node_modules/")[1]
+    //   //         .split("/")[0]
+    //   //         .toString();
+    //   //     }
+    //   //   }
+    //   // }
+
+    //   external: Object.keys({
+    //     // "ant-design-vue": "^3.2.15",
+    //     "echarts": "^5.4.2",
+    //   }),
+
+    // },
     rollupOptions: {
-      // output: {
-      //   manualChunks(id: any) {
-      //     if (id.includes("node_modules")) {
-      //       return id
-      //         .toString()
-      //         .split("node_modules/")[1]
-      //         .split("/")[0]
-      //         .toString();
-      //     }
-      //   }
-      // }
-
-      external: Object.keys({
-        // "ant-design-vue": "^3.2.15",
-        "echarts": "^5.4.2",
-      }),
-
-    }
+      output: {
+          manualChunks(id: any) {  
+              if (id.includes("node_modules")) {
+                  return id
+                          .toString()
+                          .split("node_modules/")[1]
+                          .split("/")[0]
+                          .toString();
+          }
+          }
+      }
+  }
   },
   resolve: {
     alias: {
@@ -106,7 +120,7 @@ export default defineConfig({
   server: {
     proxy: {
       '^/app': {
-        target: 'http://dhc.api.lipengwencai.com/app',//接口代理地址
+        target: 'http://szrw.lipengwencai.com/app',//接口代理地址
         // target: 'http://localhost:7001',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/app/, ' '),
