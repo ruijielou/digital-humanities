@@ -5,7 +5,7 @@ import { labgroup, meta, caseinfo } from "@/api";
 import type { PageinationType } from "@/utils/type";
 
 const checkedList = ref<string[]>([]);
-const nameLetter = ref<string>("A");
+const nameLetter = ref<string>("");
 /* 加载标签  */
 const lab_group_list = ref<any>([]);
 const load_lab_group = async () => {
