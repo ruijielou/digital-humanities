@@ -149,6 +149,9 @@ const getCooperate = (chartData: any) => {
           color: "#6960BA",
           opacity: 0.39,
         },
+        emphasis: {
+          focus: 'adjacency'
+        },
         label: {
           color: '#fff'
         }
@@ -627,11 +630,10 @@ export const getOption = (type: componentMap, chartData: any) => {
       break;
     case componentMap.Cooperate:
       options = { ...getCooperate(chartData) }
+      console.log(options, "====d");
       break;
     case componentMap.Knowledge:
       options = { ...getKnowledge(chartData) }
-      console.log(options, "====d");
-      
       break;
     case componentMap.Distribution:
       options = { ...getDistribution(chartData) }
