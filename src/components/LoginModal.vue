@@ -30,35 +30,6 @@ const formState = reactive<LoginState>({
 });
 // 登录
 const onFinish = async (values: LoginState) => {
-  if (!values.phone) {
-    Modal.error({
-      title: () => "提示",
-      content: () => "用户名不能为空",
-    });
-    return;
-  }
-  if (
-    (loginType.value === LoginTypeMap.Password ||
-      loginType.value === LoginTypeMap.Logon) &&
-    !values.password
-  ) {
-    Modal.error({
-      title: () => "提示",
-      content: () => "密码不能为空",
-    });
-    return;
-  }
-  if (
-    (loginType.value === LoginTypeMap.Code ||
-      loginType.value === LoginTypeMap.Logon) &&
-    !values.code
-  ) {
-    Modal.error({
-      title: () => "提示",
-      content: () => "验证码不能为空",
-    });
-    return;
-  }
   if (loginType.value === LoginTypeMap.Logon) {
     setLogon({ ...values });
   } else if (loginType.value === LoginTypeMap.NewPassword) {
@@ -85,10 +56,54 @@ const loginCallback = async (data: LoginState) => {
 
 const onFinishFailed = (errorInfo: any) => {
   console.log("Failed:", errorInfo);
+  const {values} = errorInfo;
+  if (!values.phone) {
+    Modal.error({
+      title: () => "提示",
+      content: () => "用户名不能为空",
+    });
+    return false;
+  }
+  if (
+    (loginType.value === LoginTypeMap.Password ||
+      loginType.value === LoginTypeMap.Logon) &&
+    !values.password
+  ) {
+    Modal.error({
+      title: () => "提示",
+      content: () => "密码不能为空",
+    });
+    return false;
+  }
+  if (
+    (loginType.value === LoginTypeMap.Code ||
+      loginType.value === LoginTypeMap.Logon) &&
+    !values.code
+  ) {
+    Modal.error({
+      title: () => "提示",
+      content: () => "验证码不能为空",
+    });
+    return;
+  }
+};
+
+const validateMessages = {
+      required: '${label} is required!',
+      types: {
+        email: '${label} is not a valid email!',
+        number: '${label} is not a valid number!',
+      },
+      number: {
+        range: '${label} must be between ${min} and ${max}',
+      },
 };
 
 const changeLoginType = (type: LoginTypeMap) => {
   loginType.value = type;
+  formState.phone = "";
+  formState.password = "";
+  formState.code = "";
 };
 
 // 获取验证码
@@ -201,28 +216,29 @@ defineExpose({ visible, changeLoginType });
         :label-col="{ span: loginType === LoginTypeMap.Password ? 4 : 5 }"
         labelAlign="left"
         :wrapper-col="{ span: loginType === LoginTypeMap.Password ? 20 : 19 }"
-        autocomplete="off"
+        :hideRequiredMark="true"
+        :scrollToFirstError="true"
         @finish="onFinish"
         @finishFailed="onFinishFailed"
       >
         <template v-if="loginType === LoginTypeMap.Password">
-          <a-form-item label="账号" name="phone" :colon="false">
+          <a-form-item label="账号" name="phone" required :colon="false">
             <a-input v-model:value="formState.phone" placeholder="请输入" />
           </a-form-item>
-          <a-form-item label="密码" name="password" :colon="false">
+          <a-form-item label="密码" name="password" required :colon="false" style="margin-bottom: 0;">
             <a-input-password v-model:value="formState.password" placeholder="请输入" />
-            <div class="flex justify-end p-t-12px">
+          </a-form-item>
+          <div class="flex justify-end cursor-pointer">
               <span @click="changeLoginType(LoginTypeMap.NewPassword)" class="c-#f243d9 text-12px">忘记密码?</span>
             </div>
-          </a-form-item>
         </template>
         <template v-else>
           <!-- 验证码登录 -->
-          <a-form-item label="手机号码" name="phone" :colon="false">
-            <a-input v-model:value="formState.phone" placeholder="请输入" />
+          <a-form-item label="手机号码" :colon="false" required  >
+            <a-input v-model:value="formState.phone" :autocomplete="LoginTypeMap.NewPassword ? 'on': 'new-password'" placeholder="请输入" />
           </a-form-item>
-          <a-form-item label="验证码" name="code" :colon="false">
-            <a-input v-model:value="formState.code" placeholder="请输入">
+          <a-form-item label="验证码" :colon="false" required >
+            <a-input v-model:value="formState.code" placeholder="请输入" autocomplete="new-password">
               <template #suffix>
                 <div v-if="countDown !== 0">{{ countDown }}秒后重新获取</div>
                 <div
@@ -238,15 +254,10 @@ defineExpose({ visible, changeLoginType });
           <a-form-item
             v-if="loginType === LoginTypeMap.Logon || loginType === LoginTypeMap.NewPassword"
             :label="loginType === LoginTypeMap.NewPassword ? '新密码' : '密码'"
-           
-            name="password"
+            required
           >
-            <a-input-password  placeholder="至少8位以上（含字母、数字、大小写）" v-model:value="formState.password" />
+            <a-input-password autocomplete="new-password" placeholder="至少8位以上（含字母、数字、大小写）" v-model:value="formState.password" />
           </a-form-item>
-          <div
-            v-if="loginType === LoginTypeMap.Code"
-            style="height: 10px"
-          ></div>
         </template>
         <a-form-item
           :wrapper-col="{ offset: 0, span: 24 }"
