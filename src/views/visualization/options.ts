@@ -328,16 +328,16 @@ function getLists(arr: any) {
       return false;
     }
     // 设置节点大小
-    let symbolSize = 30;
+    let symbolSize = 10;
     switch (item.level) {
       case 1:
-        symbolSize = 80;
+        symbolSize = 40;
         break;
       case 2:
-        symbolSize = 60;
+        symbolSize = 30;
         break;
       case 3:
-        symbolSize = 40;
+        symbolSize = 20;
         break;
       default:
         break;
@@ -507,7 +507,7 @@ const getKnowledge = (chartData: any) => {
     right: 0,
     top: 0,
     type: "graph",
-    animationDuration: 1500,
+    animationDuration: 1000,
     // animationEasingUpdate: "quinticInOut",
     series: [
       {
@@ -516,8 +516,8 @@ const getKnowledge = (chartData: any) => {
         hoverAnimation: true,
         layout: "force",
         force: {
-          edgeLength: 230,
-          repulsion: 500,
+          edgeLength: 130,
+          repulsion: 400,
           gravity: 0.2
         },
         nodeScaleRatio: 0.6,
@@ -630,6 +630,8 @@ export const getOption = (type: componentMap, chartData: any) => {
       break;
     case componentMap.Knowledge:
       options = { ...getKnowledge(chartData) }
+      console.log(options, "====d");
+      
       break;
     case componentMap.Distribution:
       options = { ...getDistribution(chartData) }

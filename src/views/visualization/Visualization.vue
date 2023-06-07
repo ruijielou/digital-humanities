@@ -40,7 +40,7 @@ const toggleChartType = (type: componentMap) => {
   ];
 
   currentType.value = type;
-  spinning.value = true;
+
   // route.query.type = type;
   router.push({ name: route.name, query: { type } });
   // initChart(type);
@@ -56,6 +56,8 @@ const case_location_list = ref<any>([]);
 const initChart = async (type: componentMap) => {
   let resultData: any = null;
   const id: string = currentId.value;
+  spinning.value = true;
+try {
   if (type === componentMap.Distribution) {
     const { result } = await caseLocation.list();
     resultData = id ? result.filter((a: any) => a.id == id) : [...result];
@@ -77,6 +79,9 @@ const initChart = async (type: componentMap) => {
     const { result } = await caseApi.findCharSankey(id);
     resultData = result;
   }
+} catch (error) {
+  spinning.value = false;
+}
   //其他图形在这儿添加else if
   // else {
   //   resultData = seriesData[type];
@@ -97,9 +102,10 @@ const initChart = async (type: componentMap) => {
 
     echarts.registerMap("world", { geoJSON: worldGeo } as any);
   }
+  spinning.value = false;
   chartInit.value = echarts.init(myChart.value);
   chartInit.value.setOption(options);
-  spinning.value = false;
+
   window.addEventListener("resize", () => {
     chartInit.value.resize();
   });
@@ -118,7 +124,6 @@ watch(
     if (val) {
       chartInit.value && chartInit.value.dispose();
       initChart(currentType.value);
-      spinning.value = false;
     }
   },
   { immediate: true } // 如果要立即执行一次，请添加此选项
@@ -130,7 +135,6 @@ watch(
     chartInit.value && chartInit.value.dispose();
     initChart(type);
     toggleChartType(type);
-    spinning.value = false;
   },
   { immediate: true } // 如果要立即执行一次，请添加此选项
 );
@@ -164,10 +168,10 @@ load_case_location();
       <div class="chart-box flex-1 relative">
         <a-spin
           v-if="spinning"
-          :spinning="spinning"
           class="position-center"
         ></a-spin>
-        <div
+        <template v-else>
+          <div
           class="legend-box flex w-86% m-l-5% position-absolute p-t-20px"
           v-if="currentType === componentMap.Cooperate"
         >
@@ -180,6 +184,7 @@ load_case_location();
             >
           </div>
         </div>
+        </template>
         <div class="w-100% h-100%" ref="myChart"></div>
       </div>
       <div class="right-slider w-300px">

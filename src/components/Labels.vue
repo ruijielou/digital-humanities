@@ -56,7 +56,14 @@ load_lab_group();
 
 <template>
   <div class="labels flex">
+     <a-spin
+          v-if="!lab_group_list || lab_group_list.length === 0"
+          :spinning="true"
+          class="h-100%"
+          style="width: 46vw"
+        ></a-spin>
     <div
+    v-else
       class="label-category flex flex-col p-l-3 p-r-3"
       v-show="group.id != 22 && group.opts && group.opts.length > 0"
       v-for="group in lab_group_list"
@@ -70,14 +77,19 @@ load_lab_group();
         v-for="item in group.opts"
         :key="item.id"
       >
-        {{ item.title }}
+        <!-- {{ item.title }} -->
+        <a-tooltip v-if="item.title.length > 6" color="#5B3DF2" :title="item.title">
+          {{ `${item.title.slice(0, 6)}...` }}
+        </a-tooltip>
+        <span v-else>{{ item.title }}</span>
       </span>
+     
     </div>
   </div>
 </template>
 <style lang="less">
 .labels {
-  max-width: 55vw;
+  max-width: 51vw;
   overflow: auto;
   white-space: nowrap;
   min-height: 250px;
@@ -87,6 +99,7 @@ load_lab_group();
   padding: 15px;
   text-align: left;
   transform: translateY(-70px);
+  max-height: 400px;
   .label-category-item {
     width: 84px;
     height: 32px;
