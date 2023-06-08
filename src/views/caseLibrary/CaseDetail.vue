@@ -23,6 +23,7 @@ import { imgBaseUrl, formatterFormData, format_file_url } from "@/utils/config";
 // import { convert_case_data } from "@/utils/case_meta_util";
 import Knowledge from "./Knowledge.vue";
 import CaseComment from "./CaseComment.vue";
+import ReviewFile from "@/components/ReviewFile.vue";
 
 const { userInfo, openLogin } = useUserStore();
 
@@ -30,6 +31,7 @@ const showDetailKey = ref<number[]>([0]);
 const loading = ref<boolean>(false);
 
 const CollectionRef = ref<any>(null);
+const ReviewFileRef = ref<any>(null);
 const isEdit = ref<boolean>(false);
 const route = useRoute();
 const router = useRouter();
@@ -48,6 +50,11 @@ const formModel = reactive<any>({
   assPorject: [],
   relateList: [],
 });
+
+const viewFile = reactive<{ [key: string]: string }>({
+  url: '',
+  name: ''
+})
 
 const changeCurrentKey = (key: number) => {
   showDetailKey.value = showDetailKey.value.includes(key)
@@ -164,26 +171,29 @@ const goBack = () => {
     router.push("/");
   }
 };
-const to_new_page = (url: string) => {
-  console.log("url:", url);
+
+/**
+ * 添加一个预览的方法
+ */
+const to_new_page = (url: string, preview?: boolean) => {
+  // console.log("url:", url);
   if (!url.startsWith("http")) {
     url = "http://" + url;
   }
-  window.open(url);
+  if (preview) {
+    viewFile.url = url;
+    ReviewFileRef.value.showModal();
+  } else {
+    window.open(url);
+  }
 };
 </script>
 <template>
   <div class="h-screen overflow-auto">
-    <Header
-      :title="
-        $route.name === 'MyCaseDetail' ? '个人中心' : '打开数字人文万花筒'
-      "
-      :bg-name="$route.name === 'MyCaseDetail' ? 'about-bg' : 'caselibrary-bg'"
-    />
-    <a-layout-content
-      style="padding: 20px 120px;"
-      class="flex flex-col"
-    >
+    <Header :title="
+      $route.name === 'MyCaseDetail' ? '个人中心' : '打开数字人文万花筒'
+    " :bg-name="$route.name === 'MyCaseDetail' ? 'about-bg' : 'caselibrary-bg'" />
+    <a-layout-content style="padding: 20px 120px;" class="flex flex-col">
       <div class="return-prev-page cursor-pointer" @click="goBack">
         <arrow-left-outlined />
         <span class="p-l-2">返回</span>
@@ -196,62 +206,31 @@ const to_new_page = (url: string) => {
           </p>
         </div>
         <div class="tool-group" v-if="$route.name !== 'MyCaseDetail'">
-          <a-button
-            @click="favorited(LikeStatus.Like, formModel.caseinfo.isLike)"
-          >
-            <HeartFilled
-              style="color: #f243d9"
-              v-if="formModel.caseinfo.isLike == BooleanStatus.True"
-            />
+          <a-button @click="favorited(LikeStatus.Like, formModel.caseinfo.isLike)">
+            <HeartFilled style="color: #f243d9" v-if="formModel.caseinfo.isLike == BooleanStatus.True" />
             <heart-outlined v-else />
             喜欢
           </a-button>
-          <a-button
-            class="m-l-4"
-            @click="starFavorited(formModel.caseinfo.isFavorite)"
-          >
-            <star-filled
-              style="color: #5b3df2"
-              v-if="formModel.caseinfo.isFavorite === BooleanStatus.True"
-            />
+          <a-button class="m-l-4" @click="starFavorited(formModel.caseinfo.isFavorite)">
+            <star-filled style="color: #5b3df2" v-if="formModel.caseinfo.isFavorite === BooleanStatus.True" />
             <star-outlined v-else />
             收藏
           </a-button>
         </div>
         <div class="tool-group" v-else>
-          <a-button
-            v-if="isEdit"
-            class="m-l-4"
-            v-show="formModel.caseinfo.status != 2"
-            @click="publish_case(1)"
-          >
+          <a-button v-if="isEdit" class="m-l-4" v-show="formModel.caseinfo.status != 2" @click="publish_case(1)">
             暂存
           </a-button>
-          <a-button
-            class="m-l-2"
-            type="primary"
-            v-if="isEdit"
-            @click="publish_case(2)"
-          >
+          <a-button class="m-l-2" type="primary" v-if="isEdit" @click="publish_case(2)">
             发布
           </a-button>
           <a-button v-if="!isEdit" @click="changeEdit"> 修改 </a-button>
         </div>
       </div>
       <div v-if="isEdit" style="min-height: 400px">
-        <a-spin
-          v-if="loading"
-          :spinning="loading"
-          class="position-center h-100%"
-        ></a-spin>
-        <StepTwo
-          ref="stepTwoRef"
-          style="padding: 20px 0"
-          :selected-tag="repositoryList"
-          :form-modal="stepTwoData.formModal"
-          :form-data="stepTwoData.data"
-          :dateInstant="stepTwoData.dateInstant"
-        />
+        <a-spin v-if="loading" :spinning="loading" class="position-center h-100%"></a-spin>
+        <StepTwo ref="stepTwoRef" style="padding: 20px 0" :selected-tag="repositoryList"
+          :form-modal="stepTwoData.formModal" :form-data="stepTwoData.data" :dateInstant="stepTwoData.dateInstant" />
       </div>
       <div v-else class="detail-content">
         <div class="m-t-5 h-500px chart-box">
@@ -261,77 +240,48 @@ const to_new_page = (url: string) => {
           <div class="flex flex-col flex-1 m-r-18">
             <div class="group-item" v-for="item in formModel.metaGroupList">
               <div class="group-item-title flex justify-between">
-                <span class="line-title"
-                  ><span>{{ item.title }}</span></span
-                >
+                <span class="line-title"><span>{{ item.title }}</span></span>
                 <span class="lines"></span>
-                <span
-                  class="cursor-pointer m-l-2"
-                  @click="changeCurrentKey(item.id)"
-                >
-                  <minus-square-outlined
-                    v-if="showDetailKey.includes(item.id)"
-                  />
+                <span class="cursor-pointer m-l-2" @click="changeCurrentKey(item.id)">
+                  <minus-square-outlined v-if="showDetailKey.includes(item.id)" />
                   <plus-square-outlined v-else />
                 </span>
               </div>
-              <div
-                class="detail-list transition-all"
-                v-show="showDetailKey.includes(item.id)"
-              >
-                <div
-                  class="p-b-2 detail-item"
-                  v-for="(col, colkey) in item.metaList"
-                >
+              <div class="detail-list transition-all" v-show="showDetailKey.includes(item.id)">
+                <div class="p-b-2 detail-item" v-for="(col, colkey) in item.metaList">
                   <span> {{ col.title }}: </span>
                   <template v-if="col.dataType != 12">
                     <div v-if="col.dataType === 9" class="flex">
-                      <div
-                        class="flex-1 m-r-2"
-                        style="height: 100px"
-                        v-for="img in col.text.split(',')"
-                      >
+                      <div class="flex-1 m-r-2" style="height: 100px" v-for="img in col.text.split(',')">
                         <a-image :height="100" :src="imgBaseUrl + img" />
                       </div>
                     </div>
                     <div v-else-if="col.dataType === 17">
                       <div class="m-r-2" v-for="file in col.text.split(',')">
-                        <a
-                          target="_blank"
-                          rel="noopener"
-                          class="ant-upload-list-item-name w-80% overflow-hidden"
-                          :title="file"
-                          :href="format_file_url(file)"
-                          >{{ file }}</a
-                        >
+                        <!-- <a target="_blank" rel="noopener" class="ant-upload-list-item-name w-80% overflow-hidden"
+                              :title="file" :href="format_file_url(file)">{{ file }}</a> -->
+                        <a-button style="padding: 0px" class="ant-upload-list-item-name text-left w-80% overflow-hidden"
+                          type="link" @click="to_new_page(format_file_url(file), true)">
+                          {{ file }}
+                        </a-button>
                       </div>
                     </div>
-                    <span v-else><div v-html="col.text"></div></span>
+                    <span v-else>
+                      <div v-html="col.text"></div>
+                    </span>
                   </template>
-                  <a-button
-                    style="padding: 0px"
-                    type="link"
-                    target="_blank"
-                    @click="to_new_page(col.text)"
-                    v-if="col.dataType == 12"
-                    >{{ col.text }}</a-button
-                  >
+                  <a-button style="padding: 0px" type="link" target="_blank" @click="to_new_page(col.text)"
+                    v-if="col.dataType == 12">{{ col.text }}</a-button>
                 </div>
               </div>
             </div>
           </div>
           <div style="width: 360px" class="p-5 detail-right">
-            <div
-              class="labels-container m-b-10"
-              v-if="formModel.labList && formModel.labList.length > 0"
-            >
+            <div class="labels-container m-b-10" v-if="formModel.labList && formModel.labList.length > 0">
               <div>标签：</div>
               <div>
                 <template v-for="(item, k) in formModel.labList">
-                  <a-tooltip
-                    v-for="(lab_item, lab_i) in item.textList"
-                    :title="lab_item"
-                  >
+                  <a-tooltip v-for="(lab_item, lab_i) in item.textList" :title="lab_item">
                     <a-tag class="max-w-100px truncate" :color="`#${item.extList[lab_i]}`">{{
                       lab_item
                     }}</a-tag>
@@ -339,12 +289,9 @@ const to_new_page = (url: string) => {
                 </template>
               </div>
             </div>
-            <div
-              class="m-b-10"
-              v-if="
-                formModel.technologyList && formModel.technologyList.length > 0
-              "
-            >
+            <div class="m-b-10" v-if="
+              formModel.technologyList && formModel.technologyList.length > 0
+            ">
               <div>应用技术：</div>
               <div v-if="formModel.technologyList">
                 <template v-for="(item, k) in formModel.technologyList">
@@ -354,21 +301,12 @@ const to_new_page = (url: string) => {
                 </template>
               </div>
             </div>
-            <div
-              class="m-b-10"
-              v-if="formModel.relateList && formModel.relateList.length > 0"
-            >
+            <div class="m-b-10" v-if="formModel.relateList && formModel.relateList.length > 0">
               <div>关联项目：</div>
-              <div
-                v-if="formModel.relateList && formModel.relateList.length > 0"
-                class="p-4 bg-#f7f7f7"
-              >
+              <div v-if="formModel.relateList && formModel.relateList.length > 0" class="p-4 bg-#f7f7f7">
                 <template v-for="(item, k) in formModel.relateList">
                   <p v-for="(text, index) in item.textList">
-                    <a
-                      target="_blank"
-                      :href="`/#/casedetail/${item.extList[index]}`"
-                    >
+                    <a target="_blank" :href="`/#/casedetail/${item.extList[index]}`">
                       {{ index + 1 }}. {{ text }}
                     </a>
                   </p>
@@ -381,12 +319,8 @@ const to_new_page = (url: string) => {
       </div>
     </a-layout-content>
     <Footer />
-    <CollectionModal
-      @reload="getDetail"
-      v-if="userInfo?.id"
-      :content-id="$route.params.id"
-      ref="CollectionRef"
-    />
+    <ReviewFile ref="ReviewFileRef" :review-url="viewFile.url" />
+    <CollectionModal @reload="getDetail" v-if="userInfo?.id" :content-id="$route.params.id" ref="CollectionRef" />
   </div>
 </template>
 <style lang="less">
@@ -397,23 +331,29 @@ const to_new_page = (url: string) => {
   left: 0;
   top: 10px;
 }
+
 .chart-box {
   background: linear-gradient(180deg, #1e1331 0%, #08122e 100%);
 }
+
 .detail-item {
   line-height: 24px;
   color: #666;
   display: flex;
-  & > span:nth-child(1) {
+
+  &>span:nth-child(1) {
     width: 120px;
   }
-  & > span:nth-child(2) {
+
+  &>span:nth-child(2) {
     flex: 1;
   }
+
   .ant-image-img {
     max-height: 100%;
   }
 }
+
 .detail-right {
   .ant-tag {
     margin: 5px;
