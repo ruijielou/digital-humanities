@@ -140,6 +140,7 @@ const getCooperate = (chartData: any) => {
       {
         type: 'sankey',
         nodeAlign: 'left',
+        focusNodeAdjacency: 'allEdges',
         data: nodes || [],
         links: chartData.links || [],
         top: 70,
@@ -560,6 +561,7 @@ const getKnowledge = (chartData: any) => {
 }
 
 const getTheme = (chartData: any) => {
+  
   return {
     grid,
     tooltip: {},
@@ -588,7 +590,7 @@ const getTheme = (chartData: any) => {
       axisLabel: {
         show: false,
       },
-      data: chartData.map((item: any) => item[0]),
+      data: chartData.map((item: any) => item.title),
     },
     yAxis: {
       splitLine: {
@@ -606,7 +608,7 @@ const getTheme = (chartData: any) => {
           normal: {
             show: true,
             formatter: (data: any) => {
-              return `${data.name}\n${data.value[1]}`
+              return `${data.name}\n${data.value}`
             },
             color: "#fff",
           },
@@ -614,7 +616,15 @@ const getTheme = (chartData: any) => {
         itemStyle: {
           borderColor: 'source'
         },
-        data: chartData,
+        data: chartData.map(item => {
+          return {
+            name: item.title,
+            value: item.quantity,
+            itemStyle: {
+              color: '#' + item.colorValue
+            }
+          }
+        }),
       },
     ],
   };
@@ -630,14 +640,14 @@ export const getOption = (type: componentMap, chartData: any) => {
       break;
     case componentMap.Knowledge:
       options = { ...getKnowledge(chartData) }
-      console.log(options, "====d");
-      
       break;
     case componentMap.Distribution:
       options = { ...getDistribution(chartData) }
       break;
     case componentMap.Theme:
       options = { ...getTheme(chartData) }
+      console.log(options);
+      
       break;
   }
   return options

@@ -16,16 +16,16 @@ const props = withDefaults(
 </script>
 <template>
   <div class="p-2">
-    <h2 class="code m-0" v-if="card && card.code">{{ "0" + card.code }}</h2>
+    <h2 class="code m-0" v-if="card && card.code">{{ card.code }}</h2>
     <h4 class="card-title">{{ card.caseName || card.title || card.name }}</h4>
     <template v-if="!props.noShowNumber">
       <div>
         <span>案例量：</span>
-        <span>{{ card.caseQuantity }}</span>
+        <span >{{ card.caseQuantity }}</span>
       </div>
       <div class="p-b-2">
         <span>最近更新：</span>
-        <span>{{ card.lastCaseName }}</span>
+        <span title="查看最近更新" class="lastUpdate" @click.stop="$router.push({name: 'CaseDetail', params: {id: card.lastCaseId}})">{{ card.lastCaseName }}</span>
       </div>
     </template>
     <div class="flex">

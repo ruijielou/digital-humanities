@@ -72,7 +72,7 @@ try {
     let kes = [];
     let i;
     for (i in result) {
-      kes.push([i, result[i]]);
+      kes.push(result[i]);
     }
     resultData = kes;
   } else if (type === componentMap.Cooperate) {

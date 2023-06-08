@@ -57,6 +57,11 @@ const favorited = (id: number) => {
     * {
       color: #fff;
     }
+    .lastUpdate{
+      &:hover {
+        color: #f243d9 !important;
+      }
+    }
   }
   .card-image {
     background-size: cover;
@@ -98,6 +103,8 @@ const favorited = (id: number) => {
         top: 0;
       }
     }
+   
   }
+
 }
 </style>

@@ -42,9 +42,11 @@ onMounted(() => {
       bg-name="caselibrary-bg"
       class="caselibrary-header"
     />
-    <a-layout-content style="padding-top: 20px" class="flex flex-col">
+    <a-layout-content style="padding-top: 20px;" class="flex flex-col">
+      <div style="height: 600px;" v-if="!cardData || cardData.lenght == 0 || cardData.filter((c:any) => c.repositoryList).length == 0"></div>
       <div
         class="case-container"
+        v-else
         v-for="(item, index) in cardData.filter((c:any) => c.repositoryList)"
         :style="{
           backgroundImage:
@@ -60,7 +62,7 @@ onMounted(() => {
           <Card
             class="flex-3"
             v-if="item.repositoryList[0]"
-            @click="$router.push({ name: 'CaseDetail', params: { id: item.repositoryList[0].id } })"
+            @click="$router.push({ name: 'MoreLibrary', params: { id: item.repositoryList[0].id } })"
             :no-show-number="true"
             :card="{ ...item.repositoryList[0], code: 1 }"
           />
@@ -69,7 +71,7 @@ onMounted(() => {
               <Card
                 class="flex-1"
                 v-if="cardIndex != 0"
-                @click="$router.push({ name: 'CaseDetail', params: { id: card.id } })"
+                @click="$router.push({ name: 'MoreLibrary', params: { id: card.id } })"
                 :hoverCard="true"
                 :no-show-number="true"
                 :card="{ ...card, code: cardIndex + 1 }"
@@ -84,8 +86,9 @@ onMounted(() => {
                 class="h-100%"
                 v-for="(card, cardIndex) in item.repositoryList"
               >
+              <!-- @click="$router.push({ name: 'CaseDetail', params: { id: card.caseId } })" -->
                 <Card
-                  @click="$router.push({ name: 'CaseDetail', params: { id: card.caseId } })"
+                @click.stop="$router.push({ name: 'MoreLibrary', params: { id: card.id} })"
                   style="width: 25vw; height: 55vh"
                   :card="card"
                 />
@@ -108,6 +111,7 @@ onMounted(() => {
   background-size: cover;
   background-position: center center;
   padding: 2em 0;
+
   & > .case-group {
     width: 100%;
     height: 58vh;
