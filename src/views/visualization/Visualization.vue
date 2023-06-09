@@ -204,10 +204,13 @@ load_case_location();
         </div>
         <div class="library-list">
           <div
-            :class="{ active: currentId == case_location.id }"
-            class="library-item flex flex-col"
-            v-for="(case_location, i) in case_location_list"
-            @click="changeView(case_location.id)"
+          :class="{ active: currentId == case_location.id }"
+          class="library-item flex flex-col"
+          v-for="(case_location, i) in case_location_list"
+          @click="changeView(case_location.id)"
+          @dblclick.native="
+              $router.push({ name: 'CaseDetail', params: { id: case_location.id } })
+            "
           >
             <div
               class="h-120px w-100% item-bg"

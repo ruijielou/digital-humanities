@@ -17,7 +17,7 @@ const props = withDefaults(
 <template>
   <div class="p-2">
     <h2 class="code m-0" v-if="card && card.code">{{ card.code }}</h2>
-    <h4 class="card-title">{{ card.caseName || card.title || card.name }}</h4>
+    <h4 class="card-title">{{ $route.name === 'CaseLibrary'? card.name : (card.caseName || card.title || card.name) }}</h4>
     <template v-if="!props.noShowNumber">
       <div>
         <span>案例量：</span>
