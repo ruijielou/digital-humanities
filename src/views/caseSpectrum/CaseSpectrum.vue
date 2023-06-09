@@ -74,7 +74,7 @@ getCaseData();
       title="案例谱"
     />
     <a-layout-content class="flex min-h-50vh">
-      <div class="w-33% bg-#f7f7f7 p-t-10 p-b-10  p-l-120px">
+      <div class="w-33% bg-#f7f7f7 p-t-10 p-b-10 left-tag-container p-l-120px" :style="{width: lab_group_list && lab_group_list.length ? '33%' : 0}">
         <div class="labels-container m-b-10">
           <!-- <div>标签：</div> -->
           <div class="flex justify-between p-r-4">
@@ -148,6 +148,10 @@ getCaseData();
 </template>
 <style lang="less">
 .casespectrum-container {
+  .left-tag-container {
+    transition: all .5s linear;
+    overflow: hidden;
+  }
   .ant-checkbox {
     top: 0;
     .ant-checkbox-inner {
