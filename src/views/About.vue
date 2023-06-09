@@ -5,8 +5,7 @@ import { ArrowLeftOutlined } from "@ant-design/icons-vue";
   <div class="h-screen overflow-auto policy-container">
     <Header class="policy-header" bg-name="policy-bg" title="隐私政策" />
     <a-layout-content
-      class="flex flex-col"
-      style="padding: 20px 0; margin: 0 auto; width: 80%"
+    class="flex flex-col article-content"
     >
       <div class="return-prev-page cursor-pointer" @click="$router.go(-1)">
         <arrow-left-outlined />
@@ -45,6 +44,10 @@ import { ArrowLeftOutlined } from "@ant-design/icons-vue";
 </template>
 <style lang="less">
 .policy-container {
+  .article-content {
+    padding: 20px 0;
+    padding-left: 220px;
+  }
   .return-prev-page {
     color: #666666;
     position: relative;
@@ -52,10 +55,13 @@ import { ArrowLeftOutlined } from "@ant-design/icons-vue";
     left: 0;
     top: 10px;
   }
+
   .article {
+    padding-right: 220px;
     p {
       text-indent: 2em;
       margin: 0;
+      margin-bottom: 1em;
       font-size: 14px;
       font-weight: 500;
       color: #333333;
