@@ -109,10 +109,13 @@ try {
   window.addEventListener("resize", () => {
     chartInit.value.resize();
   });
-  // chartInit.value.on("click", "series", (params:any) => {
-  //   currentId.value = params.data?.value;
-  //   initChart(currentType.value);
-  // });
+  type === componentMap.Knowledge && chartInit.value.on("click", "series", (params:any) => {
+    console.log(type, params);
+    if(params.dataType === 'node') {
+      searchInfo.value = params.data.name;
+      load_case_location();
+    }
+  });
 };
 
 const changeView = (id: string) => {

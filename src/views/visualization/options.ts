@@ -362,6 +362,9 @@ function getLists(arr: any) {
     let lineStyle = {
       color: '#7643DF80',
     };
+    const noedeCorlours = item.colorValue && `#${item.colorValue}`;
+    const noedeCorloursLess = noedeCorlours && `${noedeCorlours}80`;
+    
     // 设置节点样式
     let bgcolor = null;
     if (item.isParent) {
@@ -373,7 +376,7 @@ function getLists(arr: any) {
         colorStops: [
           {
             offset: 0.8,
-            color: color.c1, // 0% 处的颜色
+            color:  noedeCorlours || color.c1, // 0% 处的颜色
           },
           {
             offset: 0.8,
@@ -395,19 +398,19 @@ function getLists(arr: any) {
         colorStops: [
           {
             offset: 0.1,
-            color: color.c2, // 0% 处的颜色
+            color: noedeCorloursLess || color.c2, // 0% 处的颜色
           },
           {
             offset: 0.6,
-            color: color.c2, // 0% 处的颜色
+            color: noedeCorloursLess || color.c2, // 0% 处的颜色
           },
           {
             offset: 0.6,
-            color: color.c1, // 0% 处的颜色
+            color: noedeCorlours ||color.c1, // 0% 处的颜色
           },
           {
             offset: 0.7,
-            color: color.c1, // 0% 处的颜色
+            color: noedeCorlours || color.c1, // 0% 处的颜色
           },
           {
             offset: 0.7,
@@ -426,7 +429,7 @@ function getLists(arr: any) {
     if (!item.isParent) {
       //非子节点
       itemStyle = {
-        borderColor: color.c2,
+        borderColor: noedeCorloursLess || color.c2,
         borderWidth: 1,
         color: bgcolor,
         borderType: item.level == 1 ? [55, 5] : [40, 5],
@@ -435,7 +438,7 @@ function getLists(arr: any) {
       itemStyle = {
         color: bgcolor,
         borderWidth: 1,
-        borderColor: color.c2,
+        borderColor: noedeCorloursLess || color.c2,
         borderType: [110 / (item.level + 1), 5],
       };
     }
