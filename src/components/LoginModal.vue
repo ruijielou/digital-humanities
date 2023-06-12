@@ -11,8 +11,8 @@ const userStore = useUserStore();
 
 interface LoginState {
   phone: string;
-  password?: string;
-  code?: string;
+  password: string;
+  code: string;
 }
 
 const loginType = ref<LoginTypeMap>(LoginTypeMap.Password);
@@ -41,12 +41,12 @@ const onFinish = async (values: LoginState) => {
 
 const loginCallback = async (data: LoginState) => {
   const [err] = await to(userStore.login({ ...data }));
-  if (err) {
-    Modal.error({
-      title: () => "提示",
-      content: () => err.message,
-    });
-  } else {
+  if (!err) {
+  //   Modal.error({
+  //     title: () => "提示",
+  //     content: () => err.message,
+  //   });
+  // } else {
     message.success("登录成功！");
     setTimeout(() => {
       window.location.reload(); //登录成功刷新页面
@@ -223,10 +223,10 @@ defineExpose({ visible, changeLoginType });
         </template>
         <template v-else>
           <!-- 验证码登录 -->
-          <a-form-item label="手机号码" :colon="false" required  >
+          <a-form-item label="手机号码" :colon="false" name="phone" required  >
             <a-input v-model:value="formState.phone" :autocomplete="LoginTypeMap.NewPassword ? 'on': 'new-password'" placeholder="请输入" />
           </a-form-item>
-          <a-form-item label="验证码" :colon="false" required >
+          <a-form-item label="验证码" :colon="false" name="code" required >
             <a-input v-model:value="formState.code" placeholder="请输入" autocomplete="new-password">
               <template #suffix>
                 <div v-if="countDown !== 0">{{ countDown }}秒后重新获取</div>
@@ -244,6 +244,7 @@ defineExpose({ visible, changeLoginType });
             v-if="loginType === LoginTypeMap.Logon || loginType === LoginTypeMap.NewPassword"
             :label="loginType === LoginTypeMap.NewPassword ? '新密码' : '密码'"
             required
+            name="password"
           >
             <a-input-password autocomplete="new-password" placeholder="至少8位以上（含字母、数字、大小写）" v-model:value="formState.password" />
           </a-form-item>
