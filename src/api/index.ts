@@ -14,7 +14,7 @@ export function LoginByUser<T extends Record<string, any>>(data: T) {
     url += `&password=${data.password}`
   }
   if (data.code) {
-    url += `&code=${data.password}`
+    url += `&code=${data.code}`
   }
   return request(
     {

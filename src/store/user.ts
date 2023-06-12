@@ -44,9 +44,9 @@ export const useUserStore = defineStore({
     /** 登录 */
     async login(params: { phone: string, password?: string, code?: string }) {
       try {
-        const data = await LoginByUser(params);
-        this.setToken(data.result.token);
-        return this.afterLogin();
+      const data = await LoginByUser(params);
+      this.setToken(data.result.token);
+      return this.afterLogin();
       } catch (error) {
         return Promise.reject(error);
       }
@@ -55,7 +55,7 @@ export const useUserStore = defineStore({
     /** 获取用户信息 */
     async afterLogin() {
       try {
-
+        
         // 在这儿调用获取用户信息的接口 return获取到的数据
         const { result } = await dhuuser.findUserInfo();
         this.userInfo = result;
