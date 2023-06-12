@@ -110,7 +110,6 @@ try {
     chartInit.value.resize();
   });
   type === componentMap.Knowledge && chartInit.value.on("click", "series", (params:any) => {
-    console.log(type, params);
     if(params.dataType === 'node') {
       searchInfo.value = params.data.name;
       load_case_location();
