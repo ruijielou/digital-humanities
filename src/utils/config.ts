@@ -138,14 +138,16 @@ export const formatterFormData = (data: AnyObject) => {
   return { ...newFormData };
 };
 // 【所有文件上传地址 回显 增加前缀
-export const imgBaseUrl = '/app/common/static/'
-
+export const imgUrlPrefix = '/app/common/static/'
 
 export const viewUrl = import.meta.env.VITE_GLOB_ONLINE_VIEW_URL;
 export const visitUrl = import.meta.env.VITE_VISIT_DOMAIN_URL;
+
+export const imgBaseUrl = visitUrl + imgUrlPrefix;
+
 export const format_file_url = (file: string) => {
   let file_privew_doamin = viewUrl + '?url=';
-  let f = visitUrl + imgBaseUrl + file;
+  let f = visitUrl + visitUrl + file;
   console.log('local:', f)
   let code = Base64.encode(f)
   let new_url = file_privew_doamin + code;
@@ -157,7 +159,7 @@ export const format_file_url = (file: string) => {
  * @param path
  */
 export const format_img_url = (path: string) => {
-  let f = visitUrl + imgBaseUrl + path;
+  let f = visitUrl + visitUrl + path;
   return f;
 }
 
