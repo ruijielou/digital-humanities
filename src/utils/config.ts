@@ -137,7 +137,7 @@ export const formatterFormData = (data: AnyObject) => {
   }
   return { ...newFormData };
 };
-// 【所有文件上传地址 回显 增加前缀  
+// 【所有文件上传地址 回显 增加前缀
 export const imgBaseUrl = '/app/common/static/'
 
 
@@ -151,6 +151,14 @@ export const format_file_url = (file: string) => {
   let new_url = file_privew_doamin + code;
   console.log('prview:', new_url);
   return new_url;
+}
+/**
+ * 格式化图片地址
+ * @param path
+ */
+export const format_img_url = (path: string) => {
+  let f = visitUrl + imgBaseUrl + path;
+  return f;
 }
 
 // https://www.tapd.cn/44529296/bugtrace/bugs/view/1144529296001000140'
