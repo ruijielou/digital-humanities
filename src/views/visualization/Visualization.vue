@@ -109,8 +109,8 @@ try {
   window.addEventListener("resize", () => {
     chartInit.value.resize();
   });
-  type === componentMap.Knowledge && chartInit.value.on("click", "series", (params:any) => {
-    if(params.dataType === 'node') {
+  (type === componentMap.Knowledge || type === componentMap.Theme) && chartInit.value.on("click", "series", (params:any) => {
+    if(params.dataType === 'node' || params.seriesType === 'scatter') {
       searchInfo.value = params.data.name;
       load_case_location();
     }
