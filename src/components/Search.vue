@@ -62,12 +62,12 @@ router.push({name: 'MoreLibrary', params: {id} });
 
 </script>
 <template>
-  <div class="flex items-center justify-center m-b-2">
+  <div class="flex items-center justify-center m-b-2 w-51vw" style="margin: 0 auto;position: relative;">
     <a-input
-      class="transparent-input"
+      class="transparent-input flex-1"
       size="large"
       v-model:value="searchFields"
-      style="width: 50%"
+      
       @change="changeSearchText"
     >
       <template #addonBefore>
@@ -91,6 +91,7 @@ router.push({name: 'MoreLibrary', params: {id} });
       高级检索
       <double-right-outlined />
     </span>
+    <Labels v-if="searchType == 2" @setSearch="(val: string) => searchFields = val" />
   </div>
   <div v-if="showFiledError" class="c-#f243d9 w-50% flex items-center justify-center">请输入关键字</div>
   <div class="content-text-wrapper flex justify-center p-4" v-if='repository_suggest_list && repository_suggest_list.length'>
@@ -103,7 +104,7 @@ router.push({name: 'MoreLibrary', params: {id} });
       </span>
     </div>
   </div>
-  <Labels v-if="searchType == 2" @setSearch="(val: string) => searchFields = val" />
+ 
   <div class="flex justify-center flex-1 items-end">
     <div class="class-item" v-for="item in chartList">
       <span class="c-white" @click="gotoVisuali(item.key)">{{item.name}}</span>

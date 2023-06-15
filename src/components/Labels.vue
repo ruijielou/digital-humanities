@@ -2,68 +2,33 @@
 import { ref } from "vue";
 import { labgroup } from "@/api";
 
-// const labelsData: { label: string, id: number }[] = [
-//   {
-//     label: '分类1',
-//     id: 1
-//   },
-//   {
-//     label: '分类2',
-//     id: 2
-//   },
-//   {
-//     label: '分类3',
-//     id: 3
-//   },
-//   {
-//     label: '分类4',
-//     id: 4
-//   },
-//   {
-//     label: '分类5',
-//     id: 5
-//   },
-//   {
-//     label: '分类6',
-//     id: 6
-//   },
-//   {
-//     label: '分类7',
-//     id: 7
-//   },
-//   {
-//     label: '分类8',
-//     id: 8
-//   },
-//   {
-//     label: '分类9',
-//     id: 9
-//   },
-//   {
-//     label: '分类10',
-//     id: 10
-//   }
-// ]
+
 
 /* 加载标签  */
 const lab_group_list = ref<any>([]);
+const loading = ref<boolean>(false);
 const load_lab_group = async () => {
+  loading.value = true;
   const { result } = await labgroup.loadList();
-  lab_group_list.value = result;
+  loading.value = false;
+  lab_group_list.value = result || [];
 };
 load_lab_group();
 </script>
 
 <template>
   <div class="labels flex">
-     <a-spin
-          v-if="!lab_group_list || lab_group_list.length === 0"
-          :spinning="true"
-          class="h-100%"
-          style="width: 46vw"
-        ></a-spin>
+    <a-spin
+      v-if="loading"
+      :spinning="true"
+      class="h-100%"
+      style="width: 46vw"
+    ></a-spin>
+    <div v-else-if="lab_group_list.length == 0" class="w-100% p-t-2em text-#fff text-center">
+      没有标签
+    </div>
     <div
-    v-else
+      v-else
       class="label-category flex flex-col p-l-3 p-r-3"
       v-show="group.id != 22 && group.opts && group.opts.length > 0"
       v-for="group in lab_group_list"
@@ -78,24 +43,31 @@ load_lab_group();
         :key="item.id"
       >
         <!-- {{ item.title }} -->
-        <a-tooltip v-if="item.title.length > 6" color="#5B3DF2" :title="item.title">
+        <a-tooltip
+          v-if="item.title.length > 6"
+          color="#5B3DF2"
+          :title="item.title"
+        >
           {{ `${item.title.slice(0, 6)}...` }}
         </a-tooltip>
         <span v-else>{{ item.title }}</span>
       </span>
-     
     </div>
   </div>
 </template>
 <style lang="less">
 .labels {
-  max-width: 51vw;
+  position: absolute;
+  left: 0;
+  top: 112px;
+  z-index: 999;
+  width: calc(51vw - 90px);
   overflow: auto;
   white-space: nowrap;
   min-height: 250px;
+  max-height: 308px;
   background: @liner-color;
   margin: 0 auto;
-  margin-left: 22.5%;
   padding: 15px;
   text-align: left;
   transform: translateY(-70px);
