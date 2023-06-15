@@ -58,7 +58,7 @@ onMounted(() => {
           :style="{ color: index != 0 && index % 2 == 1 ? '#fff' : '' }"
           :text="item.title"
         />
-        <div v-if="item.isFirst" class="case-referred case-group flex m-auto">
+        <div v-if="item.isFirst" class="case-referred case-group flex m-auto first-group">
           <Card
             class="flex-3"
             v-if="item.repositoryList[0]"
@@ -89,7 +89,7 @@ onMounted(() => {
               <!-- @click="$router.push({ name: 'CaseDetail', params: { id: card.caseId } })" -->
                 <Card
                 @click.stop="$router.push({ name: 'MoreLibrary', params: { id: card.id} })"
-                  style="width: 25vw; height: 55vh"
+                  style="width: 90%; height: 55vh;margin: 0 auto;"
                   :card="card"
                 />
               </div>
@@ -112,10 +112,13 @@ onMounted(() => {
   background-position: center center;
   padding: 2em 0;
 
-  & > .case-group {
+ & > .case-group {
     width: 100%;
     height: 58vh;
-    padding-left: 120px;padding-right: 120px;
+    padding-left: 100px;padding-right: 100px;
+    &.first-group {
+      padding-left: 120px;padding-right: 120px;
+    }
   }
 }
 .more-container {
