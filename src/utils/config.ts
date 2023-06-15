@@ -147,7 +147,7 @@ export const imgBaseUrl = visitUrl + imgUrlPrefix;
 
 export const format_file_url = (file: string) => {
   let file_privew_doamin = viewUrl + '?url=';
-  let f = visitUrl + visitUrl + file;
+  let f = imgBaseUrl + file;
   console.log('local:', f)
   let code = Base64.encode(f)
   let new_url = file_privew_doamin + code;
