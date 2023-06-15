@@ -40,7 +40,10 @@ const toggleChartType = (type: componentMap) => {
   ];
 
   currentType.value = type;
-
+  if(searchInfo.value) {
+    searchInfo.value = "";
+    load_case_location();
+  }
   // route.query.type = type;
   router.push({ name: route.name, query: { type } });
   // initChart(type);
@@ -334,7 +337,7 @@ load_case_location();
     & > div:nth-last-of-type(1) {
       transform: translateX(20px);
       &:hover {
-        transform: scale(1.4) translateX(20px);
+        transform: scale(1.2) translateX(20px);
       }
     }
 
@@ -342,7 +345,7 @@ load_case_location();
     & > div:nth-last-of-type(2) {
       transform: translateX(10px);
       &:hover {
-        transform: scale(1.4) translateX(10px);
+        transform: scale(1.2) translateX(10px);
       }
     }
   }

@@ -84,7 +84,7 @@ const getTime = (chartData: any) => {
           lineStyle: { color: '#6960BA' },
         },
         axisLabel: { show: true, textStyle: { color: '#6E72F2' } },
-        data: chartData[0].data.map((item: { year: string, value: number }) => item.year)
+        data: chartData[0]?.data.map((item: { year: string, value: number }) => item.year)
       }
     ],
     yAxis: [
