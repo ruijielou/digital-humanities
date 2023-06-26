@@ -139,7 +139,7 @@ getCaseData();
           >
             加载更多
           </p>
-          <p class="text-center" v-else>没有更多了</p>
+          <p class="text-center w-100% c-gray" v-else>没有更多了</p>
         </div>
       </div>
     </a-layout-content>
