@@ -124,7 +124,7 @@ getCaseData();
         </div>
         <div class="spectrum-list p-t-5 p-r-120px flex flex-wrap">
           <div
-            class="spectrun-items cursor-pointer"
+            class="spectrun-items cursor-pointer truncate"
             v-for="item in dataSource"
             @click="
               $router.push({ name: 'CaseDetail', params: { id: item.id } })
