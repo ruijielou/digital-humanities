@@ -500,6 +500,15 @@ export const caseLocation = {
       },
     );
   },
+  page: (data?:any) => {
+    return request(
+      {
+        url: `/app/common/caselocation/page`,
+        method: "get",
+        params:data
+      },
+    );
+  },
  }
 
 //  {{URL}}/app/user/favorite/findFavoStatus?contentId=80
