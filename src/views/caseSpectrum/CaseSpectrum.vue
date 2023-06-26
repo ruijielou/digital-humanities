@@ -122,7 +122,7 @@ getCaseData();
             {{ String.fromCharCode(64 + i) }}
           </span>
         </div>
-        <div class="spectrum-list p-t-5 p-r-120px">
+        <div class="spectrum-list p-t-5 p-r-120px flex flex-wrap">
           <div
             class="spectrun-items cursor-pointer"
             v-for="item in dataSource"
@@ -199,6 +199,7 @@ getCaseData();
     position: relative;
     padding-left: 1em;
     padding: 15px;
+    width: 33%;
     &::before {
       content: "";
       width: 6px;
