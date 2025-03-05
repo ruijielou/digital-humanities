@@ -65,7 +65,6 @@ npm run lint
 ```
 
 ## Commit规范
-plaintext
 <type>(<scope>): <subject>
 <BLANK LINE>
 <body>
@@ -74,15 +73,15 @@ plaintext
 
 说明
 type（必填）：Commit 的类型，用于描述本次提交的主要目的，常见的类型有：
-feat：新功能（feature）的添加或修改。
-fix：修复 bug。
-docs：文档（documentation）的修改，如 README、注释等。
-style：代码风格的调整，不影响代码逻辑，如格式化、空格、缩进等。
-refactor：代码重构，既不是修复 bug 也不是添加新功能，只是对现有代码结构进行优化。
-test：添加或修改测试用例。
-chore：构建过程或辅助工具的变动，如依赖更新、构建脚本修改等。
-perf：性能优化相关的改动。
-ci：持续集成（Continuous Integration）相关的配置文件和脚本的修改。
+  feat：新功能（feature）的添加或修改。
+  fix：修复 bug。
+  docs：文档（documentation）的修改，如 README、注释等。
+  style：代码风格的调整，不影响代码逻辑，如格式化、空格、缩进等。
+  refactor：代码重构，既不是修复 bug 也不是添加新功能，只是对现有代码结构进行优化。
+  test：添加或修改测试用例。
+  chore：构建过程或辅助工具的变动，如依赖更新、构建脚本修改等。
+  perf：性能优化相关的改动。
+  ci：持续集成（Continuous Integration）相关的配置文件和脚本的修改。
 scope（可选）：本次提交影响的范围，用于更详细地描述修改的模块或组件，如 login, form, api 等。
 subject（必填）：简短的描述，不超过 50 个字符，使用动词开头，使用现在时态，首字母小写，结尾不加句号。
 body（可选）：详细的描述，对本次提交的目的和改动进行详细说明，可以包含多行，每行不超过 72 个字符。
