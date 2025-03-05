@@ -3,6 +3,7 @@
 这是一个基于 Vue 3 + Vite 的「数字人文多媒体案例资源库」前端项目。
 
 ## 项目介绍
+![image](https://github.com/user-attachments/assets/fc3de6ec-6ecf-4d08-9fcf-98a5e479be21)
 
 “数字人文多媒体案例资源库”是一个面向全球（一期主要集中于中文世界和英文世界）的数字人文综合性资源管理与研究平台，旨在汇聚并分享已完成或正在进行的数字人文实践项目。该平台通过对大量数字人文经典案例进行多维度语义标注与聚合研究，致力于发现数字人文领域的共性、关系与规律，以支持数字人文实践与学科史的深入探讨与批判性发展。
 
@@ -11,43 +12,92 @@
 ## 技术栈
 
 - **前端框架：** [Vue 3](https://vuejs.org/)  
+  - Vue 3 是一个渐进式 JavaScript 框架，具有响应式数据绑定、组件化开发等特性。采用 Proxy 替代 Object.defineProperty 实现响应式，同时支持 Composition API，使代码组织更加灵活，逻辑复用更加方便，能够更好地应对项目中复杂的业务逻辑和组件交互需求。
 - **构建工具：** [Vite](https://vitejs.dev/)  
+  - Vite 是一个基于 ES Module 的前端构建工具，利用浏览器原生支持 ES Module 的特性，实现了快速的冷启动和模块热更新。在开发环境中，无需打包整个项目，按需加载模块，大大提高了开发效率；在生产环境中，会进行打包优化，生成高效的代码，有助于提升项目的整体性能。
 - **语言：** [TypeScript](https://www.typescriptlang.org/)  
+  - TypeScript 是 JavaScript 的超集，为 JavaScript 添加了静态类型系统，能在开发过程中进行类型检查，提前发现潜在的错误，提高代码的可维护性和可读性，尤其在项目规模逐渐增大、业务逻辑日益复杂的情况下，TypeScript 可以让代码更加健壮。
 - **样式与插件：** [UnoCSS](https://github.com/unocss/unocss)  
-- **语义与本体：** 基于《数字人文领域规范词表》与《数字人文领域本体》进行语义标注与关联分析  
+  - UnoCSS 是一个原子化 CSS 引擎，可以根据类名生成对应的 CSS 样式，具有高性能、灵活性强等特点，能够帮助开发者快速构建样式，满足项目中多样化的界面设计需求。
+- **语义与本体：** 基于《数字人文领域规范词表》与《数字人文领域本体》进行语义标注与关联分析，为数字人文案例提供精准的语义信息，实现案例之间的自动聚类与关联展示，这对于深入挖掘数字人文案例之间的关系和规律至关重要。
 - **其他可选技术：** Vue Router、Pinia/Vuex 等（根据项目需求选择）
+  - **Vue Router**：用于实现前端路由功能，能够管理不同页面之间的导航和切换，方便用户在不同的业务模块和页面之间进行浏览和操作。
+  - **Pinia/Vuex**：状态管理工具，用于管理应用中的全局状态，方便在不同组件之间共享数据，例如用户的登录状态、收藏的案例信息等，确保数据的一致性和准确性。
 
 ## 项目功能要点
 
-1. **多维度案例管理：** 整合全球范围内的数字人文案例，提供结构化的检索、筛选和专题聚合功能。  
-2. **语义标注与本体应用：** 基于规范词表和领域本体，为每个案例进行精准标注，实现案例的自动聚类与关联展示。  
-3. **数字学术平台：** 为数字人文研究者提供案例收藏、评价、创建、维护等多种自主研究功能，支持学术共同体的协作与共享。  
-4. **案例专题库：** 包括 GLAM 案例库、数字人文奖（DHA）案例库、高校案例库等，满足不同用户的专题研究需求。  
-5. **批判性发展与学科史研究：** 通过大规模案例数据分析，探讨数字人文的发展规律与学科史，为教学、科研与学科建设提供参考。
+### 1. 多维度案例管理
+整合全球范围内的数字人文案例，提供结构化的检索、筛选和专题聚合功能。在前端，利用 Vue 3 的组件化开发模式，将不同的功能模块拆分成独立的组件，如检索组件、筛选组件、专题展示组件等，提高代码的可维护性和复用性。借助 Vue 3 的响应式数据绑定，实现用户输入与筛选结果的实时更新。同时，使用 Vue Router 实现不同页面之间的导航，方便用户在不同的案例管理页面之间切换。
 
-## 推荐的 IDE 设置
+### 2. 语义标注与本体应用
+基于规范词表和领域本体，为每个案例进行精准标注，实现案例的自动聚类与关联展示。前端使用 Vue 3 的计算属性和侦听器来处理语义标注和聚类关联的结果展示。当后端返回语义标注信息和聚类关联结果时，前端通过计算属性对数据进行处理和格式化，然后将处理后的数据展示在页面上。利用 Vue 3 的条件渲染和列表渲染指令，根据不同的语义标签和聚类结果动态渲染页面内容。
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) （并禁用 Vetur） + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin)
+### 3. 数字学术平台
+为数字人文研究者提供案例收藏、评价、创建、维护等多种自主研究功能，支持学术共同体的协作与共享。前端利用 Vue 3 的 Composition API 来组织用户认证和授权相关的逻辑，将不同的功能模块封装成独立的组合式函数，提高代码的可复用性。使用 Pinia 或 Vuex 进行状态管理，存储用户的登录状态、收藏列表、评价信息等，方便在不同组件之间共享这些状态。通过 Vue 3 的事件绑定机制，实现用户操作（如收藏、评价）与后端接口的交互，将用户的操作数据发送到后端进行处理。
 
-## .vue 文件的 TypeScript 支持
+### 4. 案例专题库
+包括 GLAM 案例库、数字人文奖（DHA）案例库、高校案例库等，满足不同用户的专题研究需求。前端使用 Vue 3 的组件化思想，为每个专题库创建独立的组件，每个组件负责展示该专题库的案例信息。利用 Vue Router 实现不同专题库页面之间的切换，同时在路由配置中可以传递参数，实现专题库的动态加载。通过 Vue 3 的 v-for 指令对案例列表进行渲染，实现专题库案例的展示。
 
-TypeScript 默认无法处理 `.vue` 文件的类型信息，因此我们使用 `vue-tsc` 来进行类型检查。  
-在编辑器中，需要 [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) 让 TypeScript 语言服务识别 `.vue` 类型。
+### 5. 批判性发展与学科史研究
+通过大规模案例数据分析，探讨数字人文的发展规律与学科史，为教学、科研与学科建设提供参考。前端使用 Echarts 等数据可视化库对分析结果进行可视化展示，将复杂的数据以图表、图形等直观的方式呈现给用户。利用 Vue 3 的组件化特性，将不同类型的可视化图表封装成独立的组件，方便在不同的页面和场景中复用。通过 Vue 3 的响应式数据绑定，实现数据的实时更新和图表的动态渲染。
 
-如果你觉得独立的 TypeScript 插件速度不够，可以启用 Volar 的 [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669)，步骤如下：
+## 项目安装与运行
+### 安装依赖
 
-1. 禁用内置的 TypeScript 扩展  
-   1) 在 VSCode 命令面板中运行 `Extensions: Show Built-in Extensions`  
-   2) 找到 `TypeScript and JavaScript Language Features`，右键选择 `Disable (Workspace)`
-2. 在命令面板中运行 `Developer: Reload Window` 重载 VSCode 窗口
+```bash
+npm install
+```
+
+### 开发编译
+
+```sh
+npm run dev
+```
+
+### 编译并压缩用于生产环境
+
+```sh
+npm run build
+```
+
+### 代码检查
+
+```sh
+npm run lint
+```
+
+## Commit规范
+plaintext
+<type>(<scope>): <subject>
+<BLANK LINE>
+<body>
+<BLANK LINE>
+<footer>
+
+说明
+type（必填）：Commit 的类型，用于描述本次提交的主要目的，常见的类型有：
+feat：新功能（feature）的添加或修改。
+fix：修复 bug。
+docs：文档（documentation）的修改，如 README、注释等。
+style：代码风格的调整，不影响代码逻辑，如格式化、空格、缩进等。
+refactor：代码重构，既不是修复 bug 也不是添加新功能，只是对现有代码结构进行优化。
+test：添加或修改测试用例。
+chore：构建过程或辅助工具的变动，如依赖更新、构建脚本修改等。
+perf：性能优化相关的改动。
+ci：持续集成（Continuous Integration）相关的配置文件和脚本的修改。
+scope（可选）：本次提交影响的范围，用于更详细地描述修改的模块或组件，如 login, form, api 等。
+subject（必填）：简短的描述，不超过 50 个字符，使用动词开头，使用现在时态，首字母小写，结尾不加句号。
+body（可选）：详细的描述，对本次提交的目的和改动进行详细说明，可以包含多行，每行不超过 72 个字符。
+footer（可选）：一些额外的信息，如关联的 Issue 编号（Closes #123）、Breaking Changes（不兼容的重大改动）等。
+
+## unocss
+
+- 类名查询地址： https://uno.antfu.me/
 
 ## 自定义配置
 
 详见 [Vite 配置参考](https://vitejs.dev/config/)。
 
-## 项目安装与运行
+## 推荐的 IDE 设置
 
-### 安装依赖
-
-```bash
-npm install
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) （并禁用 Vetur） + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin)
